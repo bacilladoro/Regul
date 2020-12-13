@@ -1,0 +1,19 @@
+﻿<Style xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:v="clr-namespace:System;assembly=netstandard">
+	<Style.Resources>
+		<v:String x:Key="File">File</v:String>
+		<v:String x:Key="Tools">Tools</v:String>
+		<v:String x:Key="Reference">Reference</v:String>
+		<v:String x:Key="ExitFromRegul">Exit from Regul</v:String>
+		<v:String x:Key="TheSims3">The Sims 3</v:String>
+		<v:String x:Key="SaveClear">Save clear</v:String>
+		
+		<v:String x:Key="Cut">Cut</v:String>
+		<v:String x:Key="Paste">Paste</v:String>
+		
+		<v:String x:Key="Yes">Yes</v:String>
+		<v:String x:Key="No">No</v:String>
+		<v:String x:Key="OK">OK</v:String>
+	</Style.Resources>
+</Style>

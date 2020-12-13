@@ -1,0 +1,28 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+        x:Class="Regul.Views.Windows.SaveClear"
+		Width="400" Height="200"
+		WindowStartupLocation="CenterOwner"
+		WindowState="Normal"
+		CanResize="False"
+		ShowInTaskbar="False"
+        Title="Save clear"
+		Icon="avares://Regul/icon.ico">
+	<Grid RowDefinitions="*,50">
+		<ScrollViewer>
+			<StackPanel Margin="5" Spacing="5">
+				<DockPanel>
+					<Button Margin="0 0 5 0" Content="Select" Height="20" Padding="10 0" Command="{Binding SelectPath}"/>
+					<TextBox Watermark="The path to save" Text="{Binding Path, Mode=TwoWay}"/>
+				</DockPanel>
+			</StackPanel>
+		</ScrollViewer>
+		
+		<Border Classes="Panel" Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{StaticResource ThemeGlobalBorderBrush}">
+			<Button Margin="10" Content="Clear" Command="{Binding Clear}"/>
+		</Border>
+	</Grid>
+</Window>

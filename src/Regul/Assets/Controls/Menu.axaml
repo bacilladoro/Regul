@@ -1,0 +1,57 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=netstandard">
+	<Style Selector="MenuItem:selected /template/ Border#root">
+			<Setter Property="Background" Value="{DynamicResource ThemeHoverBackgroundBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource ThemeHoverBackgroundBrush}"/>
+		</Style>
+		<Style Selector="Menu > MenuItem">
+			<Setter Property="Padding" Value="6 0"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Name="root"
+							Background="{TemplateBinding Background}"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}">
+						<Panel>
+							<ContentPresenter Name="PART_HeaderPresenter"
+											  Content="{TemplateBinding Header}"
+											  Margin="{TemplateBinding Padding}">
+								<ContentPresenter.DataTemplates>
+									<DataTemplate DataType="sys:String">
+										<AccessText Text="{Binding}"/>
+									</DataTemplate>
+								</ContentPresenter.DataTemplates>
+							</ContentPresenter>
+							<Popup Name="PART_Popup"
+								   IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}"
+								   StaysOpen="True">
+								<Border Background="{DynamicResource ThemeBackgroundBrush}"
+										BorderBrush="{DynamicResource ThemeGlobalBorderBrush}"
+										BorderThickness="{TemplateBinding BorderThickness}">
+									<ScrollViewer Classes="menuscroller">
+										<ItemsPresenter Name="PART_ItemsPresenter"
+														Items="{TemplateBinding Items}"
+														ItemsPanel="{TemplateBinding ItemsPanel}"
+														ItemTemplate="{TemplateBinding ItemTemplate}"
+														Grid.IsSharedSizeScope="True"/>
+									</ScrollViewer>
+								</Border>
+							</Popup>
+						</Panel>
+					</Border>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+		<Style Selector="MenuItem > MenuItem">
+			<Setter Property="RenderTransform" Value="none"/>
+			<Setter Property="Transitions">
+				<Transitions>
+					<TransformOperationsTransition Property="RenderTransform" Duration="0:0:.075" />
+				</Transitions>
+			</Setter>
+		</Style>
+		<Style Selector="MenuItem > MenuItem:pressed">
+			<Setter Property="RenderTransform" Value="scale(0.98)" />
+		</Style>
+</Styles>

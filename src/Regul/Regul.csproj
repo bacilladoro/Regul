@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net5.0</TargetFramework>
+		<ApplicationIcon>icon.ico</ApplicationIcon>
+	</PropertyGroup>
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+		<AvaloniaResource Remove="Assets\Controls\Button.axaml" />
+		<AvaloniaResource Remove="Assets\Controls\Menu.axaml" />
+		<AvaloniaResource Remove="Assets\Controls\TextBox.axaml" />
+		<AvaloniaResource Remove="Assets\Images.axaml" />
+		<AvaloniaResource Remove="Assets\Local\Lang.en-US.axaml" />
+		<AvaloniaResource Include="icon.ico" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="0.10.0-rc1" />
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc1" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0-rc1" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Regul.S3PI\Regul.S3PI.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <AvaloniaXaml Update="Assets\Local\Lang.en-US.axaml">
+	    <SubType>Designer</SubType>
+	  </AvaloniaXaml>
+	</ItemGroup>
+</Project>

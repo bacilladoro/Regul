@@ -1,0 +1,36 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=netstandard">
+	<Style>
+		<Style.Resources>
+			<ContextMenu x:Key="TextBoxContextMenu" x:Name="TextBoxContextMenu">
+				<MenuItem x:Name="TextBoxContextMenuCutItem" Header="{DynamicResource Cut}" Command="{Binding $parent[TextBox].Cut}" IsEnabled="{Binding $parent[TextBox].CanCut}" InputGesture="{x:Static TextBox.CutGesture}" />
+				<MenuItem x:Name="TextBoxContextMenuCopyItem" Header="{DynamicResource Copy}" Command="{Binding $parent[TextBox].Copy}" IsEnabled="{Binding $parent[TextBox].CanCopy}" InputGesture="{x:Static TextBox.CopyGesture}">
+					<MenuItem.Icon>
+						<Image Source="{DynamicResource ClipboardIcon}"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem x:Name="TextBoxContextMenuPasteItem" Header="{DynamicResource Paste}" Command="{Binding $parent[TextBox].Paste}" IsEnabled="{Binding $parent[TextBox].CanPaste}" InputGesture="{x:Static TextBox.PasteGesture}"/>
+			</ContextMenu>
+		</Style.Resources>
+	</Style>
+
+	<Style Selector="TextBox">
+		<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+		<Setter Property="Padding" Value="4 0"/>
+		<Setter Property="CaretBrush" Value="{DynamicResource ThemeForegroundBrush}"/>
+		<Setter Property="SelectionBrush" Value="{DynamicResource ThemeHoverBackgroundBrush}"/>
+		<Setter Property="SelectionForegroundBrush" Value="{DynamicResource ThemeForegroundBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource ThemeGlobalBorderBrush}"/>
+		<Setter Property="ContextMenu" Value="{StaticResource TextBoxContextMenu}"/>
+	</Style>
+	<Style Selector="TextBox /template/ Border#border">
+		<Setter Property="CornerRadius" Value="5"/>
+	</Style>
+	<Style Selector="TextBox:pointerover /template/ Border#border">
+		<Setter Property="BorderBrush" Value="{DynamicResource ThemeSelectedControlColor}"/>
+	</Style>
+	<Style Selector="TextBox:focus /template/ Border#border">
+		<Setter Property="BorderBrush" Value="{DynamicResource ThemeSelectedControlColor}"/>
+	</Style>
+</Styles>
