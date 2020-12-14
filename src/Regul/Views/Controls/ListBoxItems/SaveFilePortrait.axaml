@@ -1,0 +1,15 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="150" d:DesignHeight="200"
+             x:Class="Regul.Views.Controls.ListBoxItems.SaveFilePortrait"
+			 Width="160" Height="180">
+	<Grid RowDefinitions="*,Auto,Auto">
+		<Border Classes="BorderStyle" Margin="5">
+			<Image x:Name="iconFamily" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+		</Border>
+		<TextBox x:Name="saveName" Watermark="Save family" IsReadOnly="True" Margin="5 0 5 5" Grid.Row="1" HorizontalContentAlignment="Center"/>
+		<TextBox x:Name="saveFamily" Watermark="Save family" IsReadOnly="True" Margin="5 0 5 5" Grid.Row="2" HorizontalContentAlignment="Center"/>
+	</Grid>
+</UserControl>

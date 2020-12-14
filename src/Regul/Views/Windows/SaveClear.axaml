@@ -2,27 +2,41 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
         x:Class="Regul.Views.Windows.SaveClear"
-		Width="400" Height="200"
+		Width="600" Height="400"
 		WindowStartupLocation="CenterOwner"
 		WindowState="Normal"
-		CanResize="False"
+		CanResize="True"
 		ShowInTaskbar="False"
         Title="Save clear"
 		Icon="avares://Regul/icon.ico">
 	<Grid RowDefinitions="*,50">
-		<ScrollViewer>
-			<StackPanel Margin="5" Spacing="5">
-				<DockPanel>
-					<Button Margin="0 0 5 0" Content="Select" Height="20" Padding="10 0" Command="{Binding SelectPath}"/>
-					<TextBox Watermark="The path to save" Text="{Binding Path, Mode=TwoWay}"/>
-				</DockPanel>
-			</StackPanel>
-		</ScrollViewer>
-		
+		<StackPanel Margin="5" Spacing="5">
+			<DockPanel>
+				<TextBlock Text="{StaticResource VersionC}" Margin="0 0 5 0"/>
+				<ComboBox SelectedIndex="{Binding SelectVersion}">
+					<ComboBoxItem Content="1.67"/>
+					<ComboBoxItem Content="1.69 (beta)"/>
+				</ComboBox>
+			</DockPanel>
+			<ListBox Classes="Horizontal" Items="{Binding SaveFilePortraits}" SelectedItem="{Binding SelectSave}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="210" BorderBrush="{StaticResource ThemeGlobalBorderBrush}">
+				<ListBox.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel Orientation="Horizontal"/>
+					</ItemsPanelTemplate>
+				</ListBox.ItemsPanel>
+			</ListBox>
+			<Separator/>
+			<CheckBox Content="{StaticResource DeletingCharacterPortraits}" IsChecked="{Binding DeletingCharacterPortraits}" ToolTip.Tip="{StaticResource ToolTipDeletingCharacterPortraits}"/>
+			<CheckBox Content="{StaticResource RemovingLotThumbnails}" IsChecked="{Binding RemovingLotThumbnails}" ToolTip.Tip="{StaticResource ToolTipRemovingLotThumbnails}"/>
+			<CheckBox Content="{StaticResource RemovingPhotosAndTextures}" IsChecked="{Binding RemovingPhotosAndTextures}" ToolTip.Tip="{StaticResource ToolTipRemovingPhotosAndTextures}"/>
+
+			<ProgressBar Maximum="100" Value="{Binding Progress}"/>
+		</StackPanel>
+
 		<Border Classes="Panel" Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{StaticResource ThemeGlobalBorderBrush}">
-			<Button Margin="10" Content="Clear" Command="{Binding Clear}"/>
+			<Button Margin="10" Content="{StaticResource Clear}" Command="{Binding Clear}"/>
 		</Border>
 	</Grid>
 </Window>

@@ -13,6 +13,9 @@
 		<StyleInclude Source="/Assets/Controls/Button.axaml"/>
 		<StyleInclude Source="/Assets/Controls/Menu.axaml"/>
 		<StyleInclude Source="/Assets/Controls/TextBox.axaml"/>
+		<StyleInclude Source="/Assets/Controls/ComboBox.axaml"/>
+		<StyleInclude Source="/Assets/Controls/CheckBox.axaml"/>
+		<StyleInclude Source="/Assets/Controls/ListBoxItem.axaml"/>
 		
 		<Style Selector="Border.BorderStyle">
 			<Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
@@ -26,9 +29,26 @@
 			<Setter Property="Height" Value="1"/>
 			<Setter Property="Margin" Value="15 5"/>
 		</Style>
+		
 		<Style Selector="Border.Panel">
 			<Setter Property="Background" Value="{DynamicResource ThemePanelBackgroundBrush}"/>
 			<Setter Property="BorderBrush" Value="{DynamicResource ThemeGlobalBorderBrush}"/>
+		</Style>
+		
+		<Style Selector="ToolTip">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Padding="4,2" Background="{DynamicResource ThemeBackgroundBrush}"
+							BorderBrush="{DynamicResource ThemeGlobalBorderBrush}"
+							BorderThickness="1" IsHitTestVisible="True">
+						<ContentPresenter Name="PART_ContentPresenter"
+										  ContentTemplate="{TemplateBinding ContentTemplate}"
+										  Content="{TemplateBinding Content}"/>
+					</Border>
+				</ControlTemplate>
+			</Setter>
 		</Style>
     </Application.Styles>
 </Application>

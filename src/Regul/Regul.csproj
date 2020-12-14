@@ -7,6 +7,10 @@
 	<ItemGroup>
 		<AvaloniaResource Include="Assets\**" />
 		<AvaloniaResource Remove="Assets\Controls\Button.axaml" />
+		<AvaloniaResource Remove="Assets\Controls\CheckBox.axaml" />
+		<AvaloniaResource Remove="Assets\Controls\ComboBox.axaml" />
+		<AvaloniaResource Remove="Assets\Controls\ListBox.axaml" />
+		<AvaloniaResource Remove="Assets\Controls\ListBoxItem.axaml" />
 		<AvaloniaResource Remove="Assets\Controls\Menu.axaml" />
 		<AvaloniaResource Remove="Assets\Controls\TextBox.axaml" />
 		<AvaloniaResource Remove="Assets\Images.axaml" />

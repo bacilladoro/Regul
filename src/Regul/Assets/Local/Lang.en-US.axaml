@@ -15,5 +15,16 @@
 		<v:String x:Key="Yes">Yes</v:String>
 		<v:String x:Key="No">No</v:String>
 		<v:String x:Key="OK">OK</v:String>
+		
+		<v:String x:Key="VersionC">Version:</v:String>
+		<v:String x:Key="Select">Select</v:String>
+		<v:String x:Key="ThePathToSave">The path to save</v:String>
+		<v:String x:Key="Clear">Clear</v:String>
+		<v:String x:Key="DeletingCharacterPortraits">Deleting character portraits</v:String>
+		<v:String x:Key="RemovingLotThumbnails">Removing lot thumbnails</v:String>
+		<v:String x:Key="RemovingPhotosAndTextures">Removing photos and textures</v:String>
+		<v:String x:Key="ToolTipDeletingCharacterPortraits">Portraits are displayed in the relationship panel, in the CAS, when choosing clothes and in the panel of the selected active character. It is recommended to enable</v:String>
+		<v:String x:Key="ToolTipRemovingLotThumbnails">Displayed when moving and in the main menu. If you are afraid that after deleting your save will not load, do not enable (deleting is safe)</v:String>
+		<v:String x:Key="ToolTipRemovingPhotosAndTextures">The textures of the unloaded lot and photos are stored. If you don't want to delete photos, please do not include</v:String>
 	</Style.Resources>
 </Style>

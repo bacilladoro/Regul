@@ -21,9 +21,9 @@ namespace Regul
                 .UsePlatformDetect()
                 .LogToTrace()
                 .UseReactiveUI()
-                .With(new Win32PlatformOptions { AllowEglInitialization = false, UseDeferredRendering = true, OverlayPopups = true })
+                .With(new Win32PlatformOptions { AllowEglInitialization = false, UseDeferredRendering = true, OverlayPopups = false })
                 .With(new MacOSPlatformOptions { ShowInDock = true })
-                .With(new AvaloniaNativePlatformOptions { UseGpu = true, UseDeferredRendering = true, OverlayPopups = true })
+                .With(new AvaloniaNativePlatformOptions { UseGpu = true, UseDeferredRendering = true, OverlayPopups = false })
                 .With(new X11PlatformOptions { UseGpu = true, UseEGL = true });
 
         private static void AppMain(Application app, string[] args)
