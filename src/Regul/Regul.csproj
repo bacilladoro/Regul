@@ -12,6 +12,7 @@
 		<AvaloniaResource Remove="Assets\Controls\ListBox.axaml" />
 		<AvaloniaResource Remove="Assets\Controls\ListBoxItem.axaml" />
 		<AvaloniaResource Remove="Assets\Controls\Menu.axaml" />
+		<AvaloniaResource Remove="Assets\Controls\ProgressBar.axaml" />
 		<AvaloniaResource Remove="Assets\Controls\TextBox.axaml" />
 		<AvaloniaResource Remove="Assets\Images.axaml" />
 		<AvaloniaResource Remove="Assets\Local\Lang.en-US.axaml" />

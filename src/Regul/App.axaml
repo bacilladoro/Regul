@@ -16,6 +16,8 @@
 		<StyleInclude Source="/Assets/Controls/ComboBox.axaml"/>
 		<StyleInclude Source="/Assets/Controls/CheckBox.axaml"/>
 		<StyleInclude Source="/Assets/Controls/ListBoxItem.axaml"/>
+		<StyleInclude Source="/Assets/Controls/ProgressBar.axaml"/>
+		<StyleInclude Source="/Assets/Controls/ListBox.axaml"/>
 		
 		<Style Selector="Border.BorderStyle">
 			<Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>

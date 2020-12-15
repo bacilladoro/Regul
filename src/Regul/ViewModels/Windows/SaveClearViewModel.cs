@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Microsoft.VisualBasic;
 using ReactiveUI;
 using Regul.S3PI;
@@ -6,7 +7,7 @@ using Regul.S3PI.Interfaces;
 using Regul.Structures;
 using Regul.Views;
 using Regul.Views.Controls.ListBoxItems;
-using SkiaSharp;
+using Regul.Views.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,43 +15,37 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Regul.ViewModels.Windows
 {
     public class SaveClearViewModel : ReactiveObject
     {
-        private string _pathFile;
-        private int _progress;
-        private int _selectVersion;
+        private string _pathBackup;
+        private bool _isLoading;
         private ObservableCollection<SaveFilePortrait> _saveFilePortraits = new();
         private SaveFilePortrait _selectSave;
+        private Loading _loading;
 
         private bool _deletingCharacterPortraits;
         private bool _removingLotThumbnails;
         private bool _removingPhotosAndTextures;
+        private bool _createABackup;
 
         [AccessedThroughProperty("bgwClean")]
         private BackgroundWorker _bgwClean;
 
         #region Propertys
 
-        private string PathFile
+        private string PathBackup
         {
-            get => _pathFile;
-            set => this.RaiseAndSetIfChanged(ref _pathFile, value);
+            get => _pathBackup;
+            set => this.RaiseAndSetIfChanged(ref _pathBackup, value);
         }
 
-        private int Progress
+        private bool IsLoading
         {
-            get => _progress;
-            set => this.RaiseAndSetIfChanged(ref _progress, value);
-        }
-        private int SelectVersion
-        {
-            get=> _selectVersion;
-            set => this.RaiseAndSetIfChanged(ref _selectVersion, value);
+            get => _isLoading;
+            set => this.RaiseAndSetIfChanged(ref _isLoading, value);
         }
 
         private ObservableCollection<SaveFilePortrait> SaveFilePortraits
@@ -80,6 +75,11 @@ namespace Regul.ViewModels.Windows
             get => _removingPhotosAndTextures;
             set => this.RaiseAndSetIfChanged(ref _removingPhotosAndTextures, value);
         }
+        private bool CreateABackup
+        {
+            get => _createABackup;
+            set => this.RaiseAndSetIfChanged(ref _createABackup, value);
+        }
 
         #endregion
 
@@ -88,17 +88,25 @@ namespace Regul.ViewModels.Windows
             DeletingCharacterPortraits = true;
             bgwClean = new();
 
+            Initialize();
+        }
+
+        private async void Initialize()
+        {
             try
             {
                 if (!Directory.Exists(Path.Combine(TS3CC.Sims3MyDocFolder, "Saves")))
                 {
-                    MessageBox.Show(App.SaveClear, null, "No save file found", "Oops", MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
+                    await MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("SaveFilesNotFound"), (string)Application.Current.FindResource("Information"), 
+                        MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
                     App.SaveClear.Close();
+                    return;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(App.SaveClear, ex.ToString(), "No save file found", "Oops", MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
+                await MessageBox.Show(App.SaveClear, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"), 
+                    (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Error);
             }
 
             string path1 = "";
@@ -109,11 +117,22 @@ namespace Regul.ViewModels.Windows
             }
             else
             {
-                
+                await MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("NotFindFolderTheSims3"),
+                    (string)Application.Current.FindResource("Information"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
+
+                OpenFolderDialog dialog = new();
+                string path = await dialog.ShowAsync(App.SaveClear);
+                if (!string.IsNullOrEmpty(path)) path1 = path;
+                else
+                { 
+                    App.SaveClear.Close(); 
+                    return;
+                }
             }
+
             string[] directories = Directory.GetDirectories(Path.Combine(path1, "Saves"), "*.sims3", SearchOption.TopDirectoryOnly);
             int index1 = 0;
-            
+
             while (index1 < directories.Length)
             {
                 string path = directories[index1];
@@ -138,7 +157,8 @@ namespace Regul.ViewModels.Windows
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(App.SaveClear, ex.ToString(), "No save file found", "Oops", MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
+                        await MessageBox.Show(App.SaveClear, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"), 
+                            (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Error);
                     }
                     checked { ++index2; }
                 }
@@ -148,24 +168,67 @@ namespace Regul.ViewModels.Windows
 
         private async void SelectPath()
         {
-            OpenFileDialog dialog = new();
-            dialog.Filters.Add(new FileDialogFilter { Name = "Save file The Sims 3", Extensions = { "nhd" } });
-            List<string> files = (await dialog.ShowAsync(App.SaveClear)).ToList();
-
-            if (files.Count != 0) PathFile = files.First();
+            OpenFolderDialog dialog = new();
+            PathBackup = await dialog.ShowAsync(App.SaveClear) + "\\";
         }
 
-        private void Clear()
+        private async void Clear()
         {
             try
             {
+                if (SelectSave == null)
+                {
+                    await MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("NoSelectedSaveFile"), 
+                        (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Error);
+                    return;
+                }
+                IsLoading = true;
+                _loading = new();
+                _loading.ShowDialog(App.SaveClear);
                 bgwClean.RunWorkerAsync(SelectSave);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(App.SaveClear, ex.ToString(), "Save Cleanup was successful!", "Successfully!", MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
+                await MessageBox.Show(App.SaveClear, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"), 
+                    (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
             }
             GC.Collect();
+        }
+
+        private void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        {
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+            if (!dir.Exists)
+            {
+                throw new DirectoryNotFoundException(
+                    "Source directory does not exist or could not be found: "
+                    + sourceDirName);
+            }
+
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            // If the destination directory doesn't exist, create it.       
+            Directory.CreateDirectory(destDirName);
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                string tempPath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(tempPath, false);
+            }
+
+            // If copying subdirectories, copy them and their contents to new location.
+            if (copySubDirs)
+            {
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string tempPath = Path.Combine(destDirName, subdir.Name);
+                    DirectoryCopy(subdir.FullName, tempPath, copySubDirs);
+                }
+            }
         }
 
         internal virtual BackgroundWorker bgwClean
@@ -199,17 +262,31 @@ namespace Regul.ViewModels.Windows
 
         private void bgwClean_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Progress = e.ProgressPercentage;
+            _loading.ProcessText.Text = (string)e.UserState;
+            _loading.Progress.Value = e.ProgressPercentage;
         }
 
         private void bgwClean_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            MessageBox.Show(App.SaveClear, null, "Save Cleanup was successful!", "Successfully!", MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
+            _loading.Close();
+            IsLoading = false;
+            MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("SaveFilesCleanedSuccessfully"), 
+                (string)Application.Current.FindResource("Successfully"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
         }
 
         private void bgwClean_DoWork(object sender, DoWorkEventArgs e)
         {
             SaveFilePortrait saveFilePortrait = (SaveFilePortrait)e.Argument;
+
+            if (CreateABackup)
+            {
+                bgwClean.ReportProgress(10, "Create Backup...");
+                if (!string.IsNullOrEmpty(PathBackup))
+                {
+                    DirectoryCopy(saveFilePortrait.SaveDir, PathBackup + saveFilePortrait.SaveName.Text + ".sims3", true);
+                }
+            }
+
             long num1 = 0;
             string[] files1 = Directory.GetFiles(saveFilePortrait.SaveDir, "*.*", SearchOption.AllDirectories);
             int index1 = 0;
@@ -244,22 +321,10 @@ namespace Regul.ViewModels.Windows
                 checked { ++index2; }
             }
 
-            if (((IEnumerable<string>)Directory.GetFiles(saveFilePortrait.SaveDir, "*.nhd", SearchOption.AllDirectories)).Count<string>() > 1)
+            if (Directory.GetFiles(saveFilePortrait.SaveDir, "*.nhd", SearchOption.AllDirectories).Length > 1)
             {
-                bgwClean.ReportProgress(60, (object)"Clearing Duplicated Images...");
-                List<IResourceIndexEntry> resourceIndexEntries = new();
+                bgwClean.ReportProgress(60, "Clearing Duplicated Images...");
 
-                IPackage pkg1 = S3PI.Package.Package.OpenPackage(1, Path.Combine(saveFilePortrait.SaveDir, "TravelDB.package"), true);
-                try
-                {
-                    if (RemovingPhotosAndTextures)
-                        foreach (IResourceIndexEntry getResource in pkg1.GetResourceList)
-                        {
-                            if (getResource.ResourceType == 11720834U)
-                                resourceIndexEntries.Add(getResource);
-                        }
-                }
-                finally { }
                 string[] files3 = Directory.GetFiles(saveFilePortrait.SaveDir, "*.nhd", SearchOption.AllDirectories);
                 int index3 = 0;
                 while (index3 < files3.Length)
@@ -310,12 +375,10 @@ namespace Regul.ViewModels.Windows
                         finally { }
                         bgwClean.ReportProgress(80, "Saving Save...");
                         pkg2.SavePackage();
-                        S3PI.Package.Package.ClosePackage(0,pkg2);
+                        S3PI.Package.Package.ClosePackage(0, pkg2);
                     }
                     checked { ++index3; }
                 }
-                pkg1.SavePackage();
-                S3PI.Package.Package.ClosePackage(1, pkg1);
             }
             else
             {
@@ -330,15 +393,16 @@ namespace Regul.ViewModels.Windows
                         foreach (IResourceIndexEntry getResource in pkg.GetResourceList)
                         {
                             if (getResource.Compressed == 0)
-                                    getResource.Compressed = ushort.MaxValue;
-                                if (DeletingCharacterPortraits && getResource.ResourceType == 92316365U | getResource.ResourceType == 92316366U | getResource.ResourceType == 92316367U)
-                                    pkg.DeleteResource(getResource);
-                                if (RemovingLotThumbnails && getResource.ResourceType == 3629023174U)
-                                    pkg.DeleteResource(getResource);
-                                if (RemovingPhotosAndTextures && getResource.ResourceType == 11720834U)
-                                    pkg.DeleteResource(getResource);
+                                getResource.Compressed = ushort.MaxValue;
+                            if (DeletingCharacterPortraits && getResource.ResourceType == 92316365U | getResource.ResourceType == 92316366U | getResource.ResourceType == 92316367U)
+                                pkg.DeleteResource(getResource);
+                            if (RemovingLotThumbnails && getResource.ResourceType == 3629023174U)
+                                pkg.DeleteResource(getResource);
+                            if (RemovingPhotosAndTextures && getResource.ResourceType == 11720834U)
+                                pkg.DeleteResource(getResource);
                         }
-                    } finally{}
+                    }
+                    finally { }
                     bgwClean.ReportProgress(60, "Saving Save...");
                     pkg.SavePackage();
                     S3PI.Package.Package.ClosePackage(1, pkg);
@@ -355,8 +419,6 @@ namespace Regul.ViewModels.Windows
                 checked { num2 += new FileInfo(file).Length; }
                 checked { ++index4; }
             }
-            bgwClean.ReportProgress(100, "Complete!");
-            e.Result = true;
         }
     }
 }

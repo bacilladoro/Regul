@@ -1,19 +1,19 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:sys="clr-namespace:System;assembly=netstandard">
-	<Style Selector="ListBox.Horizontal">
+	<Style Selector="ListBox">
 		<Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
 		<Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMidBrush}"/>
 		<Setter Property="BorderThickness" Value="{DynamicResource ThemeBorderThickness}"/>
-		<Setter Property="Padding" Value="0"/>
+		<Setter Property="Padding" Value="5"/>
 		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
 		<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Border Name="border" BorderBrush="{TemplateBinding BorderBrush}"
-						BorderThickness="{TemplateBinding BorderThickness}">
+						BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
 					<ScrollViewer Name="PART_ScrollViewer"
-								  Background="{TemplateBinding Background}"
+								  Background="Transparent"
 								  HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
 								  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
 								  HorizontalContentAlignment="Stretch">

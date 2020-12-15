@@ -12,16 +12,17 @@
         Title="Regul">
 	<DockPanel>
 		<Menu DockPanel.Dock="Top" Foreground="{DynamicResource ThemeForegroundBrush}" IsVisible="{Binding $parent[TopLevel].(NativeMenu.IsNativeMenuExported), Converter={StaticResource AvaloniaThemesDefaultNativeMenuBarInverseBooleanValueConverter}}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}">
-			<MenuItem Header="File">
-				
+			<MenuItem Header="{DynamicResource File}">
+				<MenuItem Header="{DynamicResource Settings}"/>
+				<MenuItem Header="{DynamicResource ExitFromRegul}"/>
 			</MenuItem>
-			<MenuItem Header="Tools">
-				<MenuItem Header="The Sims 3">
-					<MenuItem Header="Clear save" Command="{Binding SaveClearWindowCommand}"/>
+			<MenuItem Header="{DynamicResource Tools}">
+				<MenuItem Header="{DynamicResource TheSims3}">
+					<MenuItem Header="{DynamicResource SaveClear}" Command="{Binding SaveClearWindowCommand}"/>
 				</MenuItem>
 			</MenuItem>
-			<MenuItem Header="Reference">
-				
+			<MenuItem Header="{DynamicResource Reference}">
+				<MenuItem Header="{DynamicResource AboutTheProgram}"/>
 			</MenuItem>
 		</Menu>
 		<Grid/>
