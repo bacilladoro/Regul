@@ -12,7 +12,7 @@ namespace Regul.S3PI.Package
     /// </summary>
     public class ResourceIndexEntry : AResourceIndexEntry
     {
-        const Int32 recommendedApiVersion = 2;
+        const int recommendedApiVersion = 2;
 
         #region AApiVersionedFields
         /// <summary>
@@ -29,7 +29,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         [MinimumVersion(1)]
         [MaximumVersion(recommendedApiVersion)]
-        public override UInt32 ResourceType
+        public override uint ResourceType
         {
             get { return BitConverter.ToUInt32(indexEntry, 4); }
             set { byte[] src = BitConverter.GetBytes(value); Array.Copy(src, 0, indexEntry, 4, src.Length); OnElementChanged(); }
@@ -39,7 +39,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         [MinimumVersion(1)]
         [MaximumVersion(recommendedApiVersion)]
-        public override UInt32 ResourceGroup
+        public override uint ResourceGroup
         {
             get { return BitConverter.ToUInt32(indexEntry, 8); }
             set { byte[] src = BitConverter.GetBytes(value); Array.Copy(src, 0, indexEntry, 8, src.Length); OnElementChanged(); }
@@ -49,7 +49,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         [MinimumVersion(1)]
         [MaximumVersion(recommendedApiVersion)]
-        public override UInt64 Instance
+        public override ulong Instance
         {
             get { return ((ulong)BitConverter.ToUInt32(indexEntry, 12) << 32) | (ulong)BitConverter.ToUInt32(indexEntry, 16); }
             set
@@ -64,7 +64,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         [MinimumVersion(1)]
         [MaximumVersion(recommendedApiVersion)]
-        public override UInt32 Chunkoffset
+        public override uint Chunkoffset
         {
             get { return BitConverter.ToUInt32(indexEntry, 20); }
             set { byte[] src = BitConverter.GetBytes(value); Array.Copy(src, 0, indexEntry, 20, src.Length); OnElementChanged(); }
@@ -74,7 +74,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         [MinimumVersion(1)]
         [MaximumVersion(recommendedApiVersion)]
-        public override UInt32 Filesize
+        public override uint Filesize
         {
             get { return BitConverter.ToUInt32(indexEntry, 24) & 0x7fffffff; }
             set { byte[] src = BitConverter.GetBytes(value | 0x80000000); Array.Copy(src, 0, indexEntry, 24, src.Length); OnElementChanged(); OnElementChanged(); }
@@ -84,7 +84,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         [MinimumVersion(1)]
         [MaximumVersion(recommendedApiVersion)]
-        public override UInt32 Memsize
+        public override uint Memsize
         {
             get { return BitConverter.ToUInt32(indexEntry, 28); }
             set { byte[] src = BitConverter.GetBytes(value); Array.Copy(src, 0, indexEntry, 28, src.Length); OnElementChanged(); }
@@ -94,7 +94,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         [MinimumVersion(1)]
         [MaximumVersion(recommendedApiVersion)]
-        public override UInt16 Compressed
+        public override ushort Compressed
         {
             get { return BitConverter.ToUInt16(indexEntry, 32); }
             set { byte[] src = BitConverter.GetBytes(value); Array.Copy(src, 0, indexEntry, 32, src.Length); OnElementChanged(); }
@@ -104,7 +104,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         [MinimumVersion(1)]
         [MaximumVersion(recommendedApiVersion)]
-        public override UInt16 Unknown2
+        public override ushort Unknown2
         {
             get { return BitConverter.ToUInt16(indexEntry, 34); }
             set { byte[] src = BitConverter.GetBytes(value); Array.Copy(src, 0, indexEntry, 34, src.Length); OnElementChanged(); }
@@ -183,7 +183,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         /// <param name="header">header ints (same for each index entry); [0] is the index type</param>
         /// <param name="entry">entry ints (specific to this entry)</param>
-        internal ResourceIndexEntry(Int32[] header, Int32[] entry)
+        internal ResourceIndexEntry(int[] header, int[] entry)
         {
             indexEntry = new byte[(header.Length + entry.Length) * 4];
             MemoryStream ms = new MemoryStream(indexEntry);

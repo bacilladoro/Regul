@@ -33,14 +33,14 @@ namespace Regul.S3PI.Package
             for (int i = 0; i < data.Length; i++) realsize = (realsize << 8) + data[i];
 
             if (checking) if (realsize != memsize)
-                    throw new InvalidDataException(String.Format(
+                    throw new InvalidDataException(string.Format(
                         "Resource data indicates size does not match index at 0x{0}.  Read 0x{1}.  Expected 0x{2}.",
                         stream.Position.ToString("X8"), realsize.ToString("X8"), memsize.ToString("X8")));
 
             while (stream.Position < end) { Dechunk(stream, bw); }
 
             if (checking) if (bw.BaseStream.Position != memsize)
-                    throw new InvalidDataException(String.Format("Read 0x{0:X8} bytes.  Expected 0x{1:X8}.", bw.BaseStream.Position, memsize));
+                    throw new InvalidDataException(string.Format("Read 0x{0:X8} bytes.  Expected 0x{1:X8}.", bw.BaseStream.Position, memsize));
 
             bw.Close();
 
@@ -102,7 +102,7 @@ namespace Regul.S3PI.Package
             }
 
             if (checking) if (copyoffset > bw.BaseStream.Position)
-                throw new InvalidDataException(String.Format("Invalid copy offset 0x{0:X8} at {1}.", copyoffset, stream.Position));
+                throw new InvalidDataException(string.Format("Invalid copy offset 0x{0:X8} at {1}.", copyoffset, stream.Position));
 
             if (copysize < copyoffset && copyoffset > 8) CopyA(bw.BaseStream, copyoffset, copysize); else CopyB(bw.BaseStream, copyoffset, copysize);
         }
@@ -487,7 +487,7 @@ namespace Tiger
             int compressedidx = 0;
             int compressedlen = 0;
 
-            if (data.Length < 16 || data.LongLength > UInt32.MaxValue)
+            if (data.Length < 16 || data.LongLength > uint.MaxValue)
                 return null;
 
             mData = data;
@@ -794,12 +794,12 @@ namespace Tiger
                 mInterval = blockinterval;
                 if (lookupstart > 0)
                 {
-                    mPendingValues = new UInt32[lookupstart / blockinterval];
+                    mPendingValues = new uint[lookupstart / blockinterval];
                     mQueueLength = mPendingValues.Length * blockinterval;
                 }
                 else
                     mQueueLength = 0;
-                mInsertedValues = new UInt32[windowlength / blockinterval - lookupstart / blockinterval];
+                mInsertedValues = new uint[windowlength / blockinterval - lookupstart / blockinterval];
                 mWindowStart = -(mInsertedValues.Length + lookupstart / blockinterval) * blockinterval - 4;
             }
 
@@ -820,7 +820,7 @@ namespace Tiger
             }
 
             // Current 32 bit value of the last 4 bytes
-            private UInt32 mRunningValue;
+            private uint mRunningValue;
 
             // How often to insert into the table
             private int mInterval;
@@ -831,7 +831,7 @@ namespace Tiger
             private int mQueueLength;
 
             // Queued up values for future matches
-            private UInt32[] mPendingValues;
+            private uint[] mPendingValues;
             private int mPendingOffset;
 
             // Bytes processed so far
@@ -842,11 +842,11 @@ namespace Tiger
             private bool mInitialized;
 
             // Values values pending removal
-            private UInt32[] mInsertedValues;
+            private uint[] mInsertedValues;
             private int mInsertLocation;
 
             // Hash of seen values
-            private Dictionary<UInt32, int> mLookupTable = new Dictionary<uint, int>();
+            private Dictionary<uint, int> mLookupTable = new();
 
             #region IMatchtracker Members
 
@@ -872,7 +872,7 @@ namespace Tiger
                             int idx;
                             if (mInsertLocation == mInsertedValues.Length)
                                 mInsertLocation = 0;
-                            UInt32 oldval = mInsertedValues[mInsertLocation];
+                            uint oldval = mInsertedValues[mInsertLocation];
                             if (mLookupTable.TryGetValue(oldval, out idx) && idx == mWindowStart)
                                 mLookupTable.Remove(oldval);
                         }
@@ -881,7 +881,7 @@ namespace Tiger
                             // Pop the top of the queue and put it in the table
                             if (mDataLength > mQueueLength + 4)
                             {
-                                UInt32 poppedval = mPendingValues[mPendingOffset];
+                                uint poppedval = mPendingValues[mPendingOffset];
                                 mInsertedValues[mInsertLocation] = poppedval;
                                 mInsertLocation++;
                                 if (mInsertLocation > mInsertedValues.Length)
@@ -936,12 +936,12 @@ namespace Tiger
                 mInterval = blockinterval;
                 if (lookupstart > 0)
                 {
-                    mPendingValues = new UInt32[lookupstart / blockinterval];
+                    mPendingValues = new uint[lookupstart / blockinterval];
                     mQueueLength = mPendingValues.Length * blockinterval;
                 }
                 else
                     mQueueLength = 0;
-                mInsertedValues = new UInt32[windowlength / blockinterval - lookupstart / blockinterval];
+                mInsertedValues = new uint[windowlength / blockinterval - lookupstart / blockinterval];
                 mWindowStart = -(mInsertedValues.Length + lookupstart / blockinterval) * blockinterval - 4;
                 mBucketDepth = bucketdepth;
             }
@@ -952,7 +952,7 @@ namespace Tiger
                 mRunningValue = 0;
 
                 mRollingInterval = 0;
-                mWindowStart = -(mInsertedValues.Length + (mPendingValues != null ? mPendingValues.Length : 0)) * mInterval - 4;
+                mWindowStart = -(mInsertedValues.Length + (mPendingValues?.Length ?? 0)) * mInterval - 4;
                 mDataLength = 0;
 
                 mInitialized = false;
@@ -967,7 +967,7 @@ namespace Tiger
             private int mBucketDepth;
 
             // Current 32 bit value of the last 4 bytes
-            private UInt32 mRunningValue;
+            private uint mRunningValue;
 
             // How often to insert into the table
             private int mInterval;
@@ -978,7 +978,7 @@ namespace Tiger
             private int mQueueLength;
 
             // Queued up values for future matches
-            private UInt32[] mPendingValues;
+            private uint[] mPendingValues;
             private int mPendingOffset;
 
             // Bytes processed so far
@@ -989,14 +989,14 @@ namespace Tiger
             private bool mInitialized;
 
             // Values values pending removal
-            private UInt32[] mInsertedValues;
+            private uint[] mInsertedValues;
             private int mInsertLocation;
 
             // Hash of seen values
-            private Dictionary<UInt32, List<int>> mLookupTable = new Dictionary<uint, List<int>>();
+            private Dictionary<uint, List<int>> mLookupTable = new();
 
             // Save allocating items unnecessarily
-            private Stack<List<int>> mUnusedLists = new Stack<List<int>>();
+            private Stack<List<int>> mUnusedLists = new();
 
             private List<int> mCurrentMatch;
             private int mCurrentMatchIndex;
@@ -1018,7 +1018,7 @@ namespace Tiger
                             List<int> locations;
                             if (mInsertLocation == mInsertedValues.Length)
                                 mInsertLocation = 0;
-                            UInt32 oldval = mInsertedValues[mInsertLocation];
+                            uint oldval = mInsertedValues[mInsertLocation];
                             if (mLookupTable.TryGetValue(oldval, out locations) && locations[0] == mWindowStart)
                             {
                                 locations.RemoveAt(0);
@@ -1034,7 +1034,7 @@ namespace Tiger
                             // Pop the top of the queue and put it in the table
                             if (mDataLength > mQueueLength + 4)
                             {
-                                UInt32 poppedval = mPendingValues[mPendingOffset];
+                                uint poppedval = mPendingValues[mPendingOffset];
                                 mInsertedValues[mInsertLocation] = poppedval;
                                 mInsertLocation++;
                                 if (mInsertLocation > mInsertedValues.Length)
@@ -1054,7 +1054,7 @@ namespace Tiger
                                     if (mUnusedLists.Count > 0)
                                         locations = mUnusedLists.Pop();
                                     else
-                                        locations = new List<int>();
+                                        locations = new List<int>(1);
                                     mLookupTable[poppedval] = locations;
                                 }
                                 locations.Add(mDataLength - mQueueLength - 4);

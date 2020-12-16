@@ -14,7 +14,10 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         public AResourceIndexEntry() : base(0, null) { handler += OnResourceIndexEntryChanged; }
 
-        private void OnResourceIndexEntryChanged(object sender, EventArgs e) { if (ResourceIndexEntryChanged != null) ResourceIndexEntryChanged(sender, e); }
+        private void OnResourceIndexEntryChanged(object sender, EventArgs e)
+        {
+            ResourceIndexEntryChanged?.Invoke(sender, e);
+        }
 
         #region AApiVersionedFields
         /// <summary>

@@ -170,13 +170,16 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s"><see cref="Stream"/> containing data.</param>
         /// <returns>New list element.</returns>
-        protected override HandlerElement<T> CreateElement(Stream s) { return new HandlerElement<T>(0, elementHandler, createElement == null ? default(T) : createElement(s)); }
+        protected override HandlerElement<T> CreateElement(Stream s) { return new(0, elementHandler, createElement == null ? default(T) : createElement(s)); }
         /// <summary>
         /// Writes the value of a list element to <paramref name="s"/>.
         /// </summary>
         /// <param name="s"><see cref="Stream"/> containing data.</param>
         /// <param name="element">List element for which to write the value to the <see cref="Stream"/>.</param>
-        protected override void WriteElement(Stream s, HandlerElement<T> element) { if (writeElement != null) writeElement(s, element.Val); }
+        protected override void WriteElement(Stream s, HandlerElement<T> element)
+        {
+            writeElement?.Invoke(s, element.Val);
+        }
         #endregion
 
         #region Sub-classes
@@ -980,8 +983,8 @@ namespace Regul.S3PI.Interfaces
         #endregion
 
         #region Data I/O
-        static UInt32 ReadUInt32(Stream s) { return new BinaryReader(s).ReadUInt32(); }
-        static void WriteUInt32(Stream s, UInt32 value) { new BinaryWriter(s).Write(value); }
+        static uint ReadUInt32(Stream s) { return new BinaryReader(s).ReadUInt32(); }
+        static void WriteUInt32(Stream s, uint value) { new BinaryWriter(s).Write(value); }
         #endregion
     }
 
@@ -1015,8 +1018,8 @@ namespace Regul.S3PI.Interfaces
         #endregion
 
         #region Data I/O
-        static Int32 ReadInt32(Stream s) { return new BinaryReader(s).ReadInt32(); }
-        static void WriteInt32(Stream s, Int32 value) { new BinaryWriter(s).Write(value); }
+        static int ReadInt32(Stream s) { return new BinaryReader(s).ReadInt32(); }
+        static void WriteInt32(Stream s, int value) { new BinaryWriter(s).Write(value); }
         #endregion
     }
 }

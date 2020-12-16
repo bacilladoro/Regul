@@ -10,7 +10,7 @@ namespace Regul.S3PI.DefaultResource
     /// </summary>
     public sealed class DefaultResource : AResource
     {
-        const Int32 recommendedApiVersion = 1;
+        const int recommendedApiVersion = 1;
 
         #region AApiVersionedFields
         /// <summary>

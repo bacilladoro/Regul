@@ -260,6 +260,9 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="sender">Object causing the list to become invalid</param>
         /// <param name="e">(not used)</param>
-        protected virtual void OnResourceIndexInvalidated(object sender, EventArgs e) { if (ResourceIndexInvalidated != null) ResourceIndexInvalidated(sender, e); }
+        protected virtual void OnResourceIndexInvalidated(object sender, EventArgs e)
+        {
+            ResourceIndexInvalidated?.Invoke(sender, e);
+        }
     }
 }

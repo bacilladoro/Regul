@@ -241,7 +241,7 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// A display-ready string representing the <see cref="TGIBlock"/>.
         /// </summary>
-        public String Value { get { return this.ToString(); } }
+        public string Value { get { return this.ToString(); } }
         #endregion
     }
 }

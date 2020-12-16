@@ -22,13 +22,13 @@ namespace System
         /// </summary>
         /// <param name="argument">Name of the method argument in error</param>
         /// <param name="length">Valid length of the argument</param>
-        public ArgumentLengthException(string argument, int length) : base(String.Format("{0} length must be {1}.", argument, length)) { }
+        public ArgumentLengthException(string argument, int length) : base(string.Format("{0} length must be {1}.", argument, length)) { }
         /// <summary>
         /// Initializes a new instance of the System.ArgumentLengthException class with a formatted error message.
         /// See <see cref="String.Format(string, object[])"/>.
         /// </summary>
         /// <param name="format">format string</param>
         /// <param name="formatparams">format string substitutions</param>
-        public ArgumentLengthException(string format, params object[] formatparams) : base(String.Format(format, formatparams)) { }
+        public ArgumentLengthException(string format, params object[] formatparams) : base(string.Format(format, formatparams)) { }
     }
 }

@@ -154,13 +154,16 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s"><see cref="Stream"/> containing data.</param>
         /// <returns>New list element.</returns>
-        protected override TGIBlockListIndex<T> CreateElement(Stream s) { return new TGIBlockListIndex<T>(0, elementHandler, createElement == null ? default(T) : createElement(s), _ParentTGIBlocks); }
+        protected override TGIBlockListIndex<T> CreateElement(Stream s) { return new(0, elementHandler, createElement == null ? default(T) : createElement(s), _ParentTGIBlocks); }
         /// <summary>
         /// Writes the value of a list element to <paramref name="s"/>.
         /// </summary>
         /// <param name="s"><see cref="Stream"/> containing data.</param>
         /// <param name="element">List element for which to write the value to the <see cref="Stream"/>.</param>
-        protected override void WriteElement(Stream s, TGIBlockListIndex<T> element) { if (writeElement != null) writeElement(s, element.Data); }
+        protected override void WriteElement(Stream s, TGIBlockListIndex<T> element)
+        {
+            writeElement?.Invoke(s, element.Data);
+        }
         #endregion
 
         #region Sub-classes
@@ -938,7 +941,7 @@ namespace Regul.S3PI.Interfaces
     /// <summary>
     /// A byte-size use of <see cref="IndexList{T}"/>.
     /// </summary>
-    public class ByteIndexList : IndexList<Byte>
+    public class ByteIndexList : IndexList<byte>
     {
         #region Constructors
         /// <summary>
@@ -968,7 +971,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="writeCount">Optional; default is to write a <see cref="Int32"/> to the <see cref="Stream"/>.</param>
         /// <param name="size">Optional list size (should be <c>byte.MaxValue</c> or below).</param>
         /// <param name="ParentTGIBlocks">Optional; default parent <see cref="DependentList{TGIBlock}"/> into which elements of this list index.</param>
-        public ByteIndexList(EventHandler handler, IEnumerable<Byte> basis, ReadCountMethod readCount = null, WriteCountMethod writeCount = null, long size = byte.MaxValue, DependentList<TGIBlock> ParentTGIBlocks = null)
+        public ByteIndexList(EventHandler handler, IEnumerable<byte> basis, ReadCountMethod readCount = null, WriteCountMethod writeCount = null, long size = byte.MaxValue, DependentList<TGIBlock> ParentTGIBlocks = null)
             : base(handler, basis, ReadByte, WriteByte, size, readCount, writeCount, ParentTGIBlocks) { }
         /// <summary>
         /// Create a ByteIndexList populated from an existing set of values, setting the <paramref name="ParentTGIBlocks"/> as passed.
@@ -977,7 +980,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="handler">Event handler.</param>
         /// <param name="basis">Basis on which to populate the list.</param>
         /// <param name="ParentTGIBlocks">Default parent <see cref="DependentList{TGIBlock}"/> into which elements of this list index.</param>
-        public ByteIndexList(EventHandler handler, IEnumerable<Byte> basis, DependentList<TGIBlock> ParentTGIBlocks)
+        public ByteIndexList(EventHandler handler, IEnumerable<byte> basis, DependentList<TGIBlock> ParentTGIBlocks)
             : this(handler, basis, null, null, byte.MaxValue, ParentTGIBlocks) { }
         /// <summary>
         /// Create a UIntList populated from a <see cref="Stream"/>.
@@ -1002,15 +1005,15 @@ namespace Regul.S3PI.Interfaces
         #endregion
 
         #region Data I/O
-        static Byte ReadByte(Stream s) { return new BinaryReader(s).ReadByte(); }
-        static void WriteByte(Stream s, Byte value) { new BinaryWriter(s).Write(value); }
+        static byte ReadByte(Stream s) { return new BinaryReader(s).ReadByte(); }
+        static void WriteByte(Stream s, byte value) { new BinaryWriter(s).Write(value); }
         #endregion
     }
 
     /// <summary>
     /// <see cref="IndexList{T}"/> with <see cref="Int32"/> entries.
     /// </summary>
-    public class Int32IndexList : IndexList<Int32>
+    public class Int32IndexList : IndexList<int>
     {
         #region Constructors
         /// <summary>
@@ -1040,7 +1043,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="readCount">Optional; default is to read a <see cref="Int32"/> from the <see cref="Stream"/>.</param>
         /// <param name="writeCount">Optional; default is to write a <see cref="Int32"/> to the <see cref="Stream"/>.</param>
         /// <param name="ParentTGIBlocks">Optional; default parent <see cref="DependentList{TGIBlock}"/> into which elements of this list index.</param>
-        public Int32IndexList(EventHandler handler, IEnumerable<Int32> basis, long size = -1, ReadCountMethod readCount = null, WriteCountMethod writeCount = null, DependentList<TGIBlock> ParentTGIBlocks = null)
+        public Int32IndexList(EventHandler handler, IEnumerable<int> basis, long size = -1, ReadCountMethod readCount = null, WriteCountMethod writeCount = null, DependentList<TGIBlock> ParentTGIBlocks = null)
             : base(handler, basis, ReadInt32, WriteInt32, size, readCount, writeCount, ParentTGIBlocks) { }
         /// <summary>
         /// Create a UIntList populated from an existing set of values, setting the <paramref name="ParentTGIBlocks"/> as passed.
@@ -1049,7 +1052,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="handler">Event handler.</param>
         /// <param name="basis">Basis on which to populate the list.</param>
         /// <param name="ParentTGIBlocks">Default parent <see cref="DependentList{TGIBlock}"/> into which elements of this list index.</param>
-        public Int32IndexList(EventHandler handler, IEnumerable<Int32> basis, DependentList<TGIBlock> ParentTGIBlocks)
+        public Int32IndexList(EventHandler handler, IEnumerable<int> basis, DependentList<TGIBlock> ParentTGIBlocks)
             : this(handler, basis, -1, null, null, ParentTGIBlocks) { }
         /// <summary>
         /// Create a UIntList populated from a <see cref="Stream"/>.
@@ -1074,8 +1077,8 @@ namespace Regul.S3PI.Interfaces
         #endregion
 
         #region Data I/O
-        static Int32 ReadInt32(Stream s) { return new BinaryReader(s).ReadInt32(); }
-        static void WriteInt32(Stream s, Int32 value) { new BinaryWriter(s).Write(value); }
+        static int ReadInt32(Stream s) { return new BinaryReader(s).ReadInt32(); }
+        static void WriteInt32(Stream s, int value) { new BinaryWriter(s).Write(value); }
         #endregion
     }
 }

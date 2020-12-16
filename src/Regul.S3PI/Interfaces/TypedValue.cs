@@ -58,12 +58,12 @@ namespace Regul.S3PI.Interfaces
         {
             if (format == "X")
             {
-                if (this.Type == typeof(Int64)) return "0x" + ((Int64)this.Value).ToString("X16");
-                if (this.Type == typeof(UInt64)) return "0x" + ((UInt64)this.Value).ToString("X16");
-                if (this.Type == typeof(Int32)) return "0x" + ((Int32)this.Value).ToString("X8");
-                if (this.Type == typeof(UInt32)) return "0x" + ((UInt32)this.Value).ToString("X8");
-                if (this.Type == typeof(Int16)) return "0x" + ((Int16)this.Value).ToString("X4");
-                if (this.Type == typeof(UInt16)) return "0x" + ((UInt16)this.Value).ToString("X4");
+                if (this.Type == typeof(long)) return "0x" + ((long)this.Value).ToString("X16");
+                if (this.Type == typeof(ulong)) return "0x" + ((ulong)this.Value).ToString("X16");
+                if (this.Type == typeof(int)) return "0x" + ((int)this.Value).ToString("X8");
+                if (this.Type == typeof(uint)) return "0x" + ((uint)this.Value).ToString("X8");
+                if (this.Type == typeof(short)) return "0x" + ((short)this.Value).ToString("X4");
+                if (this.Type == typeof(ushort)) return "0x" + ((ushort)this.Value).ToString("X4");
                 if (this.Type == typeof(sbyte)) return "0x" + ((sbyte)this.Value).ToString("X2");
                 if (this.Type == typeof(byte)) return "0x" + ((byte)this.Value).ToString("X2");
 
@@ -78,9 +78,9 @@ namespace Regul.S3PI.Interfaces
                 }
             }
 
-            if (typeof(String).IsAssignableFrom(this.Type) || typeof(System.Char[]).IsAssignableFrom(this.Type))
+            if (typeof(string).IsAssignableFrom(this.Type) || typeof(char[]).IsAssignableFrom(this.Type))
             {
-                string s = typeof(String).IsAssignableFrom(this.Type) ? (String)this.Value : new string((char[])this.Value);
+                string s = typeof(string).IsAssignableFrom(this.Type) ? (string)this.Value : new string((char[])this.Value);
                 // -- It is not necessarily correct that a zero byte indicates a unicode string; these should have been
                 // correctly read in already so no translation should be needed... so the ToANSIString is currently commented out
                 if (s.IndexOf((char)0) != -1) return /*s.Length % 2 == 0 ? ToANSIString(s) :/**/ ToDisplayString(s.ToCharArray());
@@ -117,7 +117,7 @@ namespace Regul.S3PI.Interfaces
             {
                 object v = ary.GetValue(i);
                 TypedValue tv = new TypedValue(v.GetType(), v, "X");
-                sb.Append(String.Format(" [{0:X}:'{1}']", i, "" + tv));
+                sb.Append(string.Format(" [{0:X}:'{1}']", i, "" + tv));
                 if (i % 16 == 15) sb.Append("\n");
             }
             return sb.ToString().TrimStart().TrimEnd('\n');

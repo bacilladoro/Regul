@@ -96,7 +96,7 @@ namespace Regul.S3PI.Interfaces
         {
             dirty = true;
             //Console.WriteLine(this.GetType().Name + " dirtied.");
-            if (ResourceChanged != null) ResourceChanged(sender, e);
+            ResourceChanged?.Invoke(sender, e);
         }
     }
 }

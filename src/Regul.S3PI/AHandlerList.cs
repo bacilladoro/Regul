@@ -258,7 +258,10 @@ namespace System.Collections.Generic
         /// <summary>
         /// Invokes the list change event handler.
         /// </summary>
-        protected void OnListChanged() { if (handler != null) handler(this, EventArgs.Empty); }
+        protected void OnListChanged()
+        {
+            handler?.Invoke(this, EventArgs.Empty);
+        }
 
         /// <summary>
         /// Determine whether this list is equal to <paramref name="target"/>.

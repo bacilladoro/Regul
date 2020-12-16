@@ -6,7 +6,7 @@
     public class Sims3PackCRC : HashAlgorithm
     {
         #region table
-        private static readonly UInt64[] table = new UInt64[]
+        private static readonly ulong[] table = new ulong[]
         {
             0x0000000000000000, 0x9336EAA9EBE1F042, 0x266DD453D7C3E185, 0xB55B3EFA3C2211C7,
             0xDFEC420E45663349, 0x4CDAA8A7AE87C30B, 0xF981965D92A5D2CC, 0x6AB77CF47944228E,
@@ -75,14 +75,14 @@
         };
         #endregion
 
-        private UInt64 seed64;
-        private UInt64 hash64;
+        private ulong seed64;
+        private ulong hash64;
 
         /// <summary>
         /// Create a new CRC algorithm with an optional seed.
         /// </summary>
         /// <param name="seed">Optional CRC algorithm seed.</param>
-        public Sims3PackCRC(UInt64 seed = 0x00FFFFFFFFFFFFFF) { seed64 = seed; Initialize(); }
+        public Sims3PackCRC(ulong seed = 0x00FFFFFFFFFFFFFF) { seed64 = seed; Initialize(); }
 
         #region HashAlgorithm implementation
         /// <summary>
@@ -98,7 +98,7 @@
         /// <param name="cbSize">The number of bytes in the byte array to use as data.</param>
         protected override void HashCore(byte[] array, int ibStart, int cbSize)
         {
-            UInt64 crc = SwapEndian(hash64);
+            ulong crc = SwapEndian(hash64);
             for (int i = ibStart; i < cbSize; i++)
                 crc = (crc >> 8) ^ table[(array[i] ^ crc) & 0xFF];
             hash64 = SwapEndian(crc);
@@ -126,7 +126,7 @@
         /// <exception cref="System.ArgumentException"><paramref name="count"/> is an invalid value.  -or- <paramref name="buffer"/> length is invalid.</exception>
         /// <exception cref="System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="offset"/> is out of range. This parameter requires a non-negative number.</exception>
-        public static UInt64 CalculateCRC(byte[] buffer, int offset = 0, int count = -1)
+        public static ulong CalculateCRC(byte[] buffer, int offset = 0, int count = -1)
         {
             return BitConverter.ToUInt64(new Sims3PackCRC().ComputeHash(buffer, offset, count == -1 ? buffer.Length : count), 0);
         }
@@ -136,13 +136,13 @@
         /// </summary>
         /// <param name="stream">The input to calculate the CRC for.</param>
         /// <returns>CRC of <paramref name="stream"/>.</returns>
-        public static UInt64 CalculateCRC(System.IO.Stream stream)
+        public static ulong CalculateCRC(System.IO.Stream stream)
         {
             return BitConverter.ToUInt64(new Sims3PackCRC().ComputeHash(stream), 0);
         }
 
         #region Helpers
-        private static UInt64 SwapEndian(UInt64 value)
+        private static ulong SwapEndian(ulong value)
         {
             if (!BitConverter.IsLittleEndian) return value;
 

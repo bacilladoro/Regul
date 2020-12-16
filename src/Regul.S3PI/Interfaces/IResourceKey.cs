@@ -11,14 +11,14 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// The "type" of the resource
         /// </summary>
-        UInt32 ResourceType { get; set; }
+        uint ResourceType { get; set; }
         /// <summary>
         /// The "group" the resource is part of
         /// </summary>
-        UInt32 ResourceGroup { get; set; }
+        uint ResourceGroup { get; set; }
         /// <summary>
         /// The "instance" number of the resource
         /// </summary>
-        UInt64 Instance { get; set; }
+        ulong Instance { get; set; }
     }
 }

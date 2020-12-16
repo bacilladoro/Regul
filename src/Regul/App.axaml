@@ -18,6 +18,9 @@
 		<StyleInclude Source="/Assets/Controls/ListBoxItem.axaml"/>
 		<StyleInclude Source="/Assets/Controls/ProgressBar.axaml"/>
 		<StyleInclude Source="/Assets/Controls/ListBox.axaml"/>
+		<StyleInclude Source="/Assets/Controls/ScrollBar.axaml"/>
+		<StyleInclude Source="/Assets/Controls/TabControl.axaml"/>
+		<StyleInclude Source="/Assets/Controls/TabItem.axaml"/>
 		
 		<Style Selector="Border.BorderStyle">
 			<Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>

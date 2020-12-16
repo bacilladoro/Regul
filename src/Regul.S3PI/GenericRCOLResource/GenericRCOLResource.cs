@@ -14,7 +14,7 @@ namespace Regul.S3PI.GenericRCOLResource
     public class GenericRCOLResource : AResource
     {
         static bool checking = Regul.S3PI.Settings.Settings.Checking;
-        const Int32 recommendedApiVersion = 1;
+        const int recommendedApiVersion = 1;
 
         #region Attributes
         /// <summary>
@@ -142,7 +142,7 @@ namespace Regul.S3PI.GenericRCOLResource
         /// </summary>
         public class ChunkEntry : AHandlerElement, IEquatable<ChunkEntry>
         {
-            const Int32 recommendedApiVersion = 1;
+            const int recommendedApiVersion = 1;
 
             DependentList<TGIBlock> _ParentTGIBlocks;
             /// <summary>
@@ -367,7 +367,7 @@ namespace Regul.S3PI.GenericRCOLResource
             IEquatable<ChunkReference>, IEqualityComparer<ChunkReference>,
             IComparer<ChunkReference>, IComparable<ChunkReference>
         {
-            const Int32 recommendedApiVersion = 1;
+            const int recommendedApiVersion = 1;
             /// <summary>
             /// Reference to <see cref="TGIBlockList"/> into which <see cref="TGIBlockIndex"/> is an index.
             /// </summary>
@@ -554,7 +554,7 @@ namespace Regul.S3PI.GenericRCOLResource
                     case ReferenceType.Delayed:
                         return rcol.resources[reference.TGIBlockIndex];
                 }
-                throw new NotImplementedException(String.Format("Reference Type {0} is not supported.", reference.RefType));
+                throw new NotImplementedException(string.Format("Reference Type {0} is not supported.", reference.RefType));
             }
 
             /// <summary>
@@ -579,7 +579,7 @@ namespace Regul.S3PI.GenericRCOLResource
                     case ReferenceType.Private:
                         return rcol.ChunkEntries[reference.TGIBlockIndex + rcol.PublicChunks].RCOLBlock;
                 }
-                throw new NotImplementedException(String.Format("Reference Type {0} is not supported.", reference.RefType));
+                throw new NotImplementedException(string.Format("Reference Type {0} is not supported.", reference.RefType));
             }
 
             /// <summary>
@@ -593,7 +593,7 @@ namespace Regul.S3PI.GenericRCOLResource
             /// <see cref="GenericRCOLResource.Resources"/> lists.</remarks>
             public static ChunkReference CreateReference(GenericRCOLResource rcol, IResourceKey rk)
             {
-                return new ChunkReference(0, null, CreateReferenceHelper(rcol, rk));
+                return new(0, null, CreateReferenceHelper(rcol, rk));
             }
             static uint CreateReferenceHelper(GenericRCOLResource rcol, IResourceKey rk)
             {

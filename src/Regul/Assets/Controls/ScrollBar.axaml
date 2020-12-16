@@ -1,0 +1,136 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=netstandard">
+	<Style Selector="ScrollBar">
+		<Setter Property="Cursor" Value="Arrow" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Background="{DynamicResource ThemePanelBackgroundBrush}"
+						BorderThickness="1 0 0 0"
+						BorderBrush="{DynamicResource ThemeGlobalBorderBrush}"
+						UseLayoutRounding="False">
+					<Grid RowDefinitions="Auto,*,Auto">
+						<RepeatButton Name="PART_LineUpButton" HorizontalAlignment="Center"
+									  Classes="repeat"
+									  Grid.Row="0"
+									  Focusable="False"
+									  Background="{DynamicResource ThemePanelBackgroundBrush}"
+									  MinHeight="{DynamicResource ScrollBarThickness}">
+							<Path Data="M 0 4 L 8 4 L 4 0 Z" />
+						</RepeatButton>
+						<Track Grid.Row="1"
+							   Grid.Column="1"
+							   Minimum="{TemplateBinding Minimum}"
+							   Maximum="{TemplateBinding Maximum}"
+							   Value="{TemplateBinding Value, Mode=TwoWay}"
+							   ViewportSize="{TemplateBinding ViewportSize}"
+							   Orientation="{TemplateBinding Orientation}"
+							   IsDirectionReversed="True">
+							<Track.DecreaseButton>
+								<RepeatButton Name="PART_PageUpButton"
+											  Classes="repeattrack"
+											  Background="{DynamicResource ThemePanelBackgroundBrush}"
+											  Focusable="False"/>
+							</Track.DecreaseButton>
+							<Track.IncreaseButton>
+								<RepeatButton Name="PART_PageDownButton"
+											  Classes="repeattrack"
+											  Background="{DynamicResource ThemePanelBackgroundBrush}"
+											  Focusable="False"/>
+							</Track.IncreaseButton>
+							<Thumb Name="thumb"/>
+						</Track>
+						<RepeatButton Name="PART_LineDownButton" HorizontalAlignment="Center"
+									  Classes="repeat"
+									  Grid.Row="2"
+									  Background="{DynamicResource ThemePanelBackgroundBrush}"
+									  Grid.Column="2"
+									  Focusable="False"
+									  MinHeight="{DynamicResource ScrollBarThickness}">
+							<Path Data="M 0 0 L 4 4 L 8 0 Z" />
+						</RepeatButton>
+					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+	<Style Selector="ScrollBar:horizontal">
+		<Setter Property="Height" Value="{DynamicResource ScrollBarThickness}" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Background="{DynamicResource ThemePanelBackgroundBrush}"
+						BorderBrush="{DynamicResource ThemeGlobalBorderBrush}"
+						BorderThickness="0 1 0 0"
+						UseLayoutRounding="False">
+					<Grid ColumnDefinitions="Auto,*,Auto">
+						<RepeatButton Name="PART_LineUpButton" VerticalAlignment="Center"
+									  Classes="repeat"
+									  Grid.Row="0"
+									  Grid.Column="0"
+									  Focusable="False"
+									  Background="{DynamicResource ThemePanelBackgroundBrush}"
+									  MinWidth="{DynamicResource ScrollBarThickness}">
+							<Path Data="M 4 0 L 4 8 L 0 4 Z" />
+						</RepeatButton>
+						<Track Grid.Row="1"
+							   Grid.Column="1"
+							   Minimum="{TemplateBinding Minimum}"
+							   Maximum="{TemplateBinding Maximum}"
+							   Value="{TemplateBinding Value, Mode=TwoWay}"
+							   ViewportSize="{TemplateBinding ViewportSize}"
+							   Orientation="{TemplateBinding Orientation}">
+							<Track.DecreaseButton>
+								<RepeatButton Name="PART_PageUpButton"
+											  Classes="repeattrack"
+											  Background="{DynamicResource ThemePanelBackgroundBrush}"
+											  Focusable="False"/>
+							</Track.DecreaseButton>
+							<Track.IncreaseButton>
+								<RepeatButton Name="PART_PageDownButton"
+											  Classes="repeattrack"
+											  Background="{DynamicResource ThemePanelBackgroundBrush}"
+											  Focusable="False"/>
+							</Track.IncreaseButton>
+							<Thumb Name="thumb"/>
+						</Track>
+						<RepeatButton Name="PART_LineDownButton" VerticalAlignment="Center"
+									  Classes="repeat"
+									  Grid.Row="2"
+									  Grid.Column="2"
+									  Focusable="False"
+									  Background="{DynamicResource ThemePanelBackgroundBrush}"
+									  MinWidth="{DynamicResource ScrollBarThickness}">
+							<Path Data="M 0 0 L 4 4 L 0 8 Z"  />
+						</RepeatButton>
+					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+	<Style Selector="ScrollBar /template/ RepeatButton > Path">
+		<Setter Property="Fill" Value="{DynamicResource ThemeForegroundBrush}" />
+	</Style>
+	<Style Selector="ScrollBar /template/ RepeatButton:pointerover > Path">
+		<Setter Property="Fill" Value="{DynamicResource ThemeScrollBoxHoverBrush}" />
+	</Style>
+	<Style Selector="ScrollBar /template/ RepeatButton:pressed > Path">
+		<Setter Property="Fill" Value="{DynamicResource ThemeSelectedControlBrush}" />
+	</Style>
+	<Style Selector="ScrollBar /template/ Thumb#thumb">
+		<Setter Property="Background" Value="{DynamicResource ThemeForegroundBrush}"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Border
+						Background="{TemplateBinding Background}"/>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style Selector="ScrollBar /template/ Thumb#thumb:pointerover">
+		<Setter Property="Background" Value="{DynamicResource ThemeScrollBoxHoverBrush}"/>
+	</Style>
+	<Style Selector="ScrollBar /template/ Thumb#thumb:pressed">
+		<Setter Property="Background" Value="{DynamicResource ThemeSelectedControlBrush}"/>
+	</Style>
+</Styles>

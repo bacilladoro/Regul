@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using Regul.S3PI.Interfaces;
 
@@ -14,7 +13,7 @@ namespace Regul.S3PI.Package
     {
         static bool checking = Settings.Settings.Checking;
 
-        const Int32 recommendedApiVersion = 1;
+        const int recommendedApiVersion = 1;
 
         #region AApiVersionedFields
         /// <summary>
@@ -47,7 +46,7 @@ namespace Regul.S3PI.Package
             {
                 SaveAs(tmpfile);
 
-                if (fs != null) fs.Lock(0, header.Length);
+                fs?.Lock(0, header.Length);
 
                 BinaryReader r = new BinaryReader(new FileStream(tmpfile, FileMode.Open));
                 BinaryWriter w = new BinaryWriter(packageStream);
@@ -57,10 +56,12 @@ namespace Regul.S3PI.Package
                 w.Flush();
                 r.Close();
             }
-            finally { File.Delete(tmpfile); if (fs != null) fs.Unlock(0, header.Length); }
+            finally { File.Delete(tmpfile);
+                fs?.Unlock(0, header.Length);
+            }
 
             packageStream.Position = 0;
-            header = (new BinaryReader(packageStream)).ReadBytes(header.Length);
+            header = new BinaryReader(packageStream).ReadBytes(header.Length);
             if (checking) CheckHeader();
 
             bool wasnull = index == null;
@@ -97,7 +98,7 @@ namespace Regul.S3PI.Package
             {
                 if (ie.IsDeleted) continue;
 
-                ResourceIndexEntry newIE = (ie as ResourceIndexEntry).Clone();
+                ResourceIndexEntry newIE = (ie as ResourceIndexEntry)?.Clone();
                 ((List<IResourceIndexEntry>)newIndex).Add(newIE);
                 byte[] value = packedChunk(ie as ResourceIndexEntry);
 
@@ -144,7 +145,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         /// <param name="APIversion">(unused)</param>
         /// <returns>IPackage reference to an empty package</returns>
-        public static new IPackage NewPackage(int APIversion)
+        public new static IPackage NewPackage(int APIversion)
         {
             return new Package(APIversion);
         }
@@ -155,7 +156,7 @@ namespace Regul.S3PI.Package
         /// <param name="APIversion">(unused)</param>
         /// <param name="major">Major version for the DBPF package.</param>
         /// <returns>IPackage reference to an empty package</returns>
-        public static new IPackage NewPackage(int APIversion, int major)
+        public new static IPackage NewPackage(int APIversion, int major)
         {
             return new Package(APIversion, major);
         }
@@ -183,7 +184,7 @@ namespace Regul.S3PI.Package
         /// </exception>
         /// <exception cref="System.Security.SecurityException">The caller does not have the required permission.</exception>
         /// <exception cref="InvalidDataException">Thrown if the package header is malformed.</exception>
-        public static new IPackage OpenPackage(int APIversion, string packagePath) { return OpenPackage(APIversion, packagePath, false); }
+        public new static IPackage OpenPackage(int APIversion, string packagePath) { return OpenPackage(APIversion, packagePath, false); }
         /// <summary>
         /// Open an existing package by filename, optionally readwrite
         /// </summary>
@@ -212,7 +213,7 @@ namespace Regul.S3PI.Package
         /// such as when access is ReadWrite and the file or directory is set for read-only access.
         /// </exception>
         /// <exception cref="InvalidDataException">Thrown if the package header is malformed.</exception>
-        public static new IPackage OpenPackage(int APIversion, string packagePath, bool readwrite)
+        public new static IPackage OpenPackage(int APIversion, string packagePath, bool readwrite)
         {
             return new Package(APIversion, new FileStream(packagePath, FileMode.Open, readwrite ? FileAccess.ReadWrite : FileAccess.Read, FileShare.ReadWrite));
         }
@@ -222,7 +223,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         /// <param name="APIversion">(unused)</param>
         /// <param name="pkg">IPackage reference to close</param>
-        public static new void ClosePackage(int APIversion, IPackage pkg)
+        public new static void ClosePackage(int APIversion, IPackage pkg)
         {
             Package p = pkg as Package;
             if (p == null) return;
@@ -301,7 +302,7 @@ namespace Regul.S3PI.Package
         /// Package index: the index format in use
         /// </summary>
         [ElementPriority(13)]
-        public override UInt32 Indextype { get { return (GetResourceList as PackageIndex).Indextype; } }
+        public override uint Indextype { get { return (GetResourceList as PackageIndex).Indextype; } }
 
         /// <summary>
         /// Package index: the index
@@ -481,7 +482,7 @@ namespace Regul.S3PI.Package
                 res.Position = 0;
                 chunk = r.ReadBytes((int)ie.Memsize);
                 if (checking) if (chunk.Length != (int)ie.Memsize)
-                        throw new OverflowException(String.Format("packedChunk, dirty resource - T: 0x{0:X}, G: 0x{1:X}, I: 0x{2:X}: Length expected: 0x{3:X}, read: 0x{4:X}",
+                        throw new OverflowException(string.Format("packedChunk, dirty resource - T: 0x{0:X}, G: 0x{1:X}, I: 0x{2:X}: Length expected: 0x{3:X}, read: 0x{4:X}",
                             ie.ResourceType, ie.ResourceGroup, ie.Instance, ie.Memsize, chunk.Length));
 
                 byte[] comp = ie.Compressed != 0 ? Compression.CompressStream(chunk) : chunk;
@@ -491,12 +492,12 @@ namespace Regul.S3PI.Package
             else
             {
                 if (checking) if (packageStream == null)
-                        throw new InvalidOperationException(String.Format("Clean resource with undefined \"current package\" - T: 0x{0:X}, G: 0x{1:X}, I: 0x{2:X}",
+                        throw new InvalidOperationException(string.Format("Clean resource with undefined \"current package\" - T: 0x{0:X}, G: 0x{1:X}, I: 0x{2:X}",
                             ie.ResourceType, ie.ResourceGroup, ie.Instance));
                 packageStream.Position = ie.Chunkoffset;
                 chunk = (new BinaryReader(packageStream)).ReadBytes((int)ie.Filesize);
                 if (checking) if (chunk.Length != (int)ie.Filesize)
-                        throw new OverflowException(String.Format("packedChunk, clean resource - T: 0x{0:X}, G: 0x{1:X}, I: 0x{2:X}: Length expected: 0x{3:X}, read: 0x{4:X}",
+                        throw new OverflowException(string.Format("packedChunk, clean resource - T: 0x{0:X}, G: 0x{1:X}, I: 0x{2:X}: Length expected: 0x{3:X}, read: 0x{4:X}",
                             ie.ResourceType, ie.ResourceGroup, ie.Instance, ie.Filesize, chunk.Length));
             }
             return chunk;

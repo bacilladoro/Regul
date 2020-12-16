@@ -160,7 +160,7 @@ namespace Regul.S3PI.Interfaces
         /// </param>
         /// <returns>true if <paramref name="value"/> was converted successfully; otherwise, false.</returns>
         /// <exception cref="NullReferenceException">Thrown if <paramref name="result"/> is null.</exception>
-        public static bool TryParse(String value, IResourceKey result)
+        public static bool TryParse(string value, IResourceKey result)
         {
             if (value == null) return false;
 
@@ -203,7 +203,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="value">The <see cref="AResourceKey"/> to convert</param>
         /// <returns>The 42 character string representation of this resource key,
         /// of the form 0xXXXXXXXX-0xXXXXXXXX-0xXXXXXXXXXXXXXXXX.</returns>
-        public static implicit operator String(AResourceKey value) { return String.Format("0x{0:X8}-0x{1:X8}-0x{2:X16}", value.ResourceType, value.ResourceGroup, value.Instance); }
+        public static implicit operator string(AResourceKey value) { return string.Format("0x{0:X8}-0x{1:X8}-0x{2:X16}", value.ResourceType, value.ResourceGroup, value.Instance); }
         /// <summary>
         /// Returns a string representation of this <see cref="AResourceKey"/>.
         /// </summary>

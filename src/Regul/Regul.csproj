@@ -13,6 +13,9 @@
 		<AvaloniaResource Remove="Assets\Controls\ListBoxItem.axaml" />
 		<AvaloniaResource Remove="Assets\Controls\Menu.axaml" />
 		<AvaloniaResource Remove="Assets\Controls\ProgressBar.axaml" />
+		<AvaloniaResource Remove="Assets\Controls\ScrollBar.axaml" />
+		<AvaloniaResource Remove="Assets\Controls\TabControl.axaml" />
+		<AvaloniaResource Remove="Assets\Controls\TabItem.axaml" />
 		<AvaloniaResource Remove="Assets\Controls\TextBox.axaml" />
 		<AvaloniaResource Remove="Assets\Images.axaml" />
 		<AvaloniaResource Remove="Assets\Local\Lang.en-US.axaml" />
@@ -20,8 +23,10 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Avalonia" Version="0.10.0-rc1" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.0-rc1" />
 		<PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc1" />
 		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0-rc1" />
+		<PackageReference Include="Avalonia.X11" Version="0.10.0-rc1" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Regul.S3PI\Regul.S3PI.csproj" />

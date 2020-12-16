@@ -13,8 +13,8 @@ namespace Regul.S3PI.Package
     {
         const int numFields = 9;
 
-        UInt32 indextype;
-        public UInt32 Indextype { get { return indextype; } }
+        uint indextype;
+        public uint Indextype { get { return indextype; } }
 
         int Hdrsize
         {
@@ -27,8 +27,8 @@ namespace Regul.S3PI.Package
         }
 
         public PackageIndex() { }
-        public PackageIndex(UInt32 type) { indextype = type; }
-        public PackageIndex(Stream s, Int32 indexposition, Int32 indexsize, Int32 indexcount)
+        public PackageIndex(uint type) { indextype = type; }
+        public PackageIndex(Stream s, int indexposition, int indexsize, int indexcount)
         {
             if (s == null) return;
             if (indexposition == 0) return;
@@ -37,8 +37,8 @@ namespace Regul.S3PI.Package
             s.Position = indexposition;
             indextype = r.ReadUInt32();
 
-            Int32[] hdr = new Int32[Hdrsize];
-            Int32[] entry = new Int32[numFields - Hdrsize];
+            int[] hdr = new int[Hdrsize];
+            int[] entry = new int[numFields - Hdrsize];
 
             hdr[0] = (int)indextype;
             for (int i = 1; i < hdr.Length; i++)
@@ -54,7 +54,7 @@ namespace Regul.S3PI.Package
 
         public IResourceIndexEntry Add(IResourceKey rk)
         {
-            ResourceIndexEntry rc = new ResourceIndexEntry(new Int32[Hdrsize], new Int32[numFields - Hdrsize]);
+            ResourceIndexEntry rc = new ResourceIndexEntry(new int[Hdrsize], new int[numFields - Hdrsize]);
 
             rc.ResourceType = rk.ResourceType;
             rc.ResourceGroup = rk.ResourceGroup;
@@ -67,7 +67,7 @@ namespace Regul.S3PI.Package
             return rc;
         }
 
-        public Int32 Size { get { return (Count * (numFields - Hdrsize) + Hdrsize) * 4; } }
+        public int Size { get { return (Count * (numFields - Hdrsize) + Hdrsize) * 4; } }
         public void Save(BinaryWriter w)
         {
             BinaryReader r = null;

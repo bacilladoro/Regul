@@ -160,7 +160,7 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// A displayable representation of the object
         /// </summary>
-        public string Value { get { return "{ " + String.Format("{0:F4}; {1:F4}; {2:F4}; {3:F4}", a, b, c, d) + " }"; } }
+        public string Value { get { return "{ " + string.Format("{0:F4}; {1:F4}; {2:F4}; {3:F4}", a, b, c, d) + " }"; } }
         #endregion
     }
 }

@@ -347,7 +347,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s">Stream containing element data.</param>
         /// <returns>A new element.</returns>
-        protected override TGIBlock CreateElement(Stream s) { return new TGIBlock(0, elementHandler, order, s); }
+        protected override TGIBlock CreateElement(Stream s) { return new(0, elementHandler, order, s); }
         /// <summary>
         /// Write an element to the stream.
         /// </summary>
@@ -451,7 +451,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s">Stream containing element data.</param>
         /// <returns>A new element.</returns>
-        protected override TGIBlock CreateElement(Stream s) { return new TGIBlock(0, elementHandler, s); }
+        protected override TGIBlock CreateElement(Stream s) { return new(0, elementHandler, s); }
         /// <summary>
         /// Write an element to the stream.
         /// </summary>
@@ -469,13 +469,13 @@ namespace Regul.S3PI.Interfaces
         {
             bool checking = true;
             if (checking) if (tgiPosn != s.Position)
-                    throw new InvalidDataException(String.Format("Position of TGIBlock read: 0x{0:X8}, actual: 0x{1:X8}",
+                    throw new InvalidDataException(string.Format("Position of TGIBlock read: 0x{0:X8}, actual: 0x{1:X8}",
                         tgiPosn, s.Position));
 
             if ((ignoreTgiSize && s.Position < s.Length) || tgiSize > 0) Parse(s);
 
             if (checking && !ignoreTgiSize) if (tgiSize != s.Position - tgiPosn + (addEight ? 8 : 0))
-                    throw new InvalidDataException(String.Format("Size of TGIBlock read: 0x{0:X8}, actual: 0x{1:X8}; at 0x{2:X8}",
+                    throw new InvalidDataException(string.Format("Size of TGIBlock read: 0x{0:X8}, actual: 0x{1:X8}; at 0x{2:X8}",
                         tgiSize, s.Position - tgiPosn, s.Position));
         }
 

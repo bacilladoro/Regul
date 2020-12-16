@@ -8,16 +8,16 @@ namespace Regul.S3PI.Interfaces
     /// </summary>
     public class VersionAttribute : Attribute
     {
-        Int32 version;
+        int version;
         /// <summary>
         /// Version number attribute (base)
         /// </summary>
         /// <param name="Version">Version number</param>
-        public VersionAttribute(Int32 Version) { version = Version; }
+        public VersionAttribute(int Version) { version = Version; }
         /// <summary>
         /// Version number
         /// </summary>
-        public Int32 Version { get { return version; } set { version = value; } }
+        public int Version { get { return version; } set { version = value; } }
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ namespace Regul.S3PI.Interfaces
         /// Specify the Minumum version from which a field or method is supported
         /// </summary>
         /// <param name="Version">Version number</param>
-        public MinimumVersionAttribute(Int32 Version) : base(Version) { }
+        public MinimumVersionAttribute(int Version) : base(Version) { }
     }
 
     /// <summary>
@@ -43,6 +43,6 @@ namespace Regul.S3PI.Interfaces
         /// Specify the Maximum version up to which a field or method is supported
         /// </summary>
         /// <param name="Version">Version number</param>
-        public MaximumVersionAttribute(Int32 Version) : base(Version) { }
+        public MaximumVersionAttribute(int Version) : base(Version) { }
     }
 }

@@ -36,12 +36,12 @@ namespace Regul.S3PI.Interfaces
         /// Package header: 0x00000002
         /// </summary>
         [ElementPriority(2)]
-        Int32 Major { get; }
+        int Major { get; }
         /// <summary>
         /// Package header: 0x00000000
         /// </summary>
         [ElementPriority(3)]
-        Int32 Minor { get; }
+        int Minor { get; }
         /// <summary>
         /// Package header: unused
         /// </summary>
@@ -51,7 +51,7 @@ namespace Regul.S3PI.Interfaces
         /// Package header: number of entries in the package index
         /// </summary>
         [ElementPriority(5)]
-        Int32 Indexcount { get; }
+        int Indexcount { get; }
         /// <summary>
         /// Package header: unused
         /// </summary>
@@ -61,7 +61,7 @@ namespace Regul.S3PI.Interfaces
         /// Package header: index size on disk in bytes
         /// </summary>
         [ElementPriority(7)]
-        Int32 Indexsize { get; }
+        int Indexsize { get; }
         /// <summary>
         /// Package header: unused
         /// </summary>
@@ -71,12 +71,12 @@ namespace Regul.S3PI.Interfaces
         /// Package header: always 3?
         /// </summary>
         [ElementPriority(9)]
-        Int32 Indexversion { get; }
+        int Indexversion { get; }
         /// <summary>
         /// Package header: index position in file
         /// </summary>
         [ElementPriority(10)]
-        Int32 Indexposition { get; }
+        int Indexposition { get; }
         /// <summary>
         /// Package header: unused
         /// </summary>
@@ -100,7 +100,7 @@ namespace Regul.S3PI.Interfaces
         /// Package index: the index format in use
         /// </summary>
         [ElementPriority(13)]
-        UInt32 Indextype { get; }
+        uint Indextype { get; }
 
         /// <summary>
         /// Package index: the index as a <see cref="IResourceIndexEntry"/> list

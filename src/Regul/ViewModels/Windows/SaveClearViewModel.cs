@@ -1,24 +1,23 @@
-﻿using Avalonia;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Runtime.CompilerServices;
+using Avalonia;
 using Avalonia.Controls;
 using Microsoft.VisualBasic;
 using ReactiveUI;
 using Regul.S3PI;
 using Regul.S3PI.Interfaces;
+using Regul.S3PI.Package;
 using Regul.Structures;
 using Regul.Views;
 using Regul.Views.Controls.ListBoxItems;
 using Regul.Views.Windows;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Regul.ViewModels.Windows
 {
-    public class SaveClearViewModel : ReactiveObject
+    public sealed class SaveClearViewModel : ReactiveObject
     {
         private string _pathBackup;
         private bool _isLoading;
@@ -86,7 +85,7 @@ namespace Regul.ViewModels.Windows
         public SaveClearViewModel()
         {
             DeletingCharacterPortraits = true;
-            bgwClean = new();
+            bgwClean = new BackgroundWorker();
 
             Initialize();
         }
@@ -97,7 +96,7 @@ namespace Regul.ViewModels.Windows
             {
                 if (!Directory.Exists(Path.Combine(TS3CC.Sims3MyDocFolder, "Saves")))
                 {
-                    await MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("SaveFilesNotFound"), (string)Application.Current.FindResource("Information"), 
+                    await MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("SaveFilesNotFound"), (string)Application.Current.FindResource("Information"),
                         MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
                     App.SaveClear.Close();
                     return;
@@ -105,16 +104,12 @@ namespace Regul.ViewModels.Windows
             }
             catch (Exception ex)
             {
-                await MessageBox.Show(App.SaveClear, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"), 
+                await MessageBox.Show(App.SaveClear, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"),
                     (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Error);
             }
 
-            string path1 = "";
-
-            if (TS3CC.Sims3MyDocFolder != null)
-            {
-                path1 = TS3CC.Sims3MyDocFolder;
-            }
+            string path1;
+            if (TS3CC.Sims3MyDocFolder != null) path1 = TS3CC.Sims3MyDocFolder;
             else
             {
                 await MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("NotFindFolderTheSims3"),
@@ -124,8 +119,8 @@ namespace Regul.ViewModels.Windows
                 string path = await dialog.ShowAsync(App.SaveClear);
                 if (!string.IsNullOrEmpty(path)) path1 = path;
                 else
-                { 
-                    App.SaveClear.Close(); 
+                {
+                    App.SaveClear.Close();
                     return;
                 }
             }
@@ -157,7 +152,7 @@ namespace Regul.ViewModels.Windows
                     }
                     catch (Exception ex)
                     {
-                        await MessageBox.Show(App.SaveClear, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"), 
+                        await MessageBox.Show(App.SaveClear, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"),
                             (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Error);
                     }
                     checked { ++index2; }
@@ -178,18 +173,18 @@ namespace Regul.ViewModels.Windows
             {
                 if (SelectSave == null)
                 {
-                    await MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("NoSelectedSaveFile"), 
+                    await MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("NoSelectedSaveFile"),
                         (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Error);
                     return;
                 }
                 IsLoading = true;
-                _loading = new();
-                _loading.ShowDialog(App.SaveClear);
+                _loading = new Loading();
                 bgwClean.RunWorkerAsync(SelectSave);
+                await _loading.ShowDialog(App.SaveClear);
             }
             catch (Exception ex)
             {
-                await MessageBox.Show(App.SaveClear, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"), 
+                await MessageBox.Show(App.SaveClear, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"),
                     (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
             }
             GC.Collect();
@@ -198,7 +193,7 @@ namespace Regul.ViewModels.Windows
         private void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
             // Get the subdirectories for the specified directory.
-            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+            DirectoryInfo dir = new(sourceDirName);
 
             if (!dir.Exists)
             {
@@ -214,8 +209,9 @@ namespace Regul.ViewModels.Windows
 
             // Get the files in the directory and copy them to the new location.
             FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files)
+            for (var index = 0; index < files.Length; index++)
             {
+                FileInfo file = files[index];
                 string tempPath = Path.Combine(destDirName, file.Name);
                 file.CopyTo(tempPath, false);
             }
@@ -223,23 +219,24 @@ namespace Regul.ViewModels.Windows
             // If copying subdirectories, copy them and their contents to new location.
             if (copySubDirs)
             {
-                foreach (DirectoryInfo subdir in dirs)
+                for (var i = 0; i < dirs.Length; i++)
                 {
+                    DirectoryInfo subdir = dirs[i];
                     string tempPath = Path.Combine(destDirName, subdir.Name);
-                    DirectoryCopy(subdir.FullName, tempPath, copySubDirs);
+                    DirectoryCopy(subdir.FullName, tempPath, true);
                 }
             }
         }
 
-        internal virtual BackgroundWorker bgwClean
+        internal BackgroundWorker bgwClean
         {
             get => _bgwClean;
             [MethodImpl(MethodImplOptions.Synchronized)]
             set
             {
-                ProgressChangedEventHandler changedEventHandler = new(bgwClean_ProgressChanged);
-                RunWorkerCompletedEventHandler completedEventHandler = new(bgwClean_RunWorkerCompleted);
-                DoWorkEventHandler workEventHandler = new(bgwClean_DoWork);
+                ProgressChangedEventHandler changedEventHandler = bgwClean_ProgressChanged;
+                RunWorkerCompletedEventHandler completedEventHandler = bgwClean_RunWorkerCompleted;
+                DoWorkEventHandler workEventHandler = bgwClean_DoWork;
 
                 if (_bgwClean != null)
                 {
@@ -270,7 +267,7 @@ namespace Regul.ViewModels.Windows
         {
             _loading.Close();
             IsLoading = false;
-            MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("SaveFilesCleanedSuccessfully"), 
+            MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("SaveFilesCleanedSuccessfully"),
                 (string)Application.Current.FindResource("Successfully"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
         }
 
@@ -280,7 +277,7 @@ namespace Regul.ViewModels.Windows
 
             if (CreateABackup)
             {
-                bgwClean.ReportProgress(10, "Create Backup...");
+                bgwClean.ReportProgress(10, (string)Application.Current.FindResource("ProcessingCreateBackup"));
                 if (!string.IsNullOrEmpty(PathBackup))
                 {
                     DirectoryCopy(saveFilePortrait.SaveDir, PathBackup + saveFilePortrait.SaveName.Text + ".sims3", true);
@@ -298,32 +295,41 @@ namespace Regul.ViewModels.Windows
                 checked { ++index1; }
             }
 
-            bgwClean.ReportProgress(30, "Compressing Save...");
+            bgwClean.ReportProgress(30, (string)Application.Current.FindResource("ProcessingCompressingSave"));
             string[] files2 = Directory.GetFiles(saveFilePortrait.SaveDir, "*.package", SearchOption.AllDirectories);
             int index2 = 0;
 
             while (index2 < files2.Length)
             {
-                IPackage pkg = S3PI.Package.Package.OpenPackage(1, files2[index2], true);
-                try
+                IPackage pkg = Package.OpenPackage(1, files2[index2], true);
+                foreach (IResourceIndexEntry getResource in pkg.GetResourceList)
                 {
-                    foreach (IResourceIndexEntry getResource in pkg.GetResourceList)
-                    {
-                        if (getResource.Compressed == (ushort)0)
-                            getResource.Compressed = ushort.MaxValue;
-                    }
+                    if (getResource.Compressed == 0)
+                        getResource.Compressed = ushort.MaxValue;
                 }
-                finally
-                {
-                }
+
                 pkg.SavePackage();
-                S3PI.Package.Package.ClosePackage(1, pkg);
+                Package.ClosePackage(1, pkg);
                 checked { ++index2; }
             }
 
             if (Directory.GetFiles(saveFilePortrait.SaveDir, "*.nhd", SearchOption.AllDirectories).Length > 1)
             {
-                bgwClean.ReportProgress(60, "Clearing Duplicated Images...");
+                bgwClean.ReportProgress(60, (string)Application.Current.FindResource("ProcessingClearingSave"));
+
+                if (RemovingPhotosAndTextures)
+                {
+                    IPackage pkg1 = Package.OpenPackage(1, Path.Combine(saveFilePortrait.SaveDir, "TravelDB.package"), true);
+                    for (var i = 0; i < pkg1.GetResourceList.Count; i++)
+                    {
+                        IResourceIndexEntry getResource = pkg1.GetResourceList[i];
+                        if (getResource.ResourceType == 11720834U)
+                            pkg1.DeleteResource(getResource);
+                    }
+
+                    pkg1.SavePackage();
+                    Package.ClosePackage(1, pkg1);
+                }
 
                 string[] files3 = Directory.GetFiles(saveFilePortrait.SaveDir, "*.nhd", SearchOption.AllDirectories);
                 int index3 = 0;
@@ -333,49 +339,48 @@ namespace Regul.ViewModels.Windows
 
                     if (Path.GetFileNameWithoutExtension(str).Contains(saveFilePortrait.Location))
                     {
-                        IPackage pkg2 = S3PI.Package.Package.OpenPackage(1, str, true);
-                        try
+                        IPackage pkg2 = Package.OpenPackage(1, str, true);
+                        for (var i = 0; i < pkg2.GetResourceList.Count; i++)
                         {
-                            foreach (IResourceIndexEntry getResource in pkg2.GetResourceList)
-                            {
-                                if ((long)getResource.Instance != (long)saveFilePortrait.ImgInstance && getResource.ResourceType.Equals((object)1802339198))
-                                    pkg2.DeleteResource(getResource);
-                                if (getResource.Compressed == 0)
-                                    getResource.Compressed = ushort.MaxValue;
-                                if (DeletingCharacterPortraits && getResource.ResourceType == 92316365U | getResource.ResourceType == 92316366U | getResource.ResourceType == 92316367U)
-                                    pkg2.DeleteResource(getResource);
-                                if (RemovingLotThumbnails && getResource.ResourceType == 3629023174U)
-                                    pkg2.DeleteResource(getResource);
-                                if (RemovingPhotosAndTextures && getResource.ResourceType == 11720834U)
-                                    pkg2.DeleteResource(getResource);
-                            }
+                            IResourceIndexEntry getResource = pkg2.GetResourceList[i];
+                            if ((long) getResource.Instance != (long) saveFilePortrait.ImgInstance &&
+                                getResource.ResourceType.Equals((object) 1802339198))
+                                pkg2.DeleteResource(getResource);
+                            if (getResource.Compressed == 0)
+                                getResource.Compressed = ushort.MaxValue;
+                            if (DeletingCharacterPortraits && getResource.ResourceType == 92316365U |
+                                getResource.ResourceType == 92316366U | getResource.ResourceType == 92316367U)
+                                pkg2.DeleteResource(getResource);
+                            if (RemovingLotThumbnails && getResource.ResourceType == 3629023174U)
+                                pkg2.DeleteResource(getResource);
+                            if (RemovingPhotosAndTextures && getResource.ResourceType == 11720834U)
+                                pkg2.DeleteResource(getResource);
                         }
-                        finally { }
-                        bgwClean.ReportProgress(80, "Saving Save...");
+
+                        bgwClean.ReportProgress(80, (string)Application.Current.FindResource("ProcessingSavingSave"));
                         pkg2.SavePackage();
-                        S3PI.Package.Package.ClosePackage(0, pkg2);
+                        Package.ClosePackage(0, pkg2);
                     }
                     else
                     {
-                        IPackage pkg2 = S3PI.Package.Package.OpenPackage(1, str, true);
-                        try
+                        IPackage pkg2 = Package.OpenPackage(1, str, true);
+                        for (var i = 0; i < pkg2.GetResourceList.Count; i++)
                         {
-                            foreach (IResourceIndexEntry getResource in pkg2.GetResourceList)
-                            {
-                                if (getResource.Compressed == 0)
-                                    getResource.Compressed = ushort.MaxValue;
-                                if (DeletingCharacterPortraits && getResource.ResourceType == 92316365U | getResource.ResourceType == 92316366U | getResource.ResourceType == 92316367U)
-                                    pkg2.DeleteResource(getResource);
-                                if (RemovingLotThumbnails && getResource.ResourceType == 3629023174U)
-                                    pkg2.DeleteResource(getResource);
-                                if (RemovingPhotosAndTextures && getResource.ResourceType == 11720834U)
-                                    pkg2.DeleteResource(getResource);
-                            }
+                            IResourceIndexEntry getResource = pkg2.GetResourceList[i];
+                            if (getResource.Compressed == 0)
+                                getResource.Compressed = ushort.MaxValue;
+                            if (DeletingCharacterPortraits && getResource.ResourceType == 92316365U |
+                                getResource.ResourceType == 92316366U | getResource.ResourceType == 92316367U)
+                                pkg2.DeleteResource(getResource);
+                            if (RemovingLotThumbnails && getResource.ResourceType == 3629023174U)
+                                pkg2.DeleteResource(getResource);
+                            if (RemovingPhotosAndTextures && getResource.ResourceType == 11720834U)
+                                pkg2.DeleteResource(getResource);
                         }
-                        finally { }
-                        bgwClean.ReportProgress(80, "Saving Save...");
+
+                        bgwClean.ReportProgress(80, (string)Application.Current.FindResource("ProcessingSavingSave"));
                         pkg2.SavePackage();
-                        S3PI.Package.Package.ClosePackage(0, pkg2);
+                        Package.ClosePackage(0, pkg2);
                     }
                     checked { ++index3; }
                 }
@@ -386,26 +391,25 @@ namespace Regul.ViewModels.Windows
                 int index3 = 0;
                 while (index3 < files3.Length)
                 {
-                    IPackage pkg = S3PI.Package.Package.OpenPackage(1, files3[index3], true);
-                    bgwClean.ReportProgress(30, "Compressing Save...");
-                    try
+                    IPackage pkg = Package.OpenPackage(1, files3[index3], true);
+                    bgwClean.ReportProgress(30, (string)Application.Current.FindResource("ProcessingCompressingSave"));
+                    for (var i = 0; i < pkg.GetResourceList.Count; i++)
                     {
-                        foreach (IResourceIndexEntry getResource in pkg.GetResourceList)
-                        {
-                            if (getResource.Compressed == 0)
-                                getResource.Compressed = ushort.MaxValue;
-                            if (DeletingCharacterPortraits && getResource.ResourceType == 92316365U | getResource.ResourceType == 92316366U | getResource.ResourceType == 92316367U)
-                                pkg.DeleteResource(getResource);
-                            if (RemovingLotThumbnails && getResource.ResourceType == 3629023174U)
-                                pkg.DeleteResource(getResource);
-                            if (RemovingPhotosAndTextures && getResource.ResourceType == 11720834U)
-                                pkg.DeleteResource(getResource);
-                        }
+                        IResourceIndexEntry getResource = pkg.GetResourceList[i];
+                        if (getResource.Compressed == 0)
+                            getResource.Compressed = ushort.MaxValue;
+                        if (DeletingCharacterPortraits && getResource.ResourceType == 92316365U |
+                            getResource.ResourceType == 92316366U | getResource.ResourceType == 92316367U)
+                            pkg.DeleteResource(getResource);
+                        if (RemovingLotThumbnails && getResource.ResourceType == 3629023174U)
+                            pkg.DeleteResource(getResource);
+                        if (RemovingPhotosAndTextures && getResource.ResourceType == 11720834U)
+                            pkg.DeleteResource(getResource);
                     }
-                    finally { }
-                    bgwClean.ReportProgress(60, "Saving Save...");
+
+                    bgwClean.ReportProgress(60, (string)Application.Current.FindResource("ProcessingSavingSave"));
                     pkg.SavePackage();
-                    S3PI.Package.Package.ClosePackage(1, pkg);
+                    Package.ClosePackage(1, pkg);
                     checked { ++index3; }
                 }
             }

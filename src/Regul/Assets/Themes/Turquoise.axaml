@@ -1,8 +1,6 @@
 ﻿<Style xmlns="https://github.com/avaloniaui"
-       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-       xmlns:sys="clr-namespace:System;assembly=netstandard">
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style.Resources>
-		<Color x:Key="ThemeWindowBackgroundColor">#FF5A0F26</Color>
         <Color x:Key="ThemeBackgroundColor">#FFD2FEFF</Color>
 		<Color x:Key="ThemeForegroundColor">#FF000000</Color>
 		<Color x:Key="ThemeForegroundOpacityColor">#FF5E3B82</Color>
@@ -15,7 +13,6 @@
 		<Color x:Key="ThemeScrollBoxHoverColor">#FF333333</Color>
 		<Color x:Key="ThemeBackgroundContentTabItemColor">#FFC2EAEB</Color>
 
-		<SolidColorBrush x:Key="ThemeWindowBackgroundBrush" Color="{DynamicResource ThemeWindowBackgroundColor}"/>
         <SolidColorBrush x:Key="ThemeBackgroundBrush" Color="{DynamicResource ThemeBackgroundColor}"/>
         <SolidColorBrush x:Key="ThemeForegroundBrush" Color="{DynamicResource ThemeForegroundColor}"/>
         <SolidColorBrush x:Key="ThemeForegroundOpacityBrush" Color="{DynamicResource ThemeForegroundOpacityColor}"/>

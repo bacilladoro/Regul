@@ -1,0 +1,13 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Regul.Views.Controls.Tab.TabHeader">
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock Text="{Binding NameTab}" Margin="0 0 5 0" VerticalAlignment="Center"/>
+        <Button Padding="0" Width="16" Height="16" Command="{Binding CloseTab}">
+            <Path Data="m 9.740 8.520 c 0.345 0.345 0.345 0.883 0 1.229 C 9.568 9.923 9.357 10 9.126 10 8.896 10 8.685 9.923 8.512 9.750 L 4.9 6.234 1.487 9.750 C 1.314 9.923 1.103 10 0.873 10 0.642 10 0.431 9.923 0.259 9.75 c -0.345 -0.345 -0.345 -0.883 0 -1.229 L 3.77 5 0.259 1.488 c -0.345 -0.345 -0.345 -0.883 0 -1.229 0.345 -0.345 0.88 -0.345 1.228 0 L 5 3.775 8.512 0.259 c 0.345 -0.345 0.882 -0.345 1.228 0 0.345 0.345 0.345 0.883 0 1.229 L 6.228 5 Z"/>
+        </Button>
+    </StackPanel>
+</UserControl>

@@ -39,5 +39,10 @@
 		<v:String x:Key="SaveFilesNotFound">Save files not found</v:String>
 		<v:String x:Key="NoSelectedSaveFile">You haven't selected a save file!</v:String>
 		<v:String x:Key="NotFindFolderTheSims3">Could not find the "The Sims 3" folder. Select the folder manually.</v:String>
+		
+		<v:String x:Key="ProcessingCreateBackup">Create backup...</v:String>
+		<v:String x:Key="ProcessingCompressingSave">Compressing save...</v:String>
+		<v:String x:Key="ProcessingClearingSave">Clearing save...</v:String>
+		<v:String x:Key="ProcessingSavingSave">Saving save...</v:String>
 	</Style.Resources>
 </Style>

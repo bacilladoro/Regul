@@ -150,7 +150,7 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// A displayable representation of the object
         /// </summary>
-        public string Value { get { return "{ " + String.Format("{0:F4}; {1:F4}; {2:F4}", x, y, z) + " }"; } }
+        public string Value { get { return "{ " + string.Format("{0:F4}; {1:F4}; {2:F4}", x, y, z) + " }"; } }
         #endregion
     }
 
@@ -296,7 +296,7 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// A displayable representation of the object
         /// </summary>
-        public string Value { get { return String.Format("[ Min: {0} | Max: {1} ]", min.Value, max.Value); } }
+        public string Value { get { return string.Format("[ Min: {0} | Max: {1} ]", min.Value, max.Value); } }
         #endregion
     }
 }

@@ -89,21 +89,21 @@ namespace Regul.S3PI.Interfaces
             foreach (PropertyInfo m in t.GetProperties()) banlist.Add(m.Name);
         }
 
-        static Int32 Version(Type attribute, Type type, string field)
+        static int Version(Type attribute, Type type, string field)
         {
             foreach (VersionAttribute attr in type.GetProperty(field).GetCustomAttributes(attribute, true)) return attr.Version;
             return 0;
         }
-        static Int32 MinimumVersion(Type type, string field) { return Version(typeof(MinimumVersionAttribute), type, field); }
-        static Int32 MaximumVersion(Type type, string field) { return Version(typeof(MaximumVersionAttribute), type, field); }
+        static int MinimumVersion(Type type, string field) { return Version(typeof(MinimumVersionAttribute), type, field); }
+        static int MaximumVersion(Type type, string field) { return Version(typeof(MaximumVersionAttribute), type, field); }
         //protected Int32 MinimumVersion(string field) { return AApiVersionedFields.MinimumVersion(this.GetType(), field); }
         //protected Int32 MaximumVersion(string field) { return AApiVersionedFields.MaximumVersion(this.GetType(), field); }
-        static Int32 getRecommendedApiVersion(Type t)
+        static int getRecommendedApiVersion(Type t)
         {
             FieldInfo fi = t.GetField("recommendedApiVersion", BindingFlags.Static | BindingFlags.NonPublic);
-            if (fi == null || fi.FieldType != typeof(Int32))
+            if (fi == null || fi.FieldType != typeof(int))
                 return 0;
-            return (Int32)fi.GetValue(null);
+            return (int)fi.GetValue(null);
         }
         static bool checkVersion(Type type, string field, int requestedApiVersion)
         {
@@ -122,11 +122,11 @@ namespace Regul.S3PI.Interfaces
         /// <param name="APIversion">Set to 0 (== "best")</param>
         /// <param name="t">The class type for which to get the fields</param>
         /// <returns>List of field names for the given API version</returns>
-        public static List<string> GetContentFields(Int32 APIversion, Type t)
+        public static List<string> GetContentFields(int APIversion, Type t)
         {
             List<string> fields = new List<string>();
 
-            Int32 recommendedApiVersion = getRecommendedApiVersion(t);//Could be zero if no "recommendedApiVersion" const field
+            int recommendedApiVersion = getRecommendedApiVersion(t);//Could be zero if no "recommendedApiVersion" const field
             PropertyInfo[] ap = t.GetProperties();
             foreach (PropertyInfo m in ap)
             {
@@ -179,10 +179,10 @@ namespace Regul.S3PI.Interfaces
             }
         }
 
-        static List<string> valueBuilderBanlist = new List<string>(new string[] {
+        static List<string> valueBuilderBanlist = new(new string[] {
             "Value", "Stream", "AsBytes",
         });
-        static List<string> iDictionaryBanlist = new List<string>(new string[] {
+        static List<string> iDictionaryBanlist = new(new string[] {
             "Keys", "Values", "Count", "IsReadOnly", "IsFixedSize", "IsSynchronized", "SyncRoot",
         });
 
@@ -237,10 +237,10 @@ namespace Regul.S3PI.Interfaces
                         string fmt = "\n   [{0:X" + l.Count.ToString("X").Length + "}]: {1}";
                         int i = 0;
 
-                        sb.Append(String.Format(headerFmt, tv.Type.Name, f, l.Count));
+                        sb.Append(string.Format(headerFmt, tv.Type.Name, f, l.Count));
                         foreach (AHandlerElement v in l)
                         {
-                            sb.Append(String.Format(fmt, i++, (string)v["Value"].Value));
+                            sb.Append(string.Format(fmt, i++, (string)v["Value"].Value));
                         }
                         sb.Append("\n---");
                     }
@@ -250,10 +250,10 @@ namespace Regul.S3PI.Interfaces
                         string fmt = "\n   [{0:X" + l.Count.ToString("X").Length + "}]: {1}";
                         int i = 0;
 
-                        sb.Append(String.Format(headerFmt, tv.Type.Name, f, l.Count));
+                        sb.Append(string.Format(headerFmt, tv.Type.Name, f, l.Count));
                         foreach (AHandlerElement v in l)
                         {
-                            sb.Append(String.Format(fmt, i++, v["Val"].ToString()));
+                            sb.Append(string.Format(fmt, i++, v["Val"].ToString()));
                         }
                         sb.Append("\n---");
                     }
@@ -263,9 +263,9 @@ namespace Regul.S3PI.Interfaces
                         string fmt = "\n   [{0:X" + l.Count.ToString("X").Length + "}]: {1}";
                         int i = 0;
 
-                        sb.Append(String.Format(headerFmt, tv.Type.Name, f, l.Count));
+                        sb.Append(string.Format(headerFmt, tv.Type.Name, f, l.Count));
                         foreach (TGIBlock v in l)
-                            sb.Append(String.Format(fmt, i++, v.ToString()));
+                            sb.Append(string.Format(fmt, i++, v.ToString()));
                         sb.Append("\n---");
                     }
                     else if (tv.Type.BaseType != null && tv.Type.BaseType.Name.Contains("DependentList`"))
@@ -275,7 +275,7 @@ namespace Regul.S3PI.Interfaces
                         string fmtShort = "\n   [{0:X" + l.Count.ToString("X").Length + "}]: {1}";
                         int i = 0;
 
-                        sb.Append(String.Format(headerFmt, tv.Type.Name, f, l.Count));
+                        sb.Append(string.Format(headerFmt, tv.Type.Name, f, l.Count));
                         foreach (AHandlerElement v in l)
                         {
                             if (v.ContentFields.Contains("Value") &&
@@ -283,16 +283,16 @@ namespace Regul.S3PI.Interfaces
                             {
                                 string elem = (string)v["Value"].Value;
                                 if (elem.Contains("\n"))
-                                    sb.Append(String.Format(fmtLong, f, i++) + elem.Replace("\n", "\n   ").TrimEnd());
+                                    sb.Append(string.Format(fmtLong, f, i++) + elem.Replace("\n", "\n   ").TrimEnd());
                                 else
-                                    sb.Append(String.Format(fmtShort, i++, elem));
+                                    sb.Append(string.Format(fmtShort, i++, elem));
                             }
                         }
                         sb.Append("\n---");
                     }
                     else if (tv.Type.HasElementType && typeof(AApiVersionedFields).IsAssignableFrom(tv.Type.GetElementType())) // it's an AApiVersionedFields array, slightly glossy...
                     {
-                        sb.Append(String.Format(headerFmt, tv.Type.Name, f, ((Array)tv.Value).Length));
+                        sb.Append(string.Format(headerFmt, tv.Type.Name, f, ((Array)tv.Value).Length));
                         sb.Append("\n   " + tv.ToString().Replace("\n", "\n   ").TrimEnd() + "\n---");
                     }
                     else
@@ -324,7 +324,7 @@ namespace Regul.S3PI.Interfaces
                     int i = 0;
                     sb.Append("\n--- (0x" + l.Count.ToString("X") + ") ---");
                     foreach (var key in l.Keys)
-                        sb.Append(String.Format(fmt, i++,
+                        sb.Append(string.Format(fmt, i++,
                             new TypedValue(key.GetType(), key, "X").ToString(),
                             new TypedValue(l[key].GetType(), l[key], "X").ToString()));
                     sb.Append("\n---");
@@ -354,11 +354,11 @@ namespace Regul.S3PI.Interfaces
         /// <param name="APIversion">Version of API to use</param>
         /// <param name="t">API data type to query</param>
         /// <returns></returns>
-        public static Dictionary<string, Type> GetContentFieldTypes(Int32 APIversion, Type t)
+        public static Dictionary<string, Type> GetContentFieldTypes(int APIversion, Type t)
         {
             Dictionary<string, Type> types = new Dictionary<string, Type>();
 
-            Int32 recommendedApiVersion = getRecommendedApiVersion(t);//Could be zero if no "recommendedApiVersion" const field
+            int recommendedApiVersion = getRecommendedApiVersion(t);//Could be zero if no "recommendedApiVersion" const field
             PropertyInfo[] ap = t.GetProperties();
             foreach (PropertyInfo m in ap)
             {
@@ -445,10 +445,10 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s">String to convert</param>
         /// <returns>UInt64 packed representation of <paramref name="s"/></returns>
-        public static UInt64 FOURCC(string s)
+        public static ulong FOURCC(string s)
         {
             if (s.Length > 8) throw new ArgumentLengthException("String", 8);
-            UInt64 i = 0;
+            ulong i = 0;
             for (int j = s.Length - 1; j >= 0; j--) i += ((uint)s[j]) << (j * 8);
             return i;
         }
@@ -458,7 +458,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="i">Bytes to convert</param>
         /// <returns>String representation of <paramref name="i"/></returns>
-        public static string FOURCC(UInt64 i)
+        public static string FOURCC(ulong i)
         {
             string s = "";
             for (int j = 7; j >= 0; j--) { char c = (char)((i >> (j * 8)) & 0xff); if (s.Length > 0 || c != 0) s = c + s; }
@@ -553,7 +553,7 @@ namespace Regul.S3PI.Interfaces
         {
             dirty = true;
             //Console.WriteLine(this.GetType().Name + " dirtied.");
-            if (handler != null) handler(this, EventArgs.Empty);
+            handler?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
