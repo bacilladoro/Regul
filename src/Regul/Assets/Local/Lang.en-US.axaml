@@ -6,10 +6,16 @@
 		<v:String x:Key="Tools">Tools</v:String>
 		<v:String x:Key="Reference">Reference</v:String>
 		<v:String x:Key="Settings">Settings</v:String>
-		<v:String x:Key="AboutTheProgram">About the program</v:String>
+		<v:String x:Key="New">New</v:String>
+		<v:String x:Key="Open">Open</v:String>
+        <v:String x:Key="AboutTheProgram">About the program</v:String>
 		<v:String x:Key="ExitFromRegul">Exit from Regul</v:String>
 		<v:String x:Key="TheSims3">The Sims 3</v:String>
 		<v:String x:Key="SaveClear">Save clear</v:String>
+
+		<v:String x:Key="CreatorName">Creator name</v:String>
+		<v:String x:Key="Welcome">Welcome!</v:String>
+		<v:String x:Key="RecentProjects">Recent projects</v:String>
 		
 		<v:String x:Key="Cut">Cut</v:String>
 		<v:String x:Key="Paste">Paste</v:String>

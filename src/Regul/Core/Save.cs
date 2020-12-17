@@ -5,7 +5,7 @@ using Microsoft.VisualBasic;
 using Regul.S3PI.Interfaces;
 using Regul.S3PI.Package;
 
-namespace Regul.Structures
+namespace Regul.Core
 {
     public class Save
     {

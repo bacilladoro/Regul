@@ -2,11 +2,12 @@
 using Regul.ViewModels.Windows;
 using Regul.Views.Windows;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
-using System.Text;
 using Avalonia.Controls;
+using Regul.Core;
+using Regul.Structures;
 using Regul.ViewModels.Controls.Tab;
 using Regul.Views.Controls.Tab;
 
@@ -15,6 +16,11 @@ namespace Regul.ViewModels
     public class MainWindowViewModel : ReactiveObject
     {
         private ObservableCollection<TabItem> _tabs = new();
+        private ObservableCollection<Project> _projects = new();
+
+        private string _creatorName;
+
+        private Project _selectedProject;
 
         #region Properties
 
@@ -22,6 +28,23 @@ namespace Regul.ViewModels
         {
             get => _tabs;
             set => this.RaiseAndSetIfChanged(ref _tabs, value);
+        }
+        public ObservableCollection<Project> Projects
+        {
+            get => _projects;
+            set => this.RaiseAndSetIfChanged(ref _projects, value);
+        }
+
+        public string CreatorName
+        {
+            get => _creatorName;
+            set => this.RaiseAndSetIfChanged(ref _creatorName, value);
+        }
+        
+        public Project SelectedProject
+        {
+            get => _selectedProject;
+            set => this.RaiseAndSetIfChanged(ref _selectedProject, value);
         }
 
         #endregion
@@ -31,14 +54,26 @@ namespace Regul.ViewModels
         private ReactiveCommand<Unit, Unit> ExitCommand { get; }
         private ReactiveCommand<Unit, Unit> SaveClearWindowCommand { get; }
         private ReactiveCommand<Unit, Unit> NewPackageCommand { get; }
+        private ReactiveCommand<Unit, Unit> ClearGCCommand { get; }
+        private ReactiveCommand<Unit, Unit> DeleteProjectCommand { get; }
 
         #endregion
 
         public MainWindowViewModel()
         {
-            ExitCommand = ReactiveCommand.Create(Exit);
+            ExitCommand = ReactiveCommand.Create(() => App.MainWindow.Close());
             SaveClearWindowCommand = ReactiveCommand.Create(SaveClearWindow);
             NewPackageCommand = ReactiveCommand.Create(NewPackage);
+            ClearGCCommand = ReactiveCommand.Create(ClearGC);
+            DeleteProjectCommand = ReactiveCommand.Create(DeleteProject);
+
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            CreatorName = Program.Settings.CreatorName;
+            Projects = new ObservableCollection<Project>(Program.Settings.Projects);
         }
 
         private void SaveClearWindow()
@@ -47,9 +82,12 @@ namespace Regul.ViewModels
             App.SaveClear.ShowDialog(App.MainWindow);
         }
 
-        private void Exit()
+        public void Exit()
         {
-            App.MainWindow.Close();
+            Program.Settings.Projects = Projects.ToList();
+            Program.Settings.CreatorName = CreatorName;
+            
+            FileSettings.SaveSettings();
         }
 
         private void NewPackage()
@@ -69,5 +107,8 @@ namespace Regul.ViewModels
                 }
             }
         }
+        
+        private void ClearGC() => GC.Collect();
+        private void DeleteProject() => Projects.Remove(SelectedProject);
     }
 }

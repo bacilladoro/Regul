@@ -94,22 +94,23 @@ namespace Regul.S3PI.Package
 
 
             PackageIndex newIndex = new PackageIndex(indexType);
-            foreach (IResourceIndexEntry ie in this.Index)
+            for (var i = 0; i < this.Index.Count; i++)
             {
+                IResourceIndexEntry ie = this.Index[i];
                 if (ie.IsDeleted) continue;
 
                 ResourceIndexEntry newIE = (ie as ResourceIndexEntry)?.Clone();
-                ((List<IResourceIndexEntry>)newIndex).Add(newIE);
+                ((List<IResourceIndexEntry>) newIndex).Add(newIE);
                 byte[] value = packedChunk(ie as ResourceIndexEntry);
 
-                newIE.Chunkoffset = (uint)s.Position;
+                newIE.Chunkoffset = (uint) s.Position;
                 w.Write(value);
                 w.Flush();
 
                 if (value.Length < newIE.Memsize)
                 {
                     newIE.Compressed = 0xffff;
-                    newIE.Filesize = (uint)value.Length;
+                    newIE.Filesize = (uint) value.Length;
                 }
                 else
                 {
@@ -117,6 +118,7 @@ namespace Regul.S3PI.Package
                     newIE.Filesize = newIE.Memsize;
                 }
             }
+
             long indexpos = s.Position;
             newIndex.Save(w);
             setIndexcount(w, newIndex.Count);

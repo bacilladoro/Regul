@@ -1,18 +1,26 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
 using Regul.ViewModels;
 using Regul.Views;
 using System;
+using System.IO;
+using Regul.Core;
+using Regul.Structures;
 
 namespace Regul
 {
     class Program
     {
+        public static Settings Settings;
+        
         [STAThread]
         public static void Main(string[] args)
         {
+            Settings = File.Exists(AppDomain.CurrentDomain.BaseDirectory + "settings.json")
+                ? FileSettings.LoadSettings()
+                : new Settings();
+            
             BuildAvaloniaApp().Start(AppMain, args);
         }
 

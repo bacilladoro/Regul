@@ -468,15 +468,13 @@ namespace Tiger
 
         public static bool Compress(byte[] data, out byte[] compressed)
         {
-            DBPFCompression compressor = new DBPFCompression(5);
-            compressed = compressor.Compress(data);
+            compressed = new DBPFCompression(5).Compress(data);
             return (compressed != null);
         }
 
         public static bool Compress(byte[] data, out byte[] compressed, int level)
         {
-            DBPFCompression compressor = new DBPFCompression(level);
-            compressed = compressor.Compress(data);
+            compressed = new DBPFCompression(level).Compress(data);
             return (compressed != null);
         }
 
@@ -744,8 +742,7 @@ namespace Tiger
         {
             if (bucketdepth <= 1)
                 return new SingledepthMatchTracker(blockinterval, lookupstart, windowlength);
-            else
-                return new DeepMatchTracker(blockinterval, lookupstart, windowlength, bucketdepth);
+            return new DeepMatchTracker(blockinterval, lookupstart, windowlength, bucketdepth);
         }
 
         static IMatchtracker CreateTracker(int level, out int bruteforcelength)
@@ -809,7 +806,7 @@ namespace Tiger
                 mRunningValue = 0;
 
                 mRollingInterval = 0;
-                mWindowStart = -(mInsertedValues.Length + (mPendingValues != null ? mPendingValues.Length : 0)) * mInterval - 4;
+                mWindowStart = -(mInsertedValues.Length + (mPendingValues?.Length ?? 0)) * mInterval - 4;
                 mDataLength = 0;
 
                 mInitialized = false;

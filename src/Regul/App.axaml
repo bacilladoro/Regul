@@ -1,6 +1,5 @@
 ﻿<Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Regul"
              x:Class="Regul.App">
     <Application.Styles>
         <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
@@ -21,6 +20,15 @@
 		<StyleInclude Source="/Assets/Controls/ScrollBar.axaml"/>
 		<StyleInclude Source="/Assets/Controls/TabControl.axaml"/>
 		<StyleInclude Source="/Assets/Controls/TabItem.axaml"/>
+
+        <Style Selector="Window">
+            <Setter Property="FontFamily" Value="/Assets/Fonts#Noto Sans"/>
+        </Style>
+
+        <Style Selector="TextBlock.Heading">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+        </Style>
 		
 		<Style Selector="Border.BorderStyle">
 			<Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>

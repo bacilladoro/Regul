@@ -1,7 +1,6 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Regul.Structures;
+using Regul.Core;
 using System.IO;
 
 namespace Regul.Views.Controls.ListBoxItems

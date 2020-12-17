@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
@@ -11,6 +12,13 @@ namespace Regul.Views
         public MainWindow()
         {
             InitializeComponent();
+            
+            Closed +=OnClosed;
+        }
+
+        private void OnClosed(object? sender, EventArgs e)
+        {
+            App.MainWindowViewModel.Exit();
         }
 
         private void InitializeComponent()

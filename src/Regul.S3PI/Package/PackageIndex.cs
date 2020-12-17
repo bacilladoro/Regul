@@ -54,14 +54,16 @@ namespace Regul.S3PI.Package
 
         public IResourceIndexEntry Add(IResourceKey rk)
         {
-            ResourceIndexEntry rc = new ResourceIndexEntry(new int[Hdrsize], new int[numFields - Hdrsize]);
+            ResourceIndexEntry rc = new ResourceIndexEntry(new int[Hdrsize], new int[numFields - Hdrsize])
+            {
+                ResourceType = rk.ResourceType,
+                ResourceGroup = rk.ResourceGroup,
+                Instance = rk.Instance,
+                Chunkoffset = 0xffffffff,
+                Unknown2 = 1,
+                ResourceStream = null
+            };
 
-            rc.ResourceType = rk.ResourceType;
-            rc.ResourceGroup = rk.ResourceGroup;
-            rc.Instance = rk.Instance;
-            rc.Chunkoffset = 0xffffffff;
-            rc.Unknown2 = 1;
-            rc.ResourceStream = null;
 
             base.Add(rc);
             return rc;
@@ -71,14 +73,7 @@ namespace Regul.S3PI.Package
         public void Save(BinaryWriter w)
         {
             BinaryReader r = null;
-            if (Count == 0)
-            {
-                r = new BinaryReader(new MemoryStream(new byte[numFields * 4]));
-            }
-            else
-            {
-                r = new BinaryReader(this[0].Stream);
-            }
+            r = Count == 0 ? new BinaryReader(new MemoryStream(new byte[numFields * 4])) : new BinaryReader(this[0].Stream);
             
             r.BaseStream.Position = 4;
             w.Write(indextype);
@@ -86,14 +81,19 @@ namespace Regul.S3PI.Package
             if ((indextype & 0x02) != 0) w.Write(r.ReadUInt32()); else r.BaseStream.Position += 4;
             if ((indextype & 0x04) != 0) w.Write(r.ReadUInt32()); else r.BaseStream.Position += 4;
 
-            foreach (IResourceIndexEntry ie in this)
+            for (int index = 0; index < this.Count; index++)
             {
+                IResourceIndexEntry ie = this[index];
+                
                 r = new BinaryReader(ie.Stream);
                 r.BaseStream.Position = 4;
-                if ((indextype & 0x01) == 0) w.Write(r.ReadUInt32()); else r.BaseStream.Position += 4;
-                if ((indextype & 0x02) == 0) w.Write(r.ReadUInt32()); else r.BaseStream.Position += 4;
-                if ((indextype & 0x04) == 0) w.Write(r.ReadUInt32()); else r.BaseStream.Position += 4;
-                w.Write(r.ReadBytes((int)(ie.Stream.Length - ie.Stream.Position)));
+                if ((indextype & 0x01) == 0) w.Write(r.ReadUInt32());
+                else r.BaseStream.Position += 4;
+                if ((indextype & 0x02) == 0) w.Write(r.ReadUInt32());
+                else r.BaseStream.Position += 4;
+                if ((indextype & 0x04) == 0) w.Write(r.ReadUInt32());
+                else r.BaseStream.Position += 4;
+                w.Write(r.ReadBytes((int) (ie.Stream.Length - ie.Stream.Position)));
             }
         }
 
@@ -112,13 +112,16 @@ namespace Regul.S3PI.Package
         /// <returns>Matching entry</returns>
         public IResourceIndexEntry this[uint type, uint group, ulong instance]
         {
-            get {
-                foreach(ResourceIndexEntry rie in this)
+            get
+            {
+                for (int index = 0; index < this.Count; index++)
                 {
+                    var rie = (ResourceIndexEntry) this[index];
                     if (rie.ResourceType != type) continue;
-                    if (rie.ResourceGroup != group) continue;
+                    if (rie.ResourceGroup != @group) continue;
                     if (rie.Instance == instance) return rie;
                 }
+
                 return null;
             }
         }

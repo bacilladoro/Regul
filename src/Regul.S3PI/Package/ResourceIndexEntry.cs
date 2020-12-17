@@ -142,7 +142,7 @@ namespace Regul.S3PI.Package
         /// <returns>true if the current instance is equal to the <paramref name="other"/> parameter; otherwise, false.</returns>
         public override bool Equals(IResourceIndexEntry other)
         {
-            return other as ResourceIndexEntry != null && indexEntry.Equals((other as ResourceIndexEntry).indexEntry);
+            return other is ResourceIndexEntry && indexEntry.Equals(((ResourceIndexEntry) other).indexEntry);
         }
         /// <summary>
         /// Returns the hash code for this instance.

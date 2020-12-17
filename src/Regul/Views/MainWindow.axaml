@@ -5,18 +5,22 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Regul.Views.MainWindow"
 		Width="800" Height="450"
-		MinWidth="500" MinHeight="350"
+		MinWidth="600" MinHeight="350"
 		WindowStartupLocation="CenterScreen"
         Icon="avares://Regul/icon.ico"
 		Background="{DynamicResource ThemePanelBackgroundBrush}"
         Title="Regul">
-	<DockPanel>
+	<Window.KeyBindings>
+        <KeyBinding Command="{Binding ClearGCCommand}" Gesture="Ctrl+Alt+Shift+F12"/>
+    </Window.KeyBindings>
+    <DockPanel>
 		<Menu DockPanel.Dock="Top" Foreground="{DynamicResource ThemeForegroundBrush}" IsVisible="{Binding $parent[TopLevel].(NativeMenu.IsNativeMenuExported), Converter={StaticResource AvaloniaThemesDefaultNativeMenuBarInverseBooleanValueConverter}}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}">
 			<MenuItem Header="{DynamicResource File}">
-				<MenuItem Header="New..." Command="{Binding NewPackageCommand}"/>
+				<MenuItem Header="{DynamicResource New}" Command="{Binding NewPackageCommand}" InputGesture="Ctrl+N" HotKey="Ctrl+N"/>
+				<MenuItem Header="{DynamicResource Open}" InputGesture="Ctrl+O" HotKey="Ctrl+O"/>
                 <Separator/>
                 <MenuItem Header="{DynamicResource Settings}"/>
-				<MenuItem Header="{DynamicResource ExitFromRegul}" Command="{Binding ExitCommand}"/>
+				<MenuItem Header="{DynamicResource ExitFromRegul}" Command="{Binding ExitCommand}" InputGesture="Ctrl+Q" HotKey="Ctrl+Q"/>
 			</MenuItem>
 			<MenuItem Header="{DynamicResource Tools}">
 				<MenuItem Header="{DynamicResource TheSims3}">
@@ -28,8 +32,30 @@
 			</MenuItem>
 		</Menu>
 		<Grid ColumnDefinitions="*,*">
-			<TabControl Items="{Binding Tabs}" Grid.ColumnSpan="2"/>
+			<TabControl Items="{Binding Tabs}" Grid.ColumnSpan="2" ZIndex="1"/>
 			<Image Source="{DynamicResource RegulHoveredImage}" Margin="50"/>
+			<Grid RowDefinitions="Auto,*,Auto,Auto" Grid.Column="1" Margin="20">
+				<TextBlock Text="{DynamicResource RecentProjects}" Classes="Heading" Margin="0 0 0 5" HorizontalAlignment="Center" FontSize="16"/>
+                <ListBox Grid.Row="1" Classes="BottomNotCornerRadius" Background="{DynamicResource ThemeBackgroundBrush}" Items="{Binding Projects}" SelectedItem="{Binding SelectedProject}">
+					<ListBox.DataTemplates>
+						<DataTemplate>
+                            <TextBlock Text="{Binding ProjectName}"/>
+                        </DataTemplate>
+                    </ListBox.DataTemplates>
+                    <ListBox.ContextMenu>
+                        <ContextMenu IsVisible="{Binding SelectedProject, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <MenuItem Header="Delete" Command="{Binding DeleteProjectCommand}"/>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
+				<Button Grid.Row="2" Classes="TopNotCornerRadius" Content="Open project" IsEnabled="{Binding SelectedProject, Converter={x:Static ObjectConverters.IsNotNull}}" BorderThickness="1 0 1 1"/>
+				<StackPanel Grid.Row="3" Spacing="5" Margin="0 5 0 0">
+					<TextBlock Text="{DynamicResource Welcome}" HorizontalAlignment="Center"/>
+                    <TextBox Margin="0 0 0 5" Text="{Binding CreatorName}" Watermark="{DynamicResource CreatorName}" FontWeight="Bold" HorizontalContentAlignment="Center"/>
+                    <Button Content="{DynamicResource New}"/>
+					<Button Content="{DynamicResource Open}"/>
+                </StackPanel>
+            </Grid>
         </Grid>
 	</DockPanel>
 </Window>
