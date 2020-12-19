@@ -1,0 +1,29 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="300"
+        Height="300" Width="500"
+        x:Class="Regul.Views.Windows.Settings"
+        WindowStartupLocation="CenterOwner"
+        Icon="avares://Regul/icon.ico"
+        ShowInTaskbar="False"
+        Title="{DynamicResource Settings}">
+    <Grid RowDefinitions="*,50">
+        <StackPanel Spacing="5" Margin="5">
+            <DockPanel>
+                <TextBlock Text="{DynamicResource ThemeC}"/>
+                <ComboBox Margin="5 0 0 0" SelectedIndex="{Binding Theme}">
+                    <ComboBoxItem Content="{DynamicResource Dazzling}"/>
+                    <ComboBoxItem Content="{DynamicResource Gloomy}"/>
+                    <ComboBoxItem Content="{DynamicResource Mysterious}"/>
+                    <ComboBoxItem Content="{DynamicResource Turquoise}"/>
+                    <ComboBoxItem Content="{DynamicResource Emerald}"/>
+                </ComboBox>
+            </DockPanel>
+        </StackPanel>
+        <Border Classes="Panel" Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}">
+            <Button Margin="10" Content="{DynamicResource Close}" Command="{Binding CloseWindow}" HorizontalAlignment="Right"/>
+        </Border>
+    </Grid>
+</Window>

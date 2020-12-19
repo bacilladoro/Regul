@@ -16,7 +16,7 @@ namespace Regul.Views
             Closed +=OnClosed;
         }
 
-        private void OnClosed(object? sender, EventArgs e)
+        private void OnClosed(object sender, EventArgs e)
         {
             App.MainWindowViewModel.Exit();
         }

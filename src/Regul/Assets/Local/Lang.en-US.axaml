@@ -12,10 +12,24 @@
 		<v:String x:Key="ExitFromRegul">Exit from Regul</v:String>
 		<v:String x:Key="TheSims3">The Sims 3</v:String>
 		<v:String x:Key="SaveClear">Save clear</v:String>
+		<v:String x:Key="Close">Close</v:String>
 
 		<v:String x:Key="CreatorName">Creator name</v:String>
 		<v:String x:Key="Welcome">Welcome!</v:String>
 		<v:String x:Key="RecentProjects">Recent projects</v:String>
+
+		<v:String x:Key="ThemeC">Theme:</v:String>
+
+        <v:String x:Key="Dazzling">Dazzling</v:String>
+        <v:String x:Key="Gloomy">Gloomy</v:String>
+        <v:String x:Key="Mysterious">Mysterious</v:String>
+        <v:String x:Key="Turquoise">Turquoise</v:String>
+        <v:String x:Key="Emerald">Emerald</v:String>
+
+		<v:String x:Key="VersionC">Version:</v:String>
+		<v:String x:Key="LicenseC">License:</v:String>
+		<v:String x:Key="RegulDescription">Regul - a unified editor for package files for games from Maxis, written in C#, running on Avalonia and .NET 5.</v:String>
+		<v:String x:Key="LibrariesUsedC">Libraries used:</v:String>
 		
 		<v:String x:Key="Cut">Cut</v:String>
 		<v:String x:Key="Paste">Paste</v:String>

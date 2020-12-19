@@ -19,7 +19,7 @@
 				<MenuItem Header="{DynamicResource New}" Command="{Binding NewPackageCommand}" InputGesture="Ctrl+N" HotKey="Ctrl+N"/>
 				<MenuItem Header="{DynamicResource Open}" InputGesture="Ctrl+O" HotKey="Ctrl+O"/>
                 <Separator/>
-                <MenuItem Header="{DynamicResource Settings}"/>
+                <MenuItem Header="{DynamicResource Settings}" Command="{Binding SettingsWindowCommand}"/>
 				<MenuItem Header="{DynamicResource ExitFromRegul}" Command="{Binding ExitCommand}" InputGesture="Ctrl+Q" HotKey="Ctrl+Q"/>
 			</MenuItem>
 			<MenuItem Header="{DynamicResource Tools}">
@@ -28,7 +28,7 @@
 				</MenuItem>
 			</MenuItem>
 			<MenuItem Header="{DynamicResource Reference}">
-				<MenuItem Header="{DynamicResource AboutTheProgram}"/>
+				<MenuItem Header="{DynamicResource AboutTheProgram}" Command="{Binding AboutWindowCommand}"/>
 			</MenuItem>
 		</Menu>
 		<Grid ColumnDefinitions="*,*">

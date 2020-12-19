@@ -5,7 +5,9 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml.Styling;
 using Regul.Core;
 using Regul.Structures;
 using Regul.ViewModels.Controls.Tab;
@@ -56,6 +58,8 @@ namespace Regul.ViewModels
         private ReactiveCommand<Unit, Unit> NewPackageCommand { get; }
         private ReactiveCommand<Unit, Unit> ClearGCCommand { get; }
         private ReactiveCommand<Unit, Unit> DeleteProjectCommand { get; }
+        private ReactiveCommand<Unit, Unit> SettingsWindowCommand { get; }
+        private ReactiveCommand<Unit, Unit> AboutWindowCommand { get; }
 
         #endregion
 
@@ -66,12 +70,24 @@ namespace Regul.ViewModels
             NewPackageCommand = ReactiveCommand.Create(NewPackage);
             ClearGCCommand = ReactiveCommand.Create(ClearGC);
             DeleteProjectCommand = ReactiveCommand.Create(DeleteProject);
+            SettingsWindowCommand = ReactiveCommand.Create(SettingsWindow);
+            AboutWindowCommand = ReactiveCommand.Create(AboutWindow);
 
             Initialize();
         }
 
         private void Initialize()
         {
+            Application.Current.Styles[2] = !string.IsNullOrEmpty(Program.Settings.Theme)
+                ? new StyleInclude(new Uri("resm:Styles?assembly=Regul"))
+                {
+                    Source = new Uri($"avares://Regul/Assets/Themes/{Program.Settings.Theme}.axaml")
+                }
+                : new StyleInclude(new Uri("resm:Styles?assembly=Regul"))
+                {
+                    Source = new Uri("avares://Regul/Assets/Themes/Dazzling.axaml")
+                };
+            
             CreatorName = Program.Settings.CreatorName;
             Projects = new ObservableCollection<Project>(Program.Settings.Projects);
         }
@@ -80,6 +96,16 @@ namespace Regul.ViewModels
         {
             App.SaveClear = new SaveClear{ DataContext = new SaveClearViewModel() };
             App.SaveClear.ShowDialog(App.MainWindow);
+        }
+        private void SettingsWindow()
+        {
+            App.Settings = new Views.Windows.Settings {DataContext = new SettingsViewModel()};
+            App.Settings.ShowDialog(App.MainWindow);
+        }
+        private void AboutWindow()
+        {
+            App.About = new About {DataContext = new AboutViewModel()};
+            App.About.ShowDialog(App.MainWindow);
         }
 
         public void Exit()
@@ -99,8 +125,8 @@ namespace Regul.ViewModels
         {
             for (int i = 0; i < Tabs.Count; i++)
             {
-                TabHeaderViewModel item = ((TabHeader)Tabs[i].Header).ViewModel;
-                if (item.ID == id)
+                TabHeaderViewModel item = ((TabHeader)Tabs[i].Header)?.ViewModel;
+                if (item?.ID == id)
                 {
                     Tabs.RemoveAt(i);
                     break;
