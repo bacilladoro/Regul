@@ -18,10 +18,17 @@
 			<MenuItem Header="{DynamicResource File}">
 				<MenuItem Header="{DynamicResource New}" Command="{Binding NewPackageCommand}" InputGesture="Ctrl+N" HotKey="Ctrl+N"/>
 				<MenuItem Header="{DynamicResource Open}" InputGesture="Ctrl+O" HotKey="Ctrl+O"/>
+				<MenuItem Header="Save" InputGesture="Ctrl+S" HotKey="Ctrl+S" IsEnabled="{Binding IsNotNull}"/>
                 <Separator/>
                 <MenuItem Header="{DynamicResource Settings}" Command="{Binding SettingsWindowCommand}"/>
 				<MenuItem Header="{DynamicResource ExitFromRegul}" Command="{Binding ExitCommand}" InputGesture="Ctrl+Q" HotKey="Ctrl+Q"/>
 			</MenuItem>
+			<MenuItem Header="Edit" IsVisible="{Binding IsNotNull}" IsEnabled="{Binding IsNotNull}">
+
+            </MenuItem>
+			<MenuItem Header="Package" IsVisible="{Binding IsNotNull}" IsEnabled="{Binding IsNotNull}">
+
+            </MenuItem>
 			<MenuItem Header="{DynamicResource Tools}">
 				<MenuItem Header="{DynamicResource TheSims3}">
 					<MenuItem Header="{DynamicResource SaveClear}" Command="{Binding SaveClearWindowCommand}"/>
@@ -32,7 +39,8 @@
 			</MenuItem>
 		</Menu>
 		<Grid ColumnDefinitions="*,*">
-			<TabControl Items="{Binding Tabs}" Grid.ColumnSpan="2" ZIndex="1"/>
+			<TabControl Items="{Binding Tabs}" Grid.ColumnSpan="2" ZIndex="1" SelectedItem="{Binding SelectedTabItem, Mode=TwoWay}"/>
+
 			<Image Source="{DynamicResource RegulHoveredImage}" Margin="50"/>
 			<Grid RowDefinitions="Auto,*,Auto,Auto" Grid.Column="1" Margin="20">
 				<TextBlock Text="{DynamicResource RecentProjects}" Classes="Heading" Margin="0 0 0 5" HorizontalAlignment="Center" FontSize="16"/>

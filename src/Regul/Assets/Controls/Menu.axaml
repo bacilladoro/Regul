@@ -43,7 +43,7 @@
 				</ControlTemplate>
 			</Setter>
 		</Style>
-		<Style Selector="MenuItem > MenuItem">
+    <Style Selector="MenuItem > MenuItem">
 			<Setter Property="RenderTransform" Value="none"/>
 			<Setter Property="Transitions">
 				<Transitions>

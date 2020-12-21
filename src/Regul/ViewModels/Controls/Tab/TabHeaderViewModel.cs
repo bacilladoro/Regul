@@ -6,9 +6,11 @@ namespace Regul.ViewModels.Controls.Tab
     public class TabHeaderViewModel : ReactiveObject
     {
         private string _nameTab;
+        private bool _isSave;
         
         public string ID { get; set; }
-        public int PackageType { get; set; }
+        public string PathPackage { get; set; }
+        public int PackageType { get; set; } 
 
         public Action<string> CloseTabAction;
         
@@ -16,6 +18,12 @@ namespace Regul.ViewModels.Controls.Tab
         {
             get => _nameTab;
             set => this.RaiseAndSetIfChanged(ref _nameTab, value);
+        }
+
+        public bool IsSave
+        {
+            get => _isSave;
+            set => this.RaiseAndSetIfChanged(ref _isSave, value);
         }
 
         private void CloseTab() => CloseTabAction?.Invoke(ID);

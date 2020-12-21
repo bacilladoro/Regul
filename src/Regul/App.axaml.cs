@@ -16,6 +16,7 @@ namespace Regul
         public static Settings Settings { get; set; }
         public static SaveClear SaveClear { get; set; }
         public static About About { get; set; }
+        public static SelectType SelectType { get; set; }
 
         public override void Initialize()
         {

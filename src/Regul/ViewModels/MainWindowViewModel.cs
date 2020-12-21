@@ -11,6 +11,7 @@ using Avalonia.Markup.Xaml.Styling;
 using Regul.Core;
 using Regul.Structures;
 using Regul.ViewModels.Controls.Tab;
+using Regul.Views.Controls.ContentTab;
 using Regul.Views.Controls.Tab;
 
 namespace Regul.ViewModels
@@ -21,6 +22,8 @@ namespace Regul.ViewModels
         private ObservableCollection<Project> _projects = new();
 
         private string _creatorName;
+        private bool _isNotNull;
+        private TabItem _selecetedTabItem;
 
         private Project _selectedProject;
 
@@ -31,6 +34,7 @@ namespace Regul.ViewModels
             get => _tabs;
             set => this.RaiseAndSetIfChanged(ref _tabs, value);
         }
+
         public ObservableCollection<Project> Projects
         {
             get => _projects;
@@ -47,6 +51,22 @@ namespace Regul.ViewModels
         {
             get => _selectedProject;
             set => this.RaiseAndSetIfChanged(ref _selectedProject, value);
+        }
+
+        public bool IsNotNull
+        {
+            get => _isNotNull;
+            set => this.RaiseAndSetIfChanged(ref _isNotNull, value);
+        }
+
+        public TabItem SelectedTabItem
+        {
+            get => _selecetedTabItem;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _selecetedTabItem, value);
+                IsNotNull = !Tabs.Any();
+            }
         }
 
         #endregion
@@ -99,7 +119,7 @@ namespace Regul.ViewModels
         }
         private void SettingsWindow()
         {
-            App.Settings = new Views.Windows.Settings {DataContext = new SettingsViewModel()};
+            App.Settings = new Views.Windows.Settings { DataContext = new SettingsViewModel() };
             App.Settings.ShowDialog(App.MainWindow);
         }
         private void AboutWindow()
@@ -116,9 +136,29 @@ namespace Regul.ViewModels
             FileSettings.SaveSettings();
         }
 
-        private void NewPackage()
+        private async void NewPackage()
         {
-            Tabs.Add(new TabItem { Header = new TabHeader { ViewModel = { NameTab = "dsafdasf", CloseTabAction = CloseTab, ID = Guid.NewGuid().ToString("N")}}});
+            App.SelectType = new SelectType { DataContext = new SelectTypeViewModel() };
+            if (await App.SelectType.ShowDialog<bool>(App.MainWindow))
+            {
+                Tabs.Add(new TabItem
+                {
+                    Header = new TabHeader
+                    {
+                        ViewModel =
+                        {
+                            NameTab = (string)Application.Current.FindResource("NoName"), 
+                            CloseTabAction = CloseTab, 
+                            ID = Guid.NewGuid().ToString("N"),
+                            PackageType = ((SelectTypeViewModel)App.SelectType.DataContext).Type
+                        }
+                    },
+                    Content = ((SelectTypeViewModel)App.SelectType.DataContext).Type switch
+                    {
+                        _ => new TheSims3TypeContent()
+                    }
+                });
+            }
         }
 
         private void CloseTab(string id)

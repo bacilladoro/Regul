@@ -64,5 +64,10 @@
 		<v:String x:Key="ProcessingCompressingSave">Compressing save...</v:String>
 		<v:String x:Key="ProcessingClearingSave">Clearing save...</v:String>
 		<v:String x:Key="ProcessingSavingSave">Saving save...</v:String>
+
+		<v:String x:Key="PackageType">Package type</v:String>
+        <v:String x:Key="PackageTypeC">Package type:</v:String>
+
+		<v:String x:Key="NoName">No name</v:String>
 	</Style.Resources>
 </Style>
