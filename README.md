@@ -1,5 +1,6 @@
 ![](https://github.com/Onebeld/Regul/blob/main/.github/images/logo.png)
 # Regul
+![](https://github.com/Onebeld/Regul/blob/main/.github/images/program.png)
 **Regul** - a unified editor for package files for games from Maxis, written in C#, running on Avalonia and .NET 5. The goal of this program is to be cross-platform, simple and versatile.
 
 ### Libraries used

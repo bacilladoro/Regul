@@ -9,6 +9,9 @@
 		<StyleInclude Source="/Assets/Images.axaml"/>
 		<StyleInclude Source="/Assets/Local/Lang.en-US.axaml"/>
 		
+		<StyleInclude Source="avares://Regul.OlibStyle/Controls/OlibMainWindow.axaml"/>
+		<StyleInclude Source="avares://Regul.OlibStyle/Controls/OlibModalWindow.axaml"/>
+		
 		<StyleInclude Source="/Assets/Controls/Button.axaml"/>
 		<StyleInclude Source="/Assets/Controls/Menu.axaml"/>
 		<StyleInclude Source="/Assets/Controls/TextBox.axaml"/>

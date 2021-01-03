@@ -3,11 +3,12 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
+using Regul.OlibStyle;
 using Regul.ViewModels;
 
 namespace Regul.Views
 {
-    public class MainWindow : ReactiveWindow<MainWindowViewModel>
+    public class MainWindow : OlibMainWindow
     {
         public MainWindow()
         {

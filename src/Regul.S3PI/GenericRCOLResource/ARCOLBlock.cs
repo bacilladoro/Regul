@@ -122,7 +122,7 @@ namespace Regul.S3PI.Interfaces
         {
             get
             {
-                if (dirty || Regul.S3PI.Settings.Settings.AsBytesWorkaround)
+                if (dirty || Settings.Settings.AsBytesWorkaround)
                 {
                     stream = UnParse();
                     dirty = false;
@@ -141,8 +141,7 @@ namespace Regul.S3PI.Interfaces
         {
             get
             {
-                MemoryStream s = this.Stream as MemoryStream;
-                if (s != null) return s.ToArray();
+                if (Stream is MemoryStream s) return s.ToArray();
 
                 stream.Position = 0;
                 return (new BinaryReader(stream)).ReadBytes((int)stream.Length);
@@ -167,7 +166,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="other">Another instance to compare with this <see cref="ARCOLBlock"/>.</param>
         /// <returns><c>true</c> if the current <see cref="ARCOLBlock"/> is equal to the <paramref name="other"/> parameter;
         /// otherwise, <c>false</c>.</returns>
-        public virtual bool Equals(ARCOLBlock other) { return this.AsBytes.Equals(other.AsBytes); }
+        public virtual bool Equals(ARCOLBlock other) => AsBytes.Equals(other?.AsBytes);
 
         /// <summary>
         /// Indicates whether the current <see cref="ARCOLBlock"/> is equal to another object of the same type.
@@ -175,13 +174,14 @@ namespace Regul.S3PI.Interfaces
         /// <param name="obj">An object to compare with this <see cref="ARCOLBlock"/>.</param>
         /// <returns><c>true</c> if the current <see cref="ARCOLBlock"/> is equal to the <paramref name="obj"/> parameter;
         /// otherwise, <c>false</c>.</returns>
-        public override bool Equals(object obj) { return obj as ARCOLBlock != null && this.Equals(obj as ARCOLBlock); }
+        public override bool Equals(object obj) => obj is ARCOLBlock && Equals((ARCOLBlock) obj);
 
         /// <summary>
         /// Serves as a hash function for an <see cref="ARCOLBlock"/>.
         /// </summary>
         /// <returns>A hash code for the current <see cref="ARCOLBlock"/>.</returns>
-        public override int GetHashCode() { return AsBytes.GetHashCode(); }
+        public override int GetHashCode() => AsBytes.GetHashCode();
+
         #endregion
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace Regul.S3PI.Interfaces
         [ElementPriority(1)]
         public virtual BinaryReader Data
         {
-            get { return new(UnParse()); }
+            get => new(UnParse());
             set
             {
                 if (value.BaseStream.CanSeek) { value.BaseStream.Position = 0; Parse(value.BaseStream); }

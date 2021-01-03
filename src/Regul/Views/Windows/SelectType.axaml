@@ -1,15 +1,18 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="100"
-        Width="350" Height="100"
-        x:Class="Regul.Views.Windows.SelectType"
-        WindowStartupLocation="CenterOwner"
-        Icon="avares://Regul/icon.ico"
-        ShowInTaskbar="False"
-        CanResize="False"
-        Title="{StaticResource PackageType}">
+﻿<olib:OlibModalWindow xmlns="https://github.com/avaloniaui"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		              xmlns:olib="clr-namespace:Regul.OlibStyle;assembly=Regul.OlibStyle"
+                      mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="100"
+                      Width="350" Height="130"
+                      x:Class="Regul.Views.Windows.SelectType"
+                      WindowStartupLocation="CenterOwner"
+					  HasSystemDecorations="False"
+                      Icon="avares://Regul/icon.ico"
+                      ShowInTaskbar="False"
+                      CanResize="False"
+					  Background="{StaticResource ThemeBackgroundBrush}"
+                      Title="{StaticResource PackageType}">
     <Grid RowDefinitions="*,50">
         <DockPanel VerticalAlignment="Center" Margin="10">
             <TextBlock Text="{StaticResource PackageTypeC}" Margin="0 0 5 0"/>
@@ -17,8 +20,8 @@
                 <ComboBoxItem Content="{StaticResource TheSims3}"/>
             </ComboBox>
         </DockPanel>
-        <Border Classes="Panel" Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}">
+        <Border Classes="Panel" Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.3 4.3">
             <Button Content="{DynamicResource OK}" Command="{Binding Exit}" HorizontalAlignment="Right" Margin="10"/>
         </Border>
     </Grid>
-</Window>
+</olib:OlibModalWindow>

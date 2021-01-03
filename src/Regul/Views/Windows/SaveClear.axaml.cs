@@ -1,10 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Regul.OlibStyle;
 
 namespace Regul.Views.Windows
 {
-    public class SaveClear : Window
+    public class SaveClear : OlibModalWindow
     {
         public SaveClear()
         {

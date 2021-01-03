@@ -51,7 +51,7 @@ namespace Regul.S3PI.DefaultResource
         /// </summary>
         public DefaultResourceHandler()
         {
-            this.Add(typeof(DefaultResource), new List<string>(new string[] { "*" }));
+            Add(typeof(DefaultResource), new List<string>(new string[] { "*" }));
         }
     }
 }

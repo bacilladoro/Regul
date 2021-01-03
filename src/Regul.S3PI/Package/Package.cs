@@ -56,7 +56,9 @@ namespace Regul.S3PI.Package
                 w.Flush();
                 r.Close();
             }
-            finally { File.Delete(tmpfile);
+            finally
+            {
+                File.Delete(tmpfile);
                 fs?.Unlock(0, header.Length);
             }
 
@@ -83,15 +85,16 @@ namespace Regul.S3PI.Package
             List<uint> lT = new List<uint>();
             List<uint> lG = new List<uint>();
             List<uint> lIh = new List<uint>();
-            this.Index.ForEach(x =>
+
+            for (var i = 0; i < Index.Count; i++)
             {
+                IResourceIndexEntry x = Index[i];
                 if (!lT.Contains(x.ResourceType)) lT.Add(x.ResourceType);
                 if (!lG.Contains(x.ResourceGroup)) lG.Add(x.ResourceGroup);
                 if (!lIh.Contains((uint)(x.Instance >> 32))) lIh.Add((uint)(x.Instance >> 32));
-            });
+            }
 
             uint indexType = (uint)(lIh.Count <= 1 ? 0x04 : 0x00) | (uint)(lG.Count <= 1 ? 0x02 : 0x00) | (uint)(lT.Count <= 1 ? 0x01 : 0x00);
-
 
             PackageIndex newIndex = new PackageIndex(indexType);
             for (var i = 0; i < this.Index.Count; i++)
@@ -100,17 +103,17 @@ namespace Regul.S3PI.Package
                 if (ie.IsDeleted) continue;
 
                 ResourceIndexEntry newIE = (ie as ResourceIndexEntry)?.Clone();
-                ((List<IResourceIndexEntry>) newIndex).Add(newIE);
+                ((List<IResourceIndexEntry>)newIndex).Add(newIE);
                 byte[] value = packedChunk(ie as ResourceIndexEntry);
 
-                newIE.Chunkoffset = (uint) s.Position;
+                newIE.Chunkoffset = (uint)s.Position;
                 w.Write(value);
                 w.Flush();
 
                 if (value.Length < newIE.Memsize)
                 {
                     newIE.Compressed = 0xffff;
-                    newIE.Filesize = (uint) value.Length;
+                    newIE.Filesize = (uint)value.Length;
                 }
                 else
                 {
@@ -147,10 +150,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         /// <param name="APIversion">(unused)</param>
         /// <returns>IPackage reference to an empty package</returns>
-        public new static IPackage NewPackage(int APIversion)
-        {
-            return new Package(APIversion);
-        }
+        public new static IPackage NewPackage(int APIversion) => new Package(APIversion);
 
         /// <summary>
         /// Initialise a new, empty package and return the IPackage reference
@@ -158,10 +158,7 @@ namespace Regul.S3PI.Package
         /// <param name="APIversion">(unused)</param>
         /// <param name="major">Major version for the DBPF package.</param>
         /// <returns>IPackage reference to an empty package</returns>
-        public new static IPackage NewPackage(int APIversion, int major)
-        {
-            return new Package(APIversion, major);
-        }
+        public new static IPackage NewPackage(int APIversion, int major) => new Package(APIversion, major);
 
         /// <summary>
         /// Open an existing package by filename, read only
@@ -215,10 +212,7 @@ namespace Regul.S3PI.Package
         /// such as when access is ReadWrite and the file or directory is set for read-only access.
         /// </exception>
         /// <exception cref="InvalidDataException">Thrown if the package header is malformed.</exception>
-        public new static IPackage OpenPackage(int APIversion, string packagePath, bool readwrite)
-        {
-            return new Package(APIversion, new FileStream(packagePath, FileMode.Open, readwrite ? FileAccess.ReadWrite : FileAccess.Read, FileShare.ReadWrite));
-        }
+        public new static IPackage OpenPackage(int APIversion, string packagePath, bool readwrite) => new Package(APIversion, new FileStream(packagePath, FileMode.Open, readwrite ? FileAccess.ReadWrite : FileAccess.Read, FileShare.ReadWrite));
 
         /// <summary>
         /// Releases any internal references associated with the given package
@@ -227,8 +221,7 @@ namespace Regul.S3PI.Package
         /// <param name="pkg">IPackage reference to close</param>
         public new static void ClosePackage(int APIversion, IPackage pkg)
         {
-            Package p = pkg as Package;
-            if (p == null) return;
+            if (!(pkg is Package p)) return;
             if (p.packageStream != null) { try { p.packageStream.Close(); } catch { } p.packageStream = null; }
             p.header = null;
             p.index = null;
@@ -304,7 +297,7 @@ namespace Regul.S3PI.Package
         /// Package index: the index format in use
         /// </summary>
         [ElementPriority(13)]
-        public override uint Indextype { get { return (GetResourceList as PackageIndex).Indextype; } }
+        public override uint Indextype { get { return ((PackageIndex)GetResourceList).Indextype; } }
 
         /// <summary>
         /// Package index: the index
@@ -420,7 +413,7 @@ namespace Regul.S3PI.Package
         {
             if (rejectDups && Index[rk] != null && !Index[rk].IsDeleted) return null;
             IResourceIndexEntry newrc = Index.Add(rk);
-            if (stream != null) (newrc as ResourceIndexEntry).ResourceStream = stream;
+            if (stream != null) ((ResourceIndexEntry)newrc).ResourceStream = stream;
 
             return newrc;
         }
@@ -430,7 +423,7 @@ namespace Regul.S3PI.Package
         /// </summary>
         /// <param name="rc">Target resource index</param>
         /// <param name="res">Source resource</param>
-        public override void ReplaceResource(IResourceIndexEntry rc, IResource res) { (rc as ResourceIndexEntry).ResourceStream = res.Stream; }
+        public override void ReplaceResource(IResourceIndexEntry rc, IResource res) { ((ResourceIndexEntry)rc).ResourceStream = res.Stream; }
         /// <summary>
         /// Tell the package to delete the resource indexed by <paramref name="rc"/>
         /// </summary>
@@ -438,44 +431,44 @@ namespace Regul.S3PI.Package
         public override void DeleteResource(IResourceIndexEntry rc)
         {
             if (!rc.IsDeleted)
-                (rc as ResourceIndexEntry).Delete();
+                (rc as ResourceIndexEntry)?.Delete();
         }
         #endregion
         #endregion
 
 
         #region Package implementation
-        Stream packageStream = null;
+        Stream packageStream;
 
         private Package(int requestedVersion, int major = 2)
         {
             if (!majors.Contains(major))
                 throw new InvalidDataException("Expected major version(s) '" + string.Join(", ", majors) + "'.  Found '" + major.ToString() + "'.");
-            
-            this.requestedApiVersion = requestedVersion;
+
+            requestedApiVersion = requestedVersion;
             header = new byte[96];
 
             BinaryWriter bw = new BinaryWriter(new MemoryStream(header));
             bw.Write(stringToBytes(magic));
             bw.Write(major);
             bw.Write(minor);
-            setIndexsize(bw, (new PackageIndex()).Size);
+            setIndexsize(bw, new PackageIndex().Size);
             setIndexversion(bw);
             setIndexposition(bw, header.Length);
         }
 
         private Package(int requestedVersion, Stream s)
         {
-            this.requestedApiVersion = requestedVersion;
+            requestedApiVersion = requestedVersion;
             packageStream = s;
             s.Position = 0;
-            header = (new BinaryReader(s)).ReadBytes(header.Length);
+            header = new BinaryReader(s).ReadBytes(header.Length);
             if (checking) CheckHeader();
         }
 
         private byte[] packedChunk(ResourceIndexEntry ie)
         {
-            byte[] chunk = null;
+            byte[] chunk;
             if (ie.IsDirty)
             {
                 Stream res = GetResource(ie);
@@ -484,8 +477,8 @@ namespace Regul.S3PI.Package
                 res.Position = 0;
                 chunk = r.ReadBytes((int)ie.Memsize);
                 if (checking) if (chunk.Length != (int)ie.Memsize)
-                        throw new OverflowException(string.Format("packedChunk, dirty resource - T: 0x{0:X}, G: 0x{1:X}, I: 0x{2:X}: Length expected: 0x{3:X}, read: 0x{4:X}",
-                            ie.ResourceType, ie.ResourceGroup, ie.Instance, ie.Memsize, chunk.Length));
+                        throw new OverflowException(
+                            $"packedChunk, dirty resource - T: 0x{ie.ResourceType:X}, G: 0x{ie.ResourceGroup:X}, I: 0x{ie.Instance:X}: Length expected: 0x{ie.Memsize:X}, read: 0x{chunk.Length:X}");
 
                 byte[] comp = ie.Compressed != 0 ? Compression.CompressStream(chunk) : chunk;
                 if (comp.Length < chunk.Length)
@@ -494,21 +487,33 @@ namespace Regul.S3PI.Package
             else
             {
                 if (checking) if (packageStream == null)
-                        throw new InvalidOperationException(string.Format("Clean resource with undefined \"current package\" - T: 0x{0:X}, G: 0x{1:X}, I: 0x{2:X}",
-                            ie.ResourceType, ie.ResourceGroup, ie.Instance));
+                        throw new InvalidOperationException(
+                            $"Clean resource with undefined \"current package\" - T: 0x{ie.ResourceType:X}, G: 0x{ie.ResourceGroup:X}, I: 0x{ie.Instance:X}");
                 packageStream.Position = ie.Chunkoffset;
                 chunk = (new BinaryReader(packageStream)).ReadBytes((int)ie.Filesize);
                 if (checking) if (chunk.Length != (int)ie.Filesize)
-                        throw new OverflowException(string.Format("packedChunk, clean resource - T: 0x{0:X}, G: 0x{1:X}, I: 0x{2:X}: Length expected: 0x{3:X}, read: 0x{4:X}",
-                            ie.ResourceType, ie.ResourceGroup, ie.Instance, ie.Filesize, chunk.Length));
+                        throw new OverflowException(
+                            $"packedChunk, clean resource - T: 0x{ie.ResourceType:X}, G: 0x{ie.ResourceGroup:X}, I: 0x{ie.Instance:X}: Length expected: 0x{ie.Filesize:X}, read: 0x{chunk.Length:X}");
             }
             return chunk;
         }
         #endregion
 
         #region Header implementation
-        static byte[] stringToBytes(string s) { byte[] bytes = new byte[s.Length]; int i = 0; foreach (char c in s) bytes[i++] = (byte)c; return bytes; }
-        static string bytesToString(byte[] bytes) { string s = ""; foreach (byte b in bytes) s += (char)b; return s; }
+        static byte[] stringToBytes(string s)
+        {
+            byte[] bytes = new byte[s.Length]; int i = 0;
+            for (var index1 = 0; index1 < s.Length; index1++) bytes[i++] = (byte) s[index1];
+
+            return bytes;
+        }
+        static string bytesToString(byte[] bytes)
+        {
+            string s = "";
+            for (var i = 0; i < bytes.Length; i++) s += (char) bytes[i];
+
+            return s;
+        }
 
         const string magic = "DBPF";
         static int[] majors = { 2, 3 };
@@ -519,7 +524,7 @@ namespace Regul.S3PI.Package
         void setIndexcount(BinaryWriter w, int c) { w.BaseStream.Position = 36; w.Write(c); }
         void setIndexsize(BinaryWriter w, int c) { w.BaseStream.Position = 44; w.Write(c); }
         void setIndexversion(BinaryWriter w) { w.BaseStream.Position = 60; w.Write(3); }
-        void setIndexposition(BinaryWriter w, int c) { w.BaseStream.Position = 40; w.Write((int)0); w.BaseStream.Position = 64; w.Write(c); }
+        void setIndexposition(BinaryWriter w, int c) { w.BaseStream.Position = 40; w.Write(0); w.BaseStream.Position = 64; w.Write(c); }
 
         void CheckHeader()
         {
@@ -530,7 +535,7 @@ namespace Regul.S3PI.Package
                 throw new InvalidDataException("Expected magic tag '" + magic + "'.  Found '" + bytesToString(Magic) + "'.");
 
             if (!majors.Contains(Major))
-                throw new InvalidDataException("Expected major version(s) '" + string.Join(", ", majors) + "'.  Found '" + Major.ToString() + "'.");
+                throw new InvalidDataException("Expected major version(s) '" + string.Join(", ", majors) + "'.  Found '" + Major + "'.");
 
             if (Minor != minor)
                 throw new InvalidDataException("Expected minor version '" + minor + "'.  Found '" + Minor.ToString() + "'.");
@@ -538,7 +543,7 @@ namespace Regul.S3PI.Package
         #endregion
 
         #region Index implementation
-        PackageIndex index = null;
+        PackageIndex index;
         private PackageIndex Index
         {
             get
@@ -572,11 +577,11 @@ namespace Regul.S3PI.Package
             if (rc.Chunkoffset == 0xffffffff) return null;
             packageStream.Position = rc.Chunkoffset;
 
-            byte[] data = null;
+            byte[] data;
             if (rc.Filesize == 1 && rc.Memsize == 0xFFFFFFFF) return null;//{ data = new byte[0]; }
             else if (rc.Filesize == rc.Memsize)
             {
-                data = (new BinaryReader(packageStream)).ReadBytes((int)rc.Filesize);
+                data = new BinaryReader(packageStream).ReadBytes((int)rc.Filesize);
             }
             else
             {

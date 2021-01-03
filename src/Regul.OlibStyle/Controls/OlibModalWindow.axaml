@@ -1,0 +1,169 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:local="clr-namespace:Regul.OlibStyle;assembly=Regul.OlibStyle">
+	<Styles.Resources>
+		<local:WindowIconToImageConverter x:Key="WindowIconToImageConverter"/>
+	</Styles.Resources>
+
+	<Style Selector="local|OlibModalWindow">
+		<Setter Property="BorderBrush" Value="{DynamicResource ThemeGlobalBorderBrush}"/>
+		<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+		<Setter Property="FontSize" Value="{DynamicResource FontSizeNormal}"/>
+		<Setter Property="TransparencyLevelHint" Value="Transparent"/>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid>
+					<Border Classes="OuterBorder" CornerRadius="5">
+						<DockPanel>
+							<Border DockPanel.Dock="Top" Background="{DynamicResource ThemePanelBackgroundBrush}" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" BorderThickness="0 0 0 1" CornerRadius="4.5 4.5 0 0">
+								<Grid
+								  Height="30"
+								  ColumnDefinitions="Auto,*,Auto">
+									<Border Name="TitleBar" ZIndex="-5" Grid.ColumnSpan="2" Background="{DynamicResource ThemePanelBackgroundBrush}" CornerRadius="5 5 0 0"/>
+									<StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+										<Image Classes="IconImage" Source="{Binding Icon, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource WindowIconToImageConverter}}" MaxWidth="16" MaxHeight="16"/>
+										<TextBlock Name="TitleTextBlock" VerticalAlignment="Center" Text="{TemplateBinding Title}"/>
+									</StackPanel>
+									<StackPanel
+										Grid.Column="2"
+										Orientation="Horizontal">
+										<StackPanel.Styles>
+											<Style Selector="Button">
+												<Setter Property="Width" Value="45" />
+												<Setter Property="Height" Value="30" />
+											</Style>
+											<Style Selector="Button > Path">
+												<Setter Property="Stroke" Value="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"/>
+												<Setter Property="StrokeThickness" Value="2"/>
+											</Style>
+											<Style Selector="Button:not(:pointerover):not(:pressed):disabled">
+												<Setter Property="Opacity" Value="{DynamicResource ThemeDisabledOpacity}" />
+											</Style>
+											<Style Selector="Button#MinimizeButton > Rectangle">
+												<Setter Property="Fill" Value="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"/>
+											</Style>
+											<Style Selector="Button#MaximizeButton Rectangle">
+												<Setter Property="Stroke" Value="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"/>
+												<Setter Property="StrokeThickness" Value="2"/>
+											</Style>
+											<Style Selector="Button#MaximizeButton > Grid > Grid Border">
+												<Setter Property="BorderBrush" Value="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"/>
+											</Style>
+											<Style Selector="local|OlibModalWindow[WindowState=Maximized] /template/ Button#MaximizeButton > Grid > Rectangle">
+												<Setter Property="IsVisible" Value="False"/>
+											</Style>
+											<Style Selector="local|OlibModalWindow[WindowState=Normal] /template/ Button#MaximizeButton > Grid > Grid">
+												<Setter Property="IsVisible" Value="False"/>
+											</Style>
+											<Style Selector="local|OlibModalWindow[WindowState=Minimized] /template/ Button#MaximizeButton > Grid > Grid">
+												<Setter Property="IsVisible" Value="False"/>
+											</Style>
+											<Style Selector="Button#MaximizeButton > Grid > Grid > Rectangle">
+												<Setter Property="Stroke" Value="Transparent"/>
+												<Setter Property="StrokeThickness" Value="0"/>
+												<Setter Property="Fill" Value="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"/>
+											</Style>
+											<Style Selector="local|OlibModalWindow[IsActive=false] /template/ Button:not(:pointerover):not(:pressed)">
+												<Setter Property="Opacity" Value="0.5"/>
+											</Style>
+										</StackPanel.Styles>
+										<Button Name="MinimizeButton" Classes="NoBorder">
+											<Rectangle Width="10" Height="2"/>
+										</Button>
+										<Button Name="MaximizeButton" Classes="NoBorder">
+											<Grid>
+												<Rectangle Width="10" Height="10"/>
+												<Grid Width="10" Height="10">
+													<Border BorderThickness="2" Width="7" Height="7" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+													<Grid Width="7" Height="7" HorizontalAlignment="Right" VerticalAlignment="Top">
+														<Border BorderThickness="0 2 2 0"/>
+														<Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" Width="2" Height="3"/>
+														<Rectangle HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="3" Height="2"/>
+													</Grid>
+												</Grid>
+											</Grid>
+										</Button>
+										<Button Name="CloseButton" Classes="NoBorder">
+											<Path Data="M 0 0 L 10 10 M 10 0 L 0 10"/>
+										</Button>
+									</StackPanel>
+								</Grid>
+							</Border>
+							<ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" Background="{TemplateBinding Background}" CornerRadius="0 0 4.3 4.3"/>
+						</DockPanel>
+					</Border>
+					<Grid Name="ResizeGrid" ColumnDefinitions="8,*,8" RowDefinitions="8,*,8">
+						<Border Name="TopLeft" ZIndex="1"/>
+						<Border
+							Name="TopRight"
+							ZIndex="1"
+							Grid.Column="2"/>
+						<Border
+							Name="BottomLeft"
+							Grid.Row="2"/>
+						<Border
+							Name="BottomRight"
+							Grid.Row="2"
+							Grid.Column="2"/>
+						<Border
+							Name="Top"
+							Grid.Column="1"/>
+						<Border
+							Name="Right_top"
+							Grid.Row="0"
+							Grid.Column="2"/>
+						<Border
+							Name="Right_mid"
+							Grid.Row="0"
+							Grid.Column="2"/>
+						<Border
+							Name="Right_bottom"
+							Grid.Row="1"
+							Grid.Column="2"/>
+						<Border
+							Name="Bottom"
+							Grid.Row="2"
+							Grid.Column="1"/>
+						<Border
+							Name="Left_top"
+							Grid.Row="0"/>
+						<Border
+							Name="Left_mid"
+							Grid.Row="0"/>
+						<Border
+							Name="Left_bottom"
+							Grid.Row="1"/>
+					</Grid>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+	<Style Selector="local|OlibModalWindow /template/ Image.IconImage:not(Image[Width=0])">
+		<Setter Property="Margin" Value="0,0,5,0"/>
+	</Style>
+	<Style Selector="local|OlibModalWindow[HasSystemDecorations=False] /template/ Border.OuterBorder">
+		<Setter Property="BorderBrush" Value="{DynamicResource ThemeGlobalBorderBrush}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+	</Style>
+	<Style Selector="local|OlibModalWindow[WindowState=Maximized] /template/ Border.OuterBorder">
+		<Setter Property="BorderThickness" Value="0"/>
+	</Style>
+	<Style Selector="local|OlibModalWindow[HasSystemDecorations=True] /template/ Grid#TitleBar">
+		<Setter Property="IsVisible" Value="False"/>
+	</Style>
+	<Style Selector="local|OlibModalWindow /template/ Grid#ResizeGrid Border">
+		<Setter Property="Background" Value="#01000000"/>
+	</Style>
+	<Style Selector="local|OlibModalWindow[WindowState=Maximized] /template/ Grid#ResizeGrid">
+		<Setter Property="IsVisible" Value="False"/>
+	</Style>
+	<Style Selector="local|OlibModalWindow[HasSystemDecorations=True] /template/ Grid#ResizeGrid">
+		<Setter Property="IsVisible" Value="False"/>
+	</Style>
+	<Style Selector="local|OlibModalWindow[IsActive=false]">
+		<Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMidBrush}"/>
+	</Style>
+	<Style Selector="local|OlibModalWindow[IsActive=false] /template/ ContentControl">
+		<Setter Property="Opacity" Value="0.5"/>
+	</Style>
+</Styles>

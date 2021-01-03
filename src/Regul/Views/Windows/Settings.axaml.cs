@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Regul.OlibStyle;
 using Regul.ViewModels.Windows;
 
 namespace Regul.Views.Windows
 {
-    public class Settings : Window
+    public class Settings : OlibModalWindow
     {
 
         public Settings()

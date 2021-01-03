@@ -3,11 +3,12 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Regul.OlibStyle;
 using System.Threading.Tasks;
 
 namespace Regul.Views
 {
-    public class MessageBox : Window
+    public class MessageBox : OlibModalWindow
     {
         public enum MessageBoxButtons
         {

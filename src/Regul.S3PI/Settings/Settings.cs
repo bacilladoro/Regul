@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Regul.S3PI.Settings
+﻿namespace Regul.S3PI.Settings
 {
     /// <summary>
     /// Holds global settings, currently statically defined

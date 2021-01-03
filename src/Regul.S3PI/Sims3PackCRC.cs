@@ -126,20 +126,14 @@
         /// <exception cref="System.ArgumentException"><paramref name="count"/> is an invalid value.  -or- <paramref name="buffer"/> length is invalid.</exception>
         /// <exception cref="System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="offset"/> is out of range. This parameter requires a non-negative number.</exception>
-        public static ulong CalculateCRC(byte[] buffer, int offset = 0, int count = -1)
-        {
-            return BitConverter.ToUInt64(new Sims3PackCRC().ComputeHash(buffer, offset, count == -1 ? buffer.Length : count), 0);
-        }
+        public static ulong CalculateCRC(byte[] buffer, int offset = 0, int count = -1) => BitConverter.ToUInt64(new Sims3PackCRC().ComputeHash(buffer, offset, count == -1 ? buffer.Length : count), 0);
 
         /// <summary>
         /// Calculate the CRC for the specified <see cref="System.IO.Stream"/>.
         /// </summary>
         /// <param name="stream">The input to calculate the CRC for.</param>
         /// <returns>CRC of <paramref name="stream"/>.</returns>
-        public static ulong CalculateCRC(System.IO.Stream stream)
-        {
-            return BitConverter.ToUInt64(new Sims3PackCRC().ComputeHash(stream), 0);
-        }
+        public static ulong CalculateCRC(System.IO.Stream stream) => BitConverter.ToUInt64(new Sims3PackCRC().ComputeHash(stream), 0);
 
         #region Helpers
         private static ulong SwapEndian(ulong value)

@@ -140,18 +140,14 @@ namespace Regul.S3PI.Package
         /// </summary>
         /// <param name="other">An <see cref="IResourceIndexEntry"/> instance to compare with this instance.</param>
         /// <returns>true if the current instance is equal to the <paramref name="other"/> parameter; otherwise, false.</returns>
-        public override bool Equals(IResourceIndexEntry other)
-        {
-            return other is ResourceIndexEntry && indexEntry.Equals(((ResourceIndexEntry) other).indexEntry);
-        }
+        public override bool Equals(IResourceIndexEntry other) => other is ResourceIndexEntry entry && indexEntry == entry.indexEntry;
+
         /// <summary>
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
-        {
-            return indexEntry.GetHashCode();
-        }
+        public override int GetHashCode() => indexEntry.GetHashCode();
+
         #endregion
 
 
@@ -159,18 +155,18 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// The index entry data
         /// </summary>
-        byte[] indexEntry = null;
+        byte[] indexEntry;
 
         /// <summary>
         /// True if the index entry should be treated as deleted
         /// </summary>
-        bool isDeleted = false;
+        bool isDeleted;
 
         /// <summary>
         /// The uncompressed resource data associated with this index entry
         /// (used to save having to uncompress the same entry again if it's requested more than once)
         /// </summary>
-        Stream resourceStream = null;
+        Stream resourceStream;
 
         /// <summary>
         /// Create a new index entry as a byte-for-byte copy of <paramref name="indexEntry"/>
@@ -209,7 +205,7 @@ namespace Regul.S3PI.Package
         /// Return a new index entry as a copy of this one
         /// </summary>
         /// <returns>A copy of this index entry</returns>
-        internal ResourceIndexEntry Clone() { return (ResourceIndexEntry)this.Clone(null); }
+        internal ResourceIndexEntry Clone() => (ResourceIndexEntry)Clone(null);
 
         /// <summary>
         /// Flag this index entry as deleted
@@ -217,8 +213,7 @@ namespace Regul.S3PI.Package
         /// <remarks>Use APackage.RemoveResource() from user code</remarks>
         internal void Delete()
         {
-            if (Settings.Settings.Checking) if (isDeleted)
-                    throw new InvalidOperationException("Index entry already deleted!");
+            if (Settings.Settings.Checking && isDeleted) throw new InvalidOperationException("Index entry already deleted!");
 
             isDeleted = true;
             OnElementChanged();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Regul.S3PI.Interfaces;
+using static System.String;
 
 namespace Regul.S3PI
 {
@@ -18,10 +19,7 @@ namespace Regul.S3PI
         /// <param name="APIversion">API version of request</param>
         /// <param name="resourceType">Type of resource (currently a string like "0xDEADBEEF")</param>
         /// <returns></returns>
-        public static IResource CreateNewResource(int APIversion, string resourceType)
-        {
-            return WrapperForType(resourceType, APIversion, null);
-        }
+        public static IResource CreateNewResource(int APIversion, string resourceType) => WrapperForType(resourceType, APIversion, null);
 
 
         /// <summary>
@@ -44,32 +42,35 @@ namespace Regul.S3PI
         /// <returns>A resource from the package</returns>
         public static IResource GetResource(int APIversion, IPackage pkg, IResourceIndexEntry rie, bool AlwaysDefault)
         {
-            string folder = Path.GetDirectoryName(typeof(WrapperDealer).Assembly.Location);
             typeMap = new List<KeyValuePair<string, Type>>();
-            foreach (string path in Directory.GetFiles(folder, "Regul.S3PI.dll"))
+            try
             {
-                try
+                Type[] ts = Assembly.LoadFrom(Path.GetDirectoryName(typeof(WrapperDealer).Assembly.Location) + "/Regul.S3PI.dll").GetTypes();
+                for (var index = 0; index < ts.Length; index++)
                 {
-                    foreach (Type t in Assembly.LoadFrom(path).GetTypes())
+                    Type t = ts[index];
+                    if (!t.IsSubclassOf(typeof(AResourceHandler))) continue;
+
+                    AResourceHandler arh =
+                        (AResourceHandler) t.GetConstructor(new Type[0] { })?.Invoke(new object[0] { });
+
+                    if (arh == null) continue;
+
+                    foreach (Type k in arh.Keys)
                     {
-                        if (!t.IsSubclassOf(typeof(AResourceHandler))) continue;
-
-                        AResourceHandler arh = (AResourceHandler)t.GetConstructor(new Type[0] { }).Invoke(new object[0] { });
-
-                        if (arh == null) continue;
-
-                        foreach (Type k in arh.Keys)
+                        for (var i = 0; i < arh[k].Count; i++)
                         {
-                            foreach (string s in arh[k])
-                                typeMap.Add(new KeyValuePair<string, Type>(s, k));
+                            string s = arh[k][i];
+                            typeMap.Add(new KeyValuePair<string, Type>(s, k));
                         }
                     }
                 }
-                catch(Exception ex) { }
             }
-            typeMap.Sort((x, y) => x.Key.CompareTo(y.Key));
+            catch (Exception ex) { }
 
-            return WrapperForType(AlwaysDefault ? "*" : rie["ResourceType"], APIversion, (pkg as APackage).GetResource(rie));
+            typeMap.Sort((x, y) => Compare(x.Key, y.Key, StringComparison.Ordinal));
+
+            return WrapperForType(AlwaysDefault ? "*" : rie["ResourceType"], APIversion, (pkg as APackage)?.GetResource(rie));
         }
 
         /// <summary>
@@ -98,9 +99,9 @@ namespace Regul.S3PI
                 t = typeMap.Find(x => !disabled.Contains(x) && x.Key == "*").Value;
 
             if (Settings.Settings.Checking && t == null)
-                    throw new InvalidOperationException("Could not find a resource handler");
+                throw new InvalidOperationException("Could not find a resource handler");
 
-            return (IResource)t.GetConstructor(new Type[] { typeof(int), typeof(Stream), }).Invoke(new object[] { APIversion, s });
+            return (IResource)t.GetConstructor(new[] { typeof(int), typeof(Stream), })?.Invoke(new object[] { APIversion, s });
         }
         #endregion
     }

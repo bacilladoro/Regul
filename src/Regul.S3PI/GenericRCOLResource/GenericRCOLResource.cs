@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using Regul.S3PI.Interfaces;
 using Regul.S3PI.GenericRCOLResource.Properties;
+using static Regul.S3PI.GenericRCOLResource.GenericRCOLResourceHandler;
+using static Regul.S3PI.Interfaces.AApiVersionedFields;
 
 namespace Regul.S3PI.GenericRCOLResource
 {
@@ -13,7 +15,7 @@ namespace Regul.S3PI.GenericRCOLResource
     /// </summary>
     public class GenericRCOLResource : AResource
     {
-        static bool checking = Regul.S3PI.Settings.Settings.Checking;
+        static bool checking = Settings.Settings.Checking;
         const int recommendedApiVersion = 1;
 
         #region Attributes
@@ -69,10 +71,7 @@ namespace Regul.S3PI.GenericRCOLResource
                 index[0].Position = 0x2c + (uint)countResources * 16;
                 index[0].Length = (int)(s.Length - index[0].Position);
                 if (chunks[0].ResourceType == 0)
-                {
-                    string tag = new string(r.ReadChars(4));
-                    chunks[0].ResourceType = GenericRCOLResourceHandler.RCOLTypesForTag(tag).FirstOrDefault();
-                }
+                    chunks[0].ResourceType = RCOLTypesForTag(new string(r.ReadChars(4))).FirstOrDefault();
             }
 
             blockList = new ChunkEntryList(requestedApiVersion, OnResourceChanged, s, chunks, index) { ParentTGIBlocks = resources, };
@@ -161,8 +160,7 @@ namespace Regul.S3PI.GenericRCOLResource
             /// <param name="APIversion">Unused; the requested API version.</param>
             /// <param name="handler">The change event handler.</param>
             /// <param name="basis">An existing <see cref="ChunkEntry"/> to use as a basis.</param>
-            public ChunkEntry(int APIversion, EventHandler handler, ChunkEntry basis)
-                : this(APIversion, handler, basis.tgiBlock, basis.rcolBlock) { }
+            public ChunkEntry(int APIversion, EventHandler handler, ChunkEntry basis) : this(APIversion, handler, basis.tgiBlock, basis.rcolBlock) { }
             /// <summary>
             /// Create a ChunkEntry from an existing <see cref="TGIBlock"/> and an existing <see cref="ARCOLBlock"/>.
             /// </summary>
@@ -170,8 +168,7 @@ namespace Regul.S3PI.GenericRCOLResource
             /// <param name="handler">The change event handler.</param>
             /// <param name="tgiBlock">An existing <see cref="T:TGIBlock"/>.</param>
             /// <param name="rcolBlock">An existing <see cref="ARCOLBlock"/>.</param>
-            public ChunkEntry(int APIversion, EventHandler handler, TGIBlock tgiBlock, ARCOLBlock rcolBlock)
-                : base(APIversion, handler)
+            public ChunkEntry(int APIversion, EventHandler handler, TGIBlock tgiBlock, ARCOLBlock rcolBlock) : base(APIversion, handler)
             {
                 this.tgiBlock = tgiBlock.Clone(handler) as TGIBlock;
                 this.rcolBlock = rcolBlock.Clone(handler) as ARCOLBlock;
@@ -248,9 +245,9 @@ namespace Regul.S3PI.GenericRCOLResource
                 get
                 {
                     System.Text.StringBuilder sb = new System.Text.StringBuilder();
-                    sb.Append("--- " + tgiBlock + ((rcolBlock.Equals("*")) ? "" : " - " + rcolBlock.Tag) + " ---");
-                    if (AApiVersionedFields.GetContentFields(0, rcolBlock.GetType()).Contains("Value") &&
-                            typeof(string).IsAssignableFrom(AApiVersionedFields.GetContentFieldTypes(requestedApiVersion, rcolBlock.GetType())["Value"]))
+                    sb.Append("--- " + tgiBlock + " - " + rcolBlock.Tag + " ---");
+                    if (GetContentFields(0, rcolBlock.GetType()).Contains("Value") &&
+                            typeof(string).IsAssignableFrom(GetContentFieldTypes(requestedApiVersion, rcolBlock.GetType())["Value"]))
                         sb.Append("\n" + (string)rcolBlock["Value"].Value);
                     sb.Append("\n----");
                     return sb.ToString();
@@ -270,7 +267,11 @@ namespace Regul.S3PI.GenericRCOLResource
             public DependentList<TGIBlock> ParentTGIBlocks
             {
                 get { return _ParentTGIBlocks; }
-                set { if (_ParentTGIBlocks != value) { _ParentTGIBlocks = value; foreach (var i in this) i.ParentTGIBlocks = _ParentTGIBlocks; } }
+                set { if (_ParentTGIBlocks != value)
+                {
+                    _ParentTGIBlocks = value;
+                    for (var index = 0; index < this.Count; index++) this[index].ParentTGIBlocks = _ParentTGIBlocks;
+                } }
             }
 
             internal ChunkEntryList(int requestedApiVersion, EventHandler handler, Stream s, TGIBlock[] chunks, RCOLIndexEntry[] index)
@@ -287,7 +288,7 @@ namespace Regul.S3PI.GenericRCOLResource
                     ms.Write(data, 0, data.Length);
                     ms.Position = 0;
 
-                    this.Add(new ChunkEntry(0, elementHandler, chunks[i], GenericRCOLResourceHandler.RCOLDealer(requestedApiVersion, elementHandler, chunks[i].ResourceType, ms)));
+                    Add(new ChunkEntry(0, elementHandler, chunks[i], RCOLDealer(requestedApiVersion, elementHandler, chunks[i].ResourceType, ms)));
                 }
 
                 this.handler = handler;
@@ -545,16 +546,13 @@ namespace Regul.S3PI.GenericRCOLResource
                 if (reference.chunkReference == 0)
                     return null;
 
-                switch (reference.RefType)
+                return reference.RefType switch
                 {
-                    case ReferenceType.Public:
-                        return rcol.ChunkEntries[reference.TGIBlockIndex].TGIBlock;
-                    case ReferenceType.Private:
-                        return rcol.ChunkEntries[reference.TGIBlockIndex + rcol.PublicChunks].TGIBlock;
-                    case ReferenceType.Delayed:
-                        return rcol.resources[reference.TGIBlockIndex];
-                }
-                throw new NotImplementedException(string.Format("Reference Type {0} is not supported.", reference.RefType));
+                    ReferenceType.Public => rcol.ChunkEntries[reference.TGIBlockIndex].TGIBlock,
+                    ReferenceType.Private => rcol.ChunkEntries[reference.TGIBlockIndex + rcol.PublicChunks].TGIBlock,
+                    ReferenceType.Delayed => rcol.resources[reference.TGIBlockIndex],
+                    _ => throw new NotImplementedException($"Reference Type {reference.RefType} is not supported.")
+                };
             }
 
             /// <summary>
@@ -572,14 +570,12 @@ namespace Regul.S3PI.GenericRCOLResource
                 if (reference.chunkReference == 0)
                     return null;
 
-                switch (reference.RefType)
+                return reference.RefType switch
                 {
-                    case ReferenceType.Public:
-                        return rcol.ChunkEntries[reference.TGIBlockIndex].RCOLBlock;
-                    case ReferenceType.Private:
-                        return rcol.ChunkEntries[reference.TGIBlockIndex + rcol.PublicChunks].RCOLBlock;
-                }
-                throw new NotImplementedException(string.Format("Reference Type {0} is not supported.", reference.RefType));
+                    ReferenceType.Public => rcol.ChunkEntries[reference.TGIBlockIndex].RCOLBlock,
+                    ReferenceType.Private => rcol.ChunkEntries[reference.TGIBlockIndex + rcol.PublicChunks].RCOLBlock,
+                    _ => throw new NotImplementedException($"Reference Type {reference.RefType} is not supported.")
+                };
             }
 
             /// <summary>
@@ -591,10 +587,8 @@ namespace Regul.S3PI.GenericRCOLResource
             /// <remarks>Note that the value will be zero (i.e. indicating an invalid entry) if the <paramref name="rk"/>
             /// value supplied is not found either in the <see cref="GenericRCOLResource.ChunkEntries"/> or
             /// <see cref="GenericRCOLResource.Resources"/> lists.</remarks>
-            public static ChunkReference CreateReference(GenericRCOLResource rcol, IResourceKey rk)
-            {
-                return new(0, null, CreateReferenceHelper(rcol, rk));
-            }
+            public static ChunkReference CreateReference(GenericRCOLResource rcol, IResourceKey rk) => new(0, null, CreateReferenceHelper(rcol, rk));
+
             static uint CreateReferenceHelper(GenericRCOLResource rcol, IResourceKey rk)
             {
                 int i = rcol.ChunkEntries.FindIndex(x => x.TGIBlock.Equals(rk));
@@ -721,42 +715,42 @@ namespace Regul.S3PI.GenericRCOLResource
             typeRegistry = new Dictionary<uint, Type>();
             tagRegistry = new Dictionary<string, Type>();
 
-            string folder = Path.GetDirectoryName(typeof(GenericRCOLResourceHandler).Assembly.Location);
-            foreach (string path in Directory.GetFiles(folder, "*.dll"))
+            //Protect load of DLL
+            try
             {
-                //Protect load of DLL
-                try
+                Type[] types = Assembly.LoadFrom(Path.GetDirectoryName(typeof(WrapperDealer).Assembly.Location) + "/Regul.S3PI.dll").GetTypes();
+                for (var index = 0; index < types.Length; index++)
                 {
-                    Assembly dotNetDll = Assembly.LoadFile(path);
-                    Type[] types = dotNetDll.GetTypes();
-                    foreach (Type t in types)
+                    Type t = types[index];
+                    if (t.IsAbstract) continue;
+                    if (!t.IsSubclassOf(typeof(ARCOLBlock))) continue;
+
+                    //Protect instantiating class
+                    try
                     {
-                        if (t.IsAbstract) continue;
-                        if (!t.IsSubclassOf(typeof(ARCOLBlock))) continue;
+                        ConstructorInfo ctor = t.GetConstructor(new[]
+                            {typeof(int), typeof(EventHandler), typeof(Stream),});
+                        if (ctor == null) continue;
 
-                        //Protect instantiating class
-                        try
-                        {
-                            ConstructorInfo ctor = t.GetConstructor(new Type[] { typeof(int), typeof(EventHandler), typeof(Stream), });
-                            if (ctor == null) continue;
-
-                            ARCOLBlock arb = (ARCOLBlock)ctor.Invoke(new object[] { 0, null, null });
-                            if (!typeRegistry.ContainsKey(arb.ResourceType)) typeRegistry.Add(arb.ResourceType, arb.GetType());
-                            if (!tagRegistry.ContainsKey(arb.Tag)) tagRegistry.Add(arb.Tag, arb.GetType());
-                        }
-                        catch { }
+                        ARCOLBlock arb = (ARCOLBlock) ctor.Invoke(new object[] {0, null, null});
+                        if (!typeRegistry.ContainsKey(arb.ResourceType))
+                            typeRegistry.Add(arb.ResourceType, arb.GetType());
+                        if (!tagRegistry.ContainsKey(arb.Tag)) tagRegistry.Add(arb.Tag, arb.GetType());
+                    }
+                    catch
+                    {
                     }
                 }
-                catch { }
             }
+            catch { }
 
-            StringReader sr = new StringReader(Resources.RCOLResources);
+            StringReader sr = new(Resources.RCOLResources);
             resourceTypes = new List<string>();
             string s;
             while ((s = sr.ReadLine()) != null)
             {
                 if (s.StartsWith(";")) continue;
-                string[] t = s.Split(new char[] { ' ' }, 4, StringSplitOptions.RemoveEmptyEntries);
+                string[] t = s.Split(new[] { ' ' }, 4, StringSplitOptions.RemoveEmptyEntries);
                 if (t[2].Equals("Y")) resourceTypes.Add(t[0]);
             }
         }
@@ -771,18 +765,12 @@ namespace Regul.S3PI.GenericRCOLResource
         /// or <c>null</c> if the <paramref name="type"/> is not supported.</returns>
         public static ARCOLBlock CreateRCOLBlock(int APIversion, EventHandler handler, uint type)
         {
-            Type[] types = new Type[] { typeof(int), typeof(EventHandler), };
-            object[] args = new object[] { APIversion, handler, };
-            if (GenericRCOLResourceHandler.typeRegistry.ContainsKey(type))
-            {
-                Type t = GenericRCOLResourceHandler.typeRegistry[type];
-                return (ARCOLBlock)t.GetConstructor(types).Invoke(args);
-            }
-            if (GenericRCOLResourceHandler.tagRegistry.ContainsKey("*"))
-            {
-                Type t = GenericRCOLResourceHandler.tagRegistry["*"];
-                return (ARCOLBlock)t.GetConstructor(types).Invoke(args);
-            }
+            Type[] types = { typeof(int), typeof(EventHandler) };
+            object[] args = { APIversion, handler };
+            if (typeRegistry.ContainsKey(type))
+                return (ARCOLBlock) typeRegistry[type].GetConstructor(types)?.Invoke(args);
+            if (tagRegistry.ContainsKey("*"))
+                return (ARCOLBlock) tagRegistry["*"].GetConstructor(types)?.Invoke(args);
             return null;
         }
 
@@ -799,18 +787,12 @@ namespace Regul.S3PI.GenericRCOLResource
         /// or <c>null</c> if the <paramref name="type"/> is not supported.</returns>
         public static ARCOLBlock RCOLDealer(int APIversion, EventHandler handler, uint type, Stream s)
         {
-            Type[] types = new Type[] { typeof(int), typeof(EventHandler), typeof(Stream), };
-            object[] args = new object[] { APIversion, handler, s };
-            if (GenericRCOLResourceHandler.typeRegistry.ContainsKey(type))
-            {
-                Type t = GenericRCOLResourceHandler.typeRegistry[type];
-                return (ARCOLBlock)t.GetConstructor(types).Invoke(args);
-            }
-            if (GenericRCOLResourceHandler.tagRegistry.ContainsKey("*"))
-            {
-                Type t = GenericRCOLResourceHandler.tagRegistry["*"];
-                return (ARCOLBlock)t.GetConstructor(types).Invoke(args);
-            }
+            Type[] types = { typeof(int), typeof(EventHandler), typeof(Stream) };
+            object[] args = { APIversion, handler, s };
+            if (typeRegistry.ContainsKey(type))
+                return (ARCOLBlock) typeRegistry[type].GetConstructor(types)?.Invoke(args);
+            if (tagRegistry.ContainsKey("*"))
+                return (ARCOLBlock) tagRegistry["*"].GetConstructor(types)?.Invoke(args);
             return null;
         }
 
@@ -837,16 +819,10 @@ namespace Regul.S3PI.GenericRCOLResource
             args[1] = handler;
             Array.Copy(fields, 0, args, 2, fields.Length);
 
-            if (GenericRCOLResourceHandler.typeRegistry.ContainsKey(type))
-            {
-                Type t = GenericRCOLResourceHandler.typeRegistry[type];
-                return (ARCOLBlock)t.GetConstructor(types).Invoke(args);
-            }
-            if (GenericRCOLResourceHandler.tagRegistry.ContainsKey("*"))
-            {
-                Type t = GenericRCOLResourceHandler.tagRegistry["*"];
-                return (ARCOLBlock)t.GetConstructor(types).Invoke(args);
-            }
+            if (typeRegistry.ContainsKey(type))
+                return (ARCOLBlock) typeRegistry[type].GetConstructor(types)?.Invoke(args);
+            if (tagRegistry.ContainsKey("*"))
+                return (ARCOLBlock) tagRegistry["*"].GetConstructor(types)?.Invoke(args);
             return null;
         }
 
@@ -855,22 +831,17 @@ namespace Regul.S3PI.GenericRCOLResource
         /// </summary>
         /// <param name="tag">An RCOL tag.</param>
         /// <returns>An enumeration of ResourceTypes.</returns>
-        public static IEnumerable<uint> RCOLTypesForTag(string tag)
-        {
-            return tagRegistry
+        public static IEnumerable<uint> RCOLTypesForTag(string tag) =>
+            tagRegistry
                 .Where(kvp => kvp.Key == tag)
                 .Select(kvp => kvp.Value)
                 .SelectMany(t => typeRegistry
                     .Where(kvp => kvp.Value == t)
                     .Select(kvp => kvp.Key));
-        }
 
         /// <summary>
         /// ResourceHandler for GenericRCOLResource wrapper
         /// </summary>
-        public GenericRCOLResourceHandler()
-        {
-            this.Add(typeof(GenericRCOLResource), new List<string>(resourceTypes.ToArray()));
-        }
+        public GenericRCOLResourceHandler() => Add(typeof(GenericRCOLResource), new List<string>(resourceTypes.ToArray()));
     }
 }

@@ -28,7 +28,7 @@ namespace System.Security.Cryptography
         /// </summary>
         /// <param name="value">string</param>
         /// <returns>FNV hash of string</returns>
-        public byte[] ComputeHash(string value) { return this.ComputeHash(System.Text.ASCIIEncoding.ASCII.GetBytes(value.ToLowerInvariant())); }
+        public byte[] ComputeHash(string value) { return ComputeHash(Text.Encoding.ASCII.GetBytes(value.ToLowerInvariant())); }
 
         /// <summary>
         /// Nothing to initialize
@@ -119,7 +119,7 @@ namespace System.Security.Cryptography
         /// </summary>
         /// <param name="text">the CLIP name to get the hash for</param>
         /// <returns>the hash value</returns>
-        public static new ulong GetHash(string text)
+        public new static ulong GetHash(string text)
         {
             string value = text;
             ulong mask = 0;
@@ -208,27 +208,25 @@ namespace System.Security.Cryptography
         }
 
         static string[] ao = { "a", "o", };
-        static byte Mask(string actor)
-        {
-            switch (actor)
+        static byte Mask(string actor) =>
+            actor switch
             {
-                case "b": return 0x01;
-                case "p": return 0x02;
-                case "c": return 0x03;
-                case "t": return 0x04;
-                case "h": return 0x05;
-                case "e": return 0x06;
-                case "ad": return 0x08;
-                case "cd": return 0x09;
-                case "al": return 0x0A;
-                case "ac": return 0x0D;
-                case "cc": return 0x0E;
-                case "ah": return 0x10;
-                case "ch": return 0x11;
-                case "ab": return 0x12;
-                case "ar": return 0x13;
-                default: return 0x00;
-            }
-        }
+                "b" => 0x01,
+                "p" => 0x02,
+                "c" => 0x03,
+                "t" => 0x04,
+                "h" => 0x05,
+                "e" => 0x06,
+                "ad" => 0x08,
+                "cd" => 0x09,
+                "al" => 0x0A,
+                "ac" => 0x0D,
+                "cc" => 0x0E,
+                "ah" => 0x10,
+                "ch" => 0x11,
+                "ab" => 0x12,
+                "ar" => 0x13,
+                _ => 0x00
+            };
     }
 }

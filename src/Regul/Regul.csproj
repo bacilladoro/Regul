@@ -18,6 +18,7 @@
 		<PackageReference Include="Avalonia.X11" Version="0.10.0-rc1" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\Regul.OlibStyle\Regul.OlibStyle.csproj" />
 		<ProjectReference Include="..\Regul.S3PI\Regul.S3PI.csproj" />
 	</ItemGroup>
 	<ItemGroup>

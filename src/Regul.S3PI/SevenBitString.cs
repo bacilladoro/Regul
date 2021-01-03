@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace System.Text
 {
@@ -24,9 +23,9 @@ namespace System.Text
         /// <param name="value">The <see cref="String"/> to write.</param>
         public static void Write(Stream s, Encoding enc, string value)
         {
-            byte[] bytes = enc.GetBytes(value == null ? "" : value);
-            System.IO.BinaryWriter w = new System.IO.BinaryWriter(s, enc);
-            for (int i = bytes.Length; true; ) { w.Write((byte)((i & 0x7F) | (i > 0x7F ? 0x80 : 0))); i = i >> 7; if (i == 0) break; }//zero length? write a zero
+            byte[] bytes = enc.GetBytes(value ?? "");
+            BinaryWriter w = new BinaryWriter(s, enc);
+            for (int i = bytes.Length;; ) { w.Write((byte)((i & 0x7F) | (i > 0x7F ? 0x80 : 0))); i >>= 7; if (i == 0) break; }//zero length? write a zero
             w.Write(bytes);
         }
     }

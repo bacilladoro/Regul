@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.IO;
 
 namespace Regul.S3PI.Package
@@ -21,26 +20,22 @@ namespace Regul.S3PI.Package
             BinaryWriter bw = new BinaryWriter(new MemoryStream(uncdata));
 
             byte[] data = r.ReadBytes(2);
-            if (checking) if (data.Length != 2)
-                    throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
+            if (checking && data.Length != 2) throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
 
             int datalen = (((data[0] & 0x80) != 0) ? 4 : 3) * (((data[0] & 0x01) != 0) ? 2 : 1);
             data = r.ReadBytes(datalen);
-            if (checking) if (data.Length != datalen)
-                    throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
+            if (checking && data.Length != datalen) throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
 
             long realsize = 0;
             for (int i = 0; i < data.Length; i++) realsize = (realsize << 8) + data[i];
 
-            if (checking) if (realsize != memsize)
-                    throw new InvalidDataException(string.Format(
-                        "Resource data indicates size does not match index at 0x{0}.  Read 0x{1}.  Expected 0x{2}.",
-                        stream.Position.ToString("X8"), realsize.ToString("X8"), memsize.ToString("X8")));
+            if (checking && realsize != memsize) throw new InvalidDataException(
+                $"Resource data indicates size does not match index at 0x{stream.Position:X8}.  Read 0x{realsize:X8}.  Expected 0x{memsize:X8}.");
 
             while (stream.Position < end) { Dechunk(stream, bw); }
 
-            if (checking) if (bw.BaseStream.Position != memsize)
-                    throw new InvalidDataException(string.Format("Read 0x{0:X8} bytes.  Expected 0x{1:X8}.", bw.BaseStream.Position, memsize));
+            if (checking && bw.BaseStream.Position != memsize) throw new InvalidDataException(
+                $"Read 0x{bw.BaseStream.Position:X8} bytes.  Expected 0x{memsize:X8}.");
 
             bw.Close();
 
@@ -58,51 +53,61 @@ namespace Regul.S3PI.Package
             byte packing = r.ReadByte();
 
             #region Compressed
-            if (packing < 0x80) // 0.......; new data 3; copy data 10 (min 3); offset 1024
+            switch (packing)
             {
-                data = r.ReadBytes(1);
-                if (checking) if (data.Length != 1)
+                // 0.......; new data 3; copy data 10 (min 3); offset 1024
+                case < 0x80:
+                {
+                    data = r.ReadBytes(1);
+                    if (checking) if (data.Length != 1)
                         throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
-                datalen = packing & 0x03;
-                copysize = ((packing >> 2) & 0x07) + 3;
-                copyoffset = (((packing << 3) & 0x300) | data[0]) + 1;
-            }
-            else if (packing < 0xC0) // 10......; new data 3; copy data 67 (min 4); offset 16384
-            {
-                data = r.ReadBytes(2);
-                if (checking) if (data.Length != 2)
+                    datalen = packing & 0x03;
+                    copysize = ((packing >> 2) & 0x07) + 3;
+                    copyoffset = (((packing << 3) & 0x300) | data[0]) + 1;
+                    break;
+                }
+                // 10......; new data 3; copy data 67 (min 4); offset 16384
+                case < 0xC0:
+                {
+                    data = r.ReadBytes(2);
+                    if (checking) if (data.Length != 2)
                         throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
-                datalen = (data[0] >> 6) & 0x03;
-                copysize = (packing & 0x3F) + 4;
-                copyoffset = (((data[0] << 8) & 0x3F00) | data[1]) + 1;
-            }
-            else if (packing < 0xE0) // 110.....; new data 3; copy data 1028 (min 5); offset 131072
-            {
-                data = r.ReadBytes(3);
-                if (checking) if (data.Length != 3)
+                    datalen = (data[0] >> 6) & 0x03;
+                    copysize = (packing & 0x3F) + 4;
+                    copyoffset = (((data[0] << 8) & 0x3F00) | data[1]) + 1;
+                    break;
+                }
+                // 110.....; new data 3; copy data 1028 (min 5); offset 131072
+                case < 0xE0:
+                {
+                    data = r.ReadBytes(3);
+                    if (checking) if (data.Length != 3)
                         throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
-                datalen = packing & 0x03;
-                copysize = (((packing << 6) & 0x300) | data[2]) + 5;
-                copyoffset = (((packing << 12) & 0x10000) | data[0] << 8 | data[1]) + 1;
+                    datalen = packing & 0x03;
+                    copysize = (((packing << 6) & 0x300) | data[2]) + 5;
+                    copyoffset = (((packing << 12) & 0x10000) | data[0] << 8 | data[1]) + 1;
+                    break;
+                }
+                // 1110000 - 11101111; new data 4-128
+                case < 0xFC:
+                    datalen = (((packing & 0x1F) + 1) << 2);
+                    break;
+                // 111111..; new data 3
+                default:
+                    datalen = packing & 0x03;
+                    break;
             }
-            #endregion
-            #region Uncompressed
-            else if (packing < 0xFC) // 1110000 - 11101111; new data 4-128
-                datalen = (((packing & 0x1F) + 1) << 2);
-            else // 111111..; new data 3
-                datalen = packing & 0x03;
             #endregion
 
             if (datalen > 0)
             {
                 data = r.ReadBytes(datalen);
-                if (checking) if (data.Length != datalen)
-                        throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
+                if (checking && data.Length != datalen) throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
                 bw.Write(data);
             }
 
             if (checking) if (copyoffset > bw.BaseStream.Position)
-                throw new InvalidDataException(string.Format("Invalid copy offset 0x{0:X8} at {1}.", copyoffset, stream.Position));
+                throw new InvalidDataException($"Invalid copy offset 0x{copyoffset:X8} at {stream.Position}.");
 
             if (copysize < copyoffset && copyoffset > 8) CopyA(bw.BaseStream, copyoffset, copysize); else CopyB(bw.BaseStream, copyoffset, copysize);
         }
@@ -141,9 +146,7 @@ namespace Regul.S3PI.Package
         public static byte[] CompressStream(byte[] data)
         {
 #if true
-            byte[] res;
-            bool smaller = Tiger.DBPFCompression.Compress(data, out res);
-            return smaller ? res : data;
+            return Tiger.DBPFCompression.Compress(data, out byte[] res) ? res : data;
 #else
             if (data.Length < 10) return data;
 
@@ -469,13 +472,13 @@ namespace Tiger
         public static bool Compress(byte[] data, out byte[] compressed)
         {
             compressed = new DBPFCompression(5).Compress(data);
-            return (compressed != null);
+            return compressed != null;
         }
 
         public static bool Compress(byte[] data, out byte[] compressed, int level)
         {
             compressed = new DBPFCompression(level).Compress(data);
-            return (compressed != null);
+            return compressed != null;
         }
 
         public byte[] Compress(byte[] data)
@@ -515,8 +518,7 @@ namespace Tiger
 
                     // Search ahead in blocks of 4 bytes for a match until one is found
                     // Record the best match if multiple are found
-                    mSequenceSource = 0;
-                    mSequenceLength = 0;
+                    mSequenceSource = mSequenceLength = 0;
                     mSequenceDest = int.MaxValue;
                     mSequenceFound = false;
                     do
@@ -537,8 +539,7 @@ namespace Tiger
                     while (mSequenceDest - compressedidx >= 4)
                     {
                         int tocopy = (mSequenceDest - compressedidx) & ~3;
-                        if (tocopy > 112)
-                            tocopy = 112;
+                        if (tocopy > 112) tocopy = 112;
 
                         byte[] chunk = new byte[tocopy + 1];
                         chunk[0] = (byte)(0xE0 | ((tocopy >> 2) - 1));
@@ -550,7 +551,7 @@ namespace Tiger
 
                     if (mSequenceFound)
                     {
-                        byte[] chunk = null;
+                        byte[] chunk;
                         /*
                          * 00-7F  0oocccpp oooooooo
                          *   Read 0-3
@@ -656,7 +657,7 @@ namespace Tiger
                         chunkpos += compressedchunks[loop].Length;
                     }
                     if (!endisvalid)
-                        compressed[compressed.Length - 1] = 0xfc;
+                        compressed[^1] = 0xfc;
                     return compressed;
                 }
 
@@ -1048,10 +1049,7 @@ namespace Tiger
                                 else
                                 {
                                     // Allocate a new bucket
-                                    if (mUnusedLists.Count > 0)
-                                        locations = mUnusedLists.Pop();
-                                    else
-                                        locations = new List<int>(1);
+                                    locations = mUnusedLists.Count > 0 ? mUnusedLists.Pop() : new List<int>(1);
                                     mLookupTable[poppedval] = locations;
                                 }
                                 locations.Add(mDataLength - mQueueLength - 4);
@@ -1080,10 +1078,7 @@ namespace Tiger
                             else
                             {
                                 // Allocate a new bucket
-                                if (mUnusedLists.Count > 0)
-                                    locations = mUnusedLists.Pop();
-                                else
-                                    locations = new List<int>();
+                                locations = mUnusedLists.Count > 0 ? mUnusedLists.Pop() : new List<int>();
                                 mLookupTable[mRunningValue] = locations;
                             }
                             locations.Add(mDataLength - 4);

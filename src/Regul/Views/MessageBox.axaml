@@ -1,17 +1,19 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        MinWidth="350"
-		MinHeight="120"
-		Icon="avares://Regul/icon.ico"
-		WindowStartupLocation="CenterOwner"
-		ShowInTaskbar="False"
-		Background="{StaticResource ThemeBackgroundBrush}"
-		Foreground="{StaticResource ThemeForegroundBrush}"
-        x:Class="Regul.Views.MessageBox"
-        SizeToContent="WidthAndHeight" CanResize="False">
+﻿<olib:OlibModalWindow xmlns="https://github.com/avaloniaui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					  xmlns:olib="clr-namespace:Regul.OlibStyle;assembly=Regul.OlibStyle"
+					  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+					  MinWidth="350"
+					  MinHeight="150"
+					  Icon="avares://Regul/icon.ico"
+					  WindowStartupLocation="CenterOwner"
+					  HasSystemDecorations="False"
+					  ShowInTaskbar="False"
+					  Background="{StaticResource ThemeBackgroundBrush}"
+					  Foreground="{StaticResource ThemeForegroundBrush}"
+					  x:Class="Regul.Views.MessageBox"
+					  SizeToContent="WidthAndHeight" CanResize="False">
 	<Grid Name="ContentC" RowDefinitions="*,Auto,40">
 		<Grid Name="Content" ColumnDefinitions="70,*">
 			<Image Name="Icon" Width="40" Margin="10"/>
@@ -20,8 +22,8 @@
 			</ScrollViewer>
 		</Grid>
 		<TextBox Name="ErrorText" Height="100" MaxWidth="450" Grid.Row="1" Margin="10" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True"/>
-		<Border Grid.Row="2" Classes="Panel" BorderThickness="0 1 0 0" Padding="5">
+		<Border Grid.Row="2" Classes="Panel" BorderThickness="0 1 0 0" Padding="5" CornerRadius="0 0 4.3 4.3">
 			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Name="Buttons" Spacing="5"/>
 		</Border>
 	</Grid>
-</Window>
+</olib:OlibModalWindow>

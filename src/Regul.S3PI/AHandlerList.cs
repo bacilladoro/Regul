@@ -59,7 +59,11 @@ namespace System.Collections.Generic
             //Note that the following is required to allow for implementation specific processing on items added to the list:
             EventHandler h = handler;
             handler = null;
-            foreach (T item in collection) this.Add(item);
+            foreach (T item in collection)
+            {
+                this.Add(item);
+            }
+
             handler = h;
 
             OnListChanged();
@@ -87,7 +91,11 @@ namespace System.Collections.Generic
             //Note that the following is required to allow for implementation specific processing on items inserted into the list:
             EventHandler h = handler;
             handler = null;
-            foreach (T item in collection) this.Insert(index++, item);
+            foreach (T item in collection)
+            {
+                this.Insert(index++, item);
+            }
+
             handler = h;
 
             OnListChanged();

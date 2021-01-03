@@ -9,7 +9,7 @@
 		<Border Classes="BorderStyle" Margin="5">
 			<Image x:Name="iconFamily" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 		</Border>
-		<TextBox x:Name="saveName" Watermark="Save family" IsReadOnly="True" Margin="5 0 5 5" Grid.Row="1" HorizontalContentAlignment="Center"/>
-		<TextBox x:Name="saveFamily" Watermark="Save family" IsReadOnly="True" Margin="5 0 5 5" Grid.Row="2" HorizontalContentAlignment="Center"/>
+		<TextBox x:Name="saveName" Watermark="Save family" IsReadOnly="True" Margin="5 0 5 5" Grid.Row="1" TextAlignment="Center"/>
+		<TextBox x:Name="saveFamily" Watermark="Save family" IsReadOnly="True" Margin="5 0 5 5" Grid.Row="2" TextAlignment="Center"/>
 	</Grid>
 </UserControl>

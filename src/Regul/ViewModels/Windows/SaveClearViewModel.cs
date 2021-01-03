@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Microsoft.VisualBasic;
@@ -283,13 +282,12 @@ namespace Regul.ViewModels.Windows
             {
                 bgwClean.ReportProgress(20, (string)Application.Current.FindResource("ProcessingCreateBackup"));
                 if (!string.IsNullOrEmpty(PathBackup))
-                {
-                    DirectoryCopy(saveFilePortrait.SaveDir, PathBackup + saveFilePortrait.SaveName.Text + ".sims3", true);
-                }
+                    DirectoryCopy(saveFilePortrait?.SaveDir, PathBackup + saveFilePortrait?.SaveName.Text + ".sims3",
+                        true);
             }
 
-            bgwClean.ReportProgress(60, (string)Application.Current.FindResource("ProcessingCompressingSave"));
-            string[] files2 = Directory.GetFiles(saveFilePortrait.SaveDir, "*.package", SearchOption.AllDirectories);
+            bgwClean.ReportProgress(40, (string)Application.Current.FindResource("ProcessingCompressingSave"));
+            string[] files2 = Directory.GetFiles(saveFilePortrait?.SaveDir, "*.package", SearchOption.AllDirectories);
             int index2 = 0;
 
             while (index2 < files2.Length)
@@ -309,7 +307,7 @@ namespace Regul.ViewModels.Windows
 
             if (Directory.GetFiles(saveFilePortrait.SaveDir, "*.nhd", SearchOption.AllDirectories).Length > 1)
             {
-                bgwClean.ReportProgress(80, (string)Application.Current.FindResource("ProcessingClearingSave"));
+                bgwClean.ReportProgress(70, (string)Application.Current.FindResource("ProcessingClearingSave"));
 
                 if (RemovingPhotosAndTextures)
                 {
@@ -402,10 +400,11 @@ namespace Regul.ViewModels.Windows
             {
                 string[] files3 = Directory.GetFiles(saveFilePortrait.SaveDir, "*.nhd", SearchOption.AllDirectories);
                 int index3 = 0;
+                
+                bgwClean.ReportProgress(40, (string)Application.Current.FindResource("ProcessingCompressingSave"));
                 while (index3 < files3.Length)
                 {
                     IPackage pkg = Package.OpenPackage(1, files3[index3], true);
-                    bgwClean.ReportProgress(60, (string)Application.Current.FindResource("ProcessingCompressingSave"));
                     for (var i = 0; i < pkg.GetResourceList.Count; i++)
                     {
                         IResourceIndexEntry getResource = pkg.GetResourceList[i];

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Configuration;
+﻿using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace System.Configuration
 {
@@ -279,20 +275,12 @@ namespace System.Configuration
             // If it exists, return the InnerText or InnerXML of its first child node, depending on the setting type.
             if (SettingNode != null)
             {
-
-                switch (setProp.SerializeAs)
+                return setProp.SerializeAs switch
                 {
-                    case SettingsSerializeAs.String:
-                        return SettingNode.InnerText;
-                    case SettingsSerializeAs.Xml:
-                        string xmlData = SettingNode.InnerXml;
-                        return @"" + xmlData;
-                    case SettingsSerializeAs.Binary:
-                    default:
-                        throw new NotSupportedException();
-                        //break;
-                }
-
+                    SettingsSerializeAs.String => SettingNode.InnerText,
+                    SettingsSerializeAs.Xml => @"" + SettingNode.InnerXml,
+                    _ => throw new NotSupportedException()
+                };
             }
             else
             {
@@ -306,7 +294,7 @@ namespace System.Configuration
                             retVal = setProp.DefaultValue.ToString();
                             break;
                         case SettingsSerializeAs.Xml:
-                            retVal = setProp.DefaultValue.ToString().Replace(@"<?xml version=""1.0"" encoding=""utf-16""?>", "");
+                            retVal = setProp.DefaultValue.ToString()?.Replace(@"<?xml version=""1.0"" encoding=""utf-16""?>", "");
                             break;
                         /*string xmlData = setProp.DefaultValue.ToString();
                         XmlSerializer xs = new XmlSerializer(typeof(string[]));
@@ -340,7 +328,7 @@ namespace System.Configuration
         {
             // Search for the specific settings node we are looking for in the configuration file.
             XmlNode SettingNode = XMLConfig.SelectSingleNode("//setting[@name='" + setProp.Name + "']");
-            SettingNode = SettingNode == null ? null : SettingNode.FirstChild;
+            SettingNode = SettingNode?.FirstChild;
 
             // If we have a pointer to an actual XML node, update the value stored there
             if (SettingNode != null)
@@ -381,22 +369,21 @@ namespace System.Configuration
                 {
                     case SettingsSerializeAs.String:
                         newSetting.SetAttribute("serializeAs", "String");
-                        valueElement.InnerText = setProp.SerializedValue.ToString();
+                        valueElement.InnerText = setProp.SerializedValue.ToString() ?? string.Empty;
                         break;
                     case SettingsSerializeAs.Xml:
                         newSetting.SetAttribute("serializeAs", "Xml");
                         // Write the object to the config serialized as Xml - we must remove the Xml declaration when writing
                         // the value, otherwise .Net's configuration system complains about the additional declaration
-                        valueElement.InnerXml = setProp.SerializedValue.ToString().Replace(@"<?xml version=""1.0"" encoding=""utf-16""?>", "");
+                        valueElement.InnerXml = setProp.SerializedValue.ToString()?.Replace(@"<?xml version=""1.0"" encoding=""utf-16""?>", "") ?? string.Empty;
                         break;
-                    case SettingsSerializeAs.Binary:
                     default:
                         throw new NotSupportedException();
                     //break;
                 }
 
                 // Append this node to the application settings node (<Appname.Properties.Settings>)
-                tmpNode.AppendChild(newSetting);
+                tmpNode?.AppendChild(newSetting);
 
                 //Append this new element under the setting node we created above
                 newSetting.AppendChild(valueElement);
