@@ -89,7 +89,7 @@
 									</StackPanel>
 								</Grid>
 							</Border>
-							<ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" Background="{TemplateBinding Background}" CornerRadius="0 0 4.3 4.3"/>
+							<ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" Background="{TemplateBinding Background}" CornerRadius="0 0 4.5 4.5"/>
 						</DockPanel>
 					</Border>
 					<Grid Name="ResizeGrid" ColumnDefinitions="8,*,8" RowDefinitions="8,*,8">

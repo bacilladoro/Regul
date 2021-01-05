@@ -7,6 +7,7 @@
 			<ControlTemplate>
 				<Border Background="{DynamicResource ThemePanelBackgroundBrush}"
 						BorderThickness="1 0 0 0"
+						CornerRadius="0 4.5 4.5 0"
 						BorderBrush="{DynamicResource ThemeGlobalBorderBrush}"
 						UseLayoutRounding="False">
 					<Grid RowDefinitions="Auto,*,Auto">
@@ -61,6 +62,7 @@
 				<Border Background="{DynamicResource ThemePanelBackgroundBrush}"
 						BorderBrush="{DynamicResource ThemeGlobalBorderBrush}"
 						BorderThickness="0 1 0 0"
+						CornerRadius="0 0 4.5 4.5"
 						UseLayoutRounding="False">
 					<Grid ColumnDefinitions="Auto,*,Auto">
 						<RepeatButton Name="PART_LineUpButton" VerticalAlignment="Center"

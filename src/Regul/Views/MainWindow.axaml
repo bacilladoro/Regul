@@ -22,18 +22,13 @@
                 <MenuItem Header="{DynamicResource Settings}" Command="{Binding SettingsWindowCommand}"/>
 				<MenuItem Header="{DynamicResource ExitFromRegul}" Command="{Binding ExitCommand}" InputGesture="Ctrl+Q" HotKey="Ctrl+Q"/>
 			</MenuItem>
-			<MenuItem Header="Edit" IsVisible="{Binding IsNotNull}" IsEnabled="{Binding IsNotNull}">
-
-            </MenuItem>
-			<MenuItem Header="Package" IsVisible="{Binding IsNotNull}" IsEnabled="{Binding IsNotNull}">
-
-            </MenuItem>
 			<MenuItem Header="{DynamicResource Tools}">
 				<MenuItem Header="{DynamicResource TheSims3}">
 					<MenuItem Header="{DynamicResource SaveClear}" Command="{Binding SaveClearWindowCommand}"/>
 				</MenuItem>
 			</MenuItem>
 			<MenuItem Header="{DynamicResource Reference}">
+				<MenuItem Header="{DynamicResource CheckForUpdates}"/>
 				<MenuItem Header="{DynamicResource AboutTheProgram}" Command="{Binding AboutWindowCommand}"/>
 			</MenuItem>
 		</Menu>
@@ -43,7 +38,7 @@
     </olib:OlibMainWindow.KeyBindings>
     <DockPanel>
 		<Grid ColumnDefinitions="*,*">
-			<TabControl Items="{Binding Tabs}" Grid.ColumnSpan="2" ZIndex="1" SelectedItem="{Binding SelectedTabItem, Mode=TwoWay}"/>
+			<TabControl Items="{Binding Tabs}" Grid.ColumnSpan="2" ZIndex="1" SelectedItem="{Binding SelectedTabItem}"/>
 
 			<Image Source="{DynamicResource RegulHoveredImage}" Margin="50"/>
 			<Grid RowDefinitions="Auto,*,Auto,Auto" Grid.Column="1" Margin="20">
@@ -64,7 +59,7 @@
 				<StackPanel Grid.Row="3" Spacing="5" Margin="0 5 0 0">
 					<TextBlock Text="{DynamicResource Welcome}" HorizontalAlignment="Center"/>
                     <TextBox Margin="0 0 0 5" Text="{Binding CreatorName}" Watermark="{DynamicResource CreatorName}" FontWeight="Bold" TextAlignment="Center"/>
-                    <Button Content="{DynamicResource New}"/>
+                    <Button Content="{DynamicResource New}" Command="{Binding NewPackageCommand}"/>
 					<Button Content="{DynamicResource Open}"/>
                 </StackPanel>
             </Grid>

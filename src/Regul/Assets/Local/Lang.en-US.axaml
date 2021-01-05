@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:v="clr-namespace:System;assembly=netstandard">
 	<Style.Resources>
+		<!-- MainWindow -->
 		<v:String x:Key="File">File</v:String>
 		<v:String x:Key="Tools">Tools</v:String>
 		<v:String x:Key="Reference">Reference</v:String>
@@ -13,11 +14,16 @@
 		<v:String x:Key="TheSims3">The Sims 3</v:String>
 		<v:String x:Key="SaveClear">Save clear</v:String>
 		<v:String x:Key="Close">Close</v:String>
-
+		<v:String x:Key="CheckForUpdates">Check for updates</v:String>
+		<!-- MainWindow -->
+		
+		<!-- WelcomeWindow -->
 		<v:String x:Key="CreatorName">Creator name</v:String>
 		<v:String x:Key="Welcome">Welcome!</v:String>
 		<v:String x:Key="RecentProjects">Recent projects</v:String>
+		<!-- WelcomeWindow -->
 
+		<!-- Settings -->
 		<v:String x:Key="ThemeC">Theme:</v:String>
 
         <v:String x:Key="Dazzling">Dazzling</v:String>
@@ -25,20 +31,32 @@
         <v:String x:Key="Mysterious">Mysterious</v:String>
         <v:String x:Key="Turquoise">Turquoise</v:String>
         <v:String x:Key="Emerald">Emerald</v:String>
+		<!-- Settings -->
 
+		<!-- About the program -->
 		<v:String x:Key="VersionC">Version:</v:String>
 		<v:String x:Key="LicenseC">License:</v:String>
 		<v:String x:Key="RegulDescription">Regul - a unified editor for package files for games from Maxis, written in C#, running on Avalonia and .NET 5.</v:String>
 		<v:String x:Key="LibrariesUsedC">Libraries used:</v:String>
+		<!-- About the program -->
 		
+		<!-- TextBoxContextMenu -->
 		<v:String x:Key="Cut">Cut</v:String>
 		<v:String x:Key="Paste">Paste</v:String>
 		<v:String x:Key="Copy">Copy</v:String>
+		<!-- TextBoxContextMenu -->
 		
+		<!-- MessageBox -->
 		<v:String x:Key="Yes">Yes</v:String>
 		<v:String x:Key="No">No</v:String>
 		<v:String x:Key="OK">OK</v:String>
 		
+		<v:String x:Key="Error">Error</v:String>
+		<v:String x:Key="Successfully">Successfully</v:String>
+		<v:String x:Key="Information">Information</v:String>
+		<!-- MessageBox -->
+		
+		<!-- SaveClear -->
 		<v:String x:Key="Select">Select</v:String>
 		<v:String x:Key="PathBackup">The path for creating a backup</v:String>
 		<v:String x:Key="Clear">Clear</v:String>
@@ -50,10 +68,6 @@
 		<v:String x:Key="ToolTipRemovingLotThumbnails">Displayed when moving and in the main menu. If you are afraid that after deleting your save will not load, do not enable (deleting is safe)</v:String>
 		<v:String x:Key="ToolTipRemovingPhotosAndTextures">The textures of the unloaded lot and photos are stored. If you don't want to delete photos, please do not include</v:String>
 	
-		<v:String x:Key="Error">Error</v:String>
-		<v:String x:Key="Successfully">Successfully</v:String>
-		<v:String x:Key="Information">Information</v:String>
-		
 		<v:String x:Key="AnErrorHasOccurred">An error has occurred. Details below.</v:String>
 		<v:String x:Key="SaveFilesCleanedSuccessfully">Save files cleaned successfully!</v:String>
 		<v:String x:Key="SaveFilesNotFound">Save files not found</v:String>
@@ -64,9 +78,36 @@
 		<v:String x:Key="ProcessingCompressingSave">Compressing save...</v:String>
 		<v:String x:Key="ProcessingClearingSave">Clearing save...</v:String>
 		<v:String x:Key="ProcessingSavingSave">Saving save...</v:String>
+		<!-- SaveClear -->
 
+		<!-- SelectPackageType -->
 		<v:String x:Key="PackageType">Package type</v:String>
         <v:String x:Key="PackageTypeC">Package type:</v:String>
+		<!-- SelectPackageType -->
+		
+		<!-- TheSims3TypeContent -->
+		<v:String x:Key="Edit">Edit</v:String>
+		<v:String x:Key="Resource">Resource</v:String>
+		
+		<v:String x:Key="SavePreviewE">Save preview...</v:String>
+		<v:String x:Key="AddE">Add...</v:String>
+		<v:String x:Key="PasteE">Paste...</v:String>
+		<v:String x:Key="Dublicate">Dublicate</v:String>
+		<v:String x:Key="Replace">Replace</v:String>
+		<v:String x:Key="Compressed">Compressed</v:String>
+		<v:String x:Key="Deleted">Deleted</v:String>
+		<v:String x:Key="Details">Details</v:String>
+		<v:String x:Key="SelectAll">Select all</v:String>
+		<v:String x:Key="CopyResourceKey">Copy ResourceKey</v:String>
+		<v:String x:Key="Import">Import</v:String>
+		<v:String x:Key="FromFileE">From file...</v:String>
+		<v:String x:Key="FromPackageE">From package...</v:String>
+		<v:String x:Key="ReplaceSelectedE">Replace selected...</v:String>
+		<v:String x:Key="AsDbcE">As dbc...</v:String>
+		<v:String x:Key="Export">Export</v:String>
+		<v:String x:Key="ToFileE">To file...</v:String>
+		<v:String x:Key="ToPackageE">To package...</v:String>
+		<!-- TheSims3TypeContent -->
 
 		<v:String x:Key="NoName">No name</v:String>
 	</Style.Resources>

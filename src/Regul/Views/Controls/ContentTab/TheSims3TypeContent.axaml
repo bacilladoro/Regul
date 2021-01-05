@@ -3,7 +3,61 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             Background="{DynamicResource ThemePanelBackgroundBrush}"
              x:Class="Regul.Views.Controls.ContentTab.TheSims3TypeContent">
-    Welcome to Avalonia!
+	<Border CornerRadius="0 0 4.5 4.5" Background="{DynamicResource ThemePanelBackgroundBrush}" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}">
+		<Grid ColumnDefinitions="*,Auto" RowDefinitions="30,*">
+			<Border Grid.Row="0" Margin="5 5 5 0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5">
+				<Grid ColumnDefinitions="Auto,*,Auto">
+					<Menu Grid.Column="0" VerticalAlignment="Center" Margin="5 0 0 0">
+						<MenuItem Header="{DynamicResource Edit}">
+							<MenuItem Header="{DynamicResource Copy}" InputGesture="Ctrl+C"/>
+							<MenuItem Header="{DynamicResource SavePreviewE}"/>
+							<MenuItem Header="Float"/>
+						</MenuItem>
+						<MenuItem Header="{DynamicResource Resource}">
+							<MenuItem Header="{DynamicResource AddE}" InputGesture="Ctrl+Shift+A" HotKey="Ctrl+Shift+A"/>
+							<MenuItem Header="{DynamicResource Copy}" InputGesture="Ctrl+Shift+C" HotKey="Ctrl+Shift+C"/>
+							<MenuItem Header="{DynamicResource PasteE}" InputGesture="Ctrl+Shift+V" HotKey="Ctrl+Shift+V"/>
+							<MenuItem Header="{DynamicResource Dublicate}"/>
+							<MenuItem Header="{DynamicResource Replace}"/>
+							<Separator/>
+							<MenuItem Header="{DynamicResource Compressed}"/>
+							<MenuItem Header="{DynamicResource Deleted}"/>
+							<MenuItem Header="{DynamicResource Details}" InputGesture="Ctrl+Shift+D" HotKey="Ctrl+Shift+D"/>
+							<Separator/>
+							<MenuItem Header="{DynamicResource SelectAll}"/>
+							<MenuItem Header="{DynamicResource CopyResourceKey}"/>
+							<MenuItem Header="{DynamicResource Import}">
+								<MenuItem Header="{DynamicResource FromFileE}" InputGesture="Ctrl+Shift+M" HotKey="Ctrl+Shift+M"/>
+								<MenuItem Header="{DynamicResource FromPackageE}"/>
+								<MenuItem Header="{DynamicResource ReplaceSelectedE}"/>
+								<MenuItem Header="{DynamicResource AsDbcE}"/>
+							</MenuItem>
+							<MenuItem Header="{DynamicResource Export}">
+								<MenuItem Header="{DynamicResource ToFileE}"/>
+								<MenuItem Header="{DynamicResource ToPackageE}"/>
+							</MenuItem>
+						</MenuItem>
+					</Menu>
+					<ToggleButton Grid.Column="2" IsChecked="{Binding OpenedMenu}" Content="Menu"/>
+				</Grid>
+			</Border>
+
+			<Grid ColumnDefinitions="*,Auto,*" Grid.Row="1">
+				<Border Grid.Column="0" Margin="5 5 0 5" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5"/>
+				<GridSplitter Grid.Column="1" Width="5" Background="Transparent" Margin="0 5"/>
+				<Border Grid.Column="2" Margin="0 5 5 5" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5"/>
+			</Grid>
+
+			<Grid Grid.Column="1" Grid.RowSpan="2">
+				<Border Width="250" IsVisible="{Binding OpenedMenu}" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1 0 0 0" CornerRadius="0 0 4.5 0">
+					<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+						<StackPanel Margin="5">
+							
+						</StackPanel>
+					</ScrollViewer>
+				</Border>
+			</Grid>
+		</Grid>
+	</Border>
 </UserControl>

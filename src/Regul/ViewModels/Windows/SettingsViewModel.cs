@@ -29,7 +29,7 @@ namespace Regul.ViewModels.Windows
 
                 Application.Current.Styles[2] = new StyleInclude(new Uri("resm:Style?assembly=Regul"))
                 {
-                    Source = new Uri($"avares://Regul/Assets/Themes/{Program.Settings.Theme}.axaml")
+                    Source = new Uri($"avares://Regul.OlibStyle/Themes/{Program.Settings.Theme}.axaml")
                 };
             }
         }

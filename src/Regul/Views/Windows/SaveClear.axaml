@@ -15,7 +15,7 @@
 					  Title="{StaticResource SaveClear}"
 					  Icon="avares://Regul/icon.ico">
 	<Grid RowDefinitions="*,50">
-		<Border Background="Black" ZIndex="5" Grid.RowSpan="2" Opacity="0.2" IsVisible="{Binding IsLoading}" CornerRadius="0 0 4.3 4.3"/>
+		<Border Background="Black" ZIndex="5" Grid.RowSpan="2" Opacity="0.2" IsVisible="{Binding IsLoading}" CornerRadius="0 0 4.5 4.5"/>
 		<StackPanel Margin="5" Spacing="5">
 			<ListBox Classes="Horizontal" Items="{Binding SaveFilePortraits}" SelectedItem="{Binding SelectSave}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="210">
 				<ListBox.ItemsPanel>
@@ -34,7 +34,7 @@
 			</DockPanel>
 		</StackPanel>
 
-		<Border Classes="Panel" Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{StaticResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.3 4.3">
+		<Border Classes="Panel" Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="{StaticResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.5 4.5">
 			<Button Margin="10" Content="{StaticResource Clear}" Command="{Binding Clear}"/>
 		</Border>
 	</Grid>

@@ -40,7 +40,7 @@
                 </ScrollViewer>
             </Border>
         </Grid>
-        <Border Classes="Panel" Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.3 4.3">
+        <Border Classes="Panel" Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.5 4.5">
             <Grid ColumnDefinitions="Auto,*,Auto" Margin="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <Button Padding="0" Command="{Binding GitHubSite}">

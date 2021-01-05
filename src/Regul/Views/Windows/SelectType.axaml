@@ -13,6 +13,9 @@
                       CanResize="False"
 					  Background="{StaticResource ThemeBackgroundBrush}"
                       Title="{StaticResource PackageType}">
+	<olib:OlibModalWindow.KeyBindings>
+		<KeyBinding Command="{Binding Exit}" Gesture="Enter"/>
+	</olib:OlibModalWindow.KeyBindings>
     <Grid RowDefinitions="*,50">
         <DockPanel VerticalAlignment="Center" Margin="10">
             <TextBlock Text="{StaticResource PackageTypeC}" Margin="0 0 5 0"/>
@@ -20,7 +23,7 @@
                 <ComboBoxItem Content="{StaticResource TheSims3}"/>
             </ComboBox>
         </DockPanel>
-        <Border Classes="Panel" Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.3 4.3">
+        <Border Classes="Panel" Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.5 4.5">
             <Button Content="{DynamicResource OK}" Command="{Binding Exit}" HorizontalAlignment="Right" Margin="10"/>
         </Border>
     </Grid>

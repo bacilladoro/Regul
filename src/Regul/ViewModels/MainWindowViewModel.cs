@@ -65,7 +65,7 @@ namespace Regul.ViewModels
             set
             {
                 this.RaiseAndSetIfChanged(ref _selecetedTabItem, value);
-                IsNotNull = !Tabs.Any();
+                IsNotNull = SelectedTabItem != null;
             }
         }
 
@@ -101,11 +101,11 @@ namespace Regul.ViewModels
             Application.Current.Styles[2] = !string.IsNullOrEmpty(Program.Settings.Theme)
                 ? new StyleInclude(new Uri("resm:Styles?assembly=Regul"))
                 {
-                    Source = new Uri($"avares://Regul/Assets/Themes/{Program.Settings.Theme}.axaml")
+                    Source = new Uri($"avares://Regul.OlibStyle/Themes/{Program.Settings.Theme}.axaml")
                 }
                 : new StyleInclude(new Uri("resm:Styles?assembly=Regul"))
                 {
-                    Source = new Uri("avares://Regul/Assets/Themes/Dazzling.axaml")
+                    Source = new Uri("avares://Regul.OlibStyle/Themes/Dazzling.axaml")
                 };
             
             CreatorName = Program.Settings.CreatorName;

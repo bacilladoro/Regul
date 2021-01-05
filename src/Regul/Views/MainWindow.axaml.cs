@@ -1,10 +1,6 @@
 ﻿using System;
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
 using Regul.OlibStyle;
-using Regul.ViewModels;
 
 namespace Regul.Views
 {
@@ -14,17 +10,11 @@ namespace Regul.Views
         {
             InitializeComponent();
             
-            Closed +=OnClosed;
+            Closed += OnClosed;
         }
 
-        private void OnClosed(object sender, EventArgs e)
-        {
-            App.MainWindowViewModel.Exit();
-        }
+        private void OnClosed(object sender, EventArgs e) => App.MainWindowViewModel.Exit();
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
     }
 }

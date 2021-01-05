@@ -25,7 +25,7 @@
                 </ComboBox>
             </DockPanel>
         </StackPanel>
-        <Border Classes="Panel" Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.3 4.3">
+        <Border Classes="Panel" Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.5 4.5">
             <Button Margin="10" Content="{DynamicResource Close}" Command="{Binding CloseWindow}" HorizontalAlignment="Right"/>
         </Border>
     </Grid>

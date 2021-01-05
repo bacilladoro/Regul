@@ -5,66 +5,14 @@
         <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
         <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
 		
-		<StyleInclude Source="/Assets/Themes/Dazzling.axaml"/>
+		<StyleInclude Source="avares://Regul.OlibStyle/Themes/Dazzling.axaml"/>
 		<StyleInclude Source="/Assets/Images.axaml"/>
 		<StyleInclude Source="/Assets/Local/Lang.en-US.axaml"/>
 		
-		<StyleInclude Source="avares://Regul.OlibStyle/Controls/OlibMainWindow.axaml"/>
-		<StyleInclude Source="avares://Regul.OlibStyle/Controls/OlibModalWindow.axaml"/>
-		
-		<StyleInclude Source="/Assets/Controls/Button.axaml"/>
-		<StyleInclude Source="/Assets/Controls/Menu.axaml"/>
-		<StyleInclude Source="/Assets/Controls/TextBox.axaml"/>
-		<StyleInclude Source="/Assets/Controls/ComboBox.axaml"/>
-		<StyleInclude Source="/Assets/Controls/CheckBox.axaml"/>
-		<StyleInclude Source="/Assets/Controls/ListBoxItem.axaml"/>
-		<StyleInclude Source="/Assets/Controls/ProgressBar.axaml"/>
-		<StyleInclude Source="/Assets/Controls/ListBox.axaml"/>
-		<StyleInclude Source="/Assets/Controls/ScrollBar.axaml"/>
-		<StyleInclude Source="/Assets/Controls/TabControl.axaml"/>
-		<StyleInclude Source="/Assets/Controls/TabItem.axaml"/>
+		<StyleInclude Source="avares://Regul.OlibStyle/OlibStyle.axaml"/>
 
         <Style Selector="Window">
             <Setter Property="FontFamily" Value="/Assets/Fonts#Noto Sans"/>
         </Style>
-
-        <Style Selector="TextBlock.Heading">
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
-        </Style>
-		
-		<Style Selector="Border.BorderStyle">
-			<Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
-			<Setter Property="CornerRadius" Value="5"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="BorderBrush" Value="{DynamicResource ThemeGlobalBorderBrush}"/>
-		</Style>
-
-		<Style Selector="Separator">
-			<Setter Property="Background" Value="{DynamicResource ThemeGlobalBorderBrush}"/>
-			<Setter Property="Height" Value="1"/>
-			<Setter Property="Margin" Value="15 5"/>
-		</Style>
-		
-		<Style Selector="Border.Panel">
-			<Setter Property="Background" Value="{DynamicResource ThemePanelBackgroundBrush}"/>
-			<Setter Property="BorderBrush" Value="{DynamicResource ThemeGlobalBorderBrush}"/>
-		</Style>
-		
-		<Style Selector="ToolTip">
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
-			<Setter Property="Template">
-				<ControlTemplate>
-					<Border Padding="4,2" Background="{DynamicResource ThemeBackgroundBrush}"
-							BorderBrush="{DynamicResource ThemeGlobalBorderBrush}"
-							BorderThickness="1" IsHitTestVisible="True">
-						<ContentPresenter Name="PART_ContentPresenter"
-										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  Content="{TemplateBinding Content}"/>
-					</Border>
-				</ControlTemplate>
-			</Setter>
-		</Style>
     </Application.Styles>
 </Application>
