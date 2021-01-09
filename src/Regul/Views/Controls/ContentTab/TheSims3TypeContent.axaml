@@ -2,8 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:local="clr-namespace:Regul.Core.Converters;assembly=Regul"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Regul.Views.Controls.ContentTab.TheSims3TypeContent">
+	<UserControl.Resources>
+		<local:UIntToStringConverter x:Key="UIntToStringConverter"/>
+		<local:ULongToStringConverter x:Key="ULongToStringConverter"/>
+		<local:UShortToStringConverter x:Key="UShortToStringConverter"/>
+	</UserControl.Resources>
 	<Border CornerRadius="0 0 4.5 4.5" Background="{DynamicResource ThemePanelBackgroundBrush}" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}">
 		<Grid ColumnDefinitions="*,Auto" RowDefinitions="30,*">
 			<Border Grid.Row="0" Margin="5 5 5 0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5">
@@ -15,7 +21,7 @@
 							<MenuItem Header="Float"/>
 						</MenuItem>
 						<MenuItem Header="{DynamicResource Resource}">
-							<MenuItem Header="{DynamicResource AddE}" InputGesture="Ctrl+Shift+A" HotKey="Ctrl+Shift+A"/>
+							<MenuItem Header="{DynamicResource AddE}" Command="{Binding AddResource}" InputGesture="Ctrl+Shift+A" HotKey="Ctrl+Shift+A"/>
 							<MenuItem Header="{DynamicResource Copy}" InputGesture="Ctrl+Shift+C" HotKey="Ctrl+Shift+C"/>
 							<MenuItem Header="{DynamicResource PasteE}" InputGesture="Ctrl+Shift+V" HotKey="Ctrl+Shift+V"/>
 							<MenuItem Header="{DynamicResource Dublicate}"/>
@@ -44,7 +50,23 @@
 			</Border>
 
 			<Grid ColumnDefinitions="*,Auto,*" Grid.Row="1">
-				<Border Grid.Column="0" Margin="5 5 0 5" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5"/>
+				<Border Grid.Column="0" Margin="5 5 0 5" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5">
+					<DataGrid Items="{Binding Resources}">
+						<DataGrid.Columns>
+							<DataGridTextColumn Header="Name" Width="255" Binding="{Binding ResourceName}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Tag" Width="50" Binding="{Binding Tag}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Type" Width="90" Binding="{Binding ResourceType, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Group" Width="85" Binding="{Binding ResourceGroup, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Instance" Width="145" Binding="{Binding Instance, Converter={StaticResource ULongToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Chunkoffset" Width="85" Binding="{Binding Chunkoffset, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Filesize" Width="80" Binding="{Binding Filesize, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Memsize" Width="80" Binding="{Binding Memsize, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Compressed" Width="80" Binding="{Binding Compressed, Converter={StaticResource UShortToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Unknown2" Width="80" Binding="{Binding Unknown2, Converter={StaticResource UShortToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="IsDeleted" Width="80" IsReadOnly="True"/>
+						</DataGrid.Columns>
+					</DataGrid>
+				</Border>
 				<GridSplitter Grid.Column="1" Width="5" Background="Transparent" Margin="0 5"/>
 				<Border Grid.Column="2" Margin="0 5 5 5" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5"/>
 			</Grid>
@@ -53,7 +75,7 @@
 				<Border Width="250" IsVisible="{Binding OpenedMenu}" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1 0 0 0" CornerRadius="0 0 4.5 0">
 					<ScrollViewer HorizontalScrollBarVisibility="Disabled">
 						<StackPanel Margin="5">
-							
+							<Image Source="{Binding ImageResource}"/>
 						</StackPanel>
 					</ScrollViewer>
 				</Border>

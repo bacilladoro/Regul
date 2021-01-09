@@ -13,6 +13,7 @@ using Regul.Structures;
 using Regul.ViewModels.Controls.Tab;
 using Regul.Views.Controls.ContentTab;
 using Regul.Views.Controls.Tab;
+using System.Collections.Generic;
 
 namespace Regul.ViewModels
 {
@@ -80,6 +81,8 @@ namespace Regul.ViewModels
         private ReactiveCommand<Unit, Unit> DeleteProjectCommand { get; }
         private ReactiveCommand<Unit, Unit> SettingsWindowCommand { get; }
         private ReactiveCommand<Unit, Unit> AboutWindowCommand { get; }
+        private ReactiveCommand<Unit, Unit> OpenPackageCommand { get; }
+        private ReactiveCommand<Unit, Unit> HEXNumberConverterCommand { get; }
 
         #endregion
 
@@ -92,6 +95,8 @@ namespace Regul.ViewModels
             DeleteProjectCommand = ReactiveCommand.Create(DeleteProject);
             SettingsWindowCommand = ReactiveCommand.Create(SettingsWindow);
             AboutWindowCommand = ReactiveCommand.Create(AboutWindow);
+            OpenPackageCommand = ReactiveCommand.Create(OpenPackage);
+            HEXNumberConverterCommand = ReactiveCommand.Create(HEXNumberConverter);
 
             Initialize();
         }
@@ -114,7 +119,7 @@ namespace Regul.ViewModels
 
         private void SaveClearWindow()
         {
-            App.SaveClear = new SaveClear{ DataContext = new SaveClearViewModel() };
+            App.SaveClear = new SaveClear { DataContext = new SaveClearViewModel() };
             App.SaveClear.ShowDialog(App.MainWindow);
         }
         private void SettingsWindow()
@@ -124,8 +129,13 @@ namespace Regul.ViewModels
         }
         private void AboutWindow()
         {
-            App.About = new About {DataContext = new AboutViewModel()};
+            App.About = new About { DataContext = new AboutViewModel() };
             App.About.ShowDialog(App.MainWindow);
+        }
+        private void HEXNumberConverter()
+        {
+            App.HEXNumberConverter = new HEXNumberConverter();
+            App.HEXNumberConverter.Show();
         }
 
         public void Exit()
@@ -156,6 +166,37 @@ namespace Regul.ViewModels
                     Content = ((SelectTypeViewModel)App.SelectType.DataContext).Type switch
                     {
                         _ => new TheSims3TypeContent()
+                    }
+                });
+            }
+        }
+        private async void OpenPackage()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filters.Add(new FileDialogFilter { Extensions = { "package" }, Name = "Package files" });
+            dialog.Filters.Add(new FileDialogFilter { Extensions = { "nhd" }, Name = "Save files" });
+            List<string> files = (await dialog.ShowAsync(App.MainWindow)).ToList();
+
+            if (files.Count == 0) return;
+
+            App.SelectType = new SelectType { DataContext = new SelectTypeViewModel() };
+            if (await App.SelectType.ShowDialog<bool>(App.MainWindow))
+            {
+                Tabs.Add(new TabItem
+                {
+                    Header = new TabHeader
+                    {
+                        ViewModel =
+                        {
+                            NameTab = System.IO.Path.GetFileNameWithoutExtension(files[0]),
+                            CloseTabAction = CloseTab,
+                            ID = Guid.NewGuid().ToString("N"),
+                            PackageType = ((SelectTypeViewModel)App.SelectType.DataContext).Type
+                        }
+                    },
+                    Content = ((SelectTypeViewModel)App.SelectType.DataContext).Type switch
+                    {
+                        _ => new TheSims3TypeContent(files[0])
                     }
                 });
             }

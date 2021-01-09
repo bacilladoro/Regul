@@ -14,13 +14,13 @@
 			<ControlTemplate>
 				<Grid>
 					<Border Classes="OuterBorder" CornerRadius="5">
-						<DockPanel>
-							<Border DockPanel.Dock="Top" Background="{DynamicResource ThemePanelBackgroundBrush}" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" BorderThickness="0 0 0 1" CornerRadius="4.5 4.5 0 0">
+						<Grid RowDefinitions="30,*,Auto">
+							<Border Grid.Row="0" Background="{DynamicResource ThemePanelBackgroundBrush}" CornerRadius="4.5 4.5 0 0">
 								<Grid
-								  Height="30"
 								  ColumnDefinitions="Auto,*,Auto">
-									<Border Name="TitleBar" ZIndex="-5" Grid.ColumnSpan="2" Background="{DynamicResource ThemePanelBackgroundBrush}" CornerRadius="5 5 0 0"/>
-									<StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+									<Border ZIndex="-5" Grid.ColumnSpan="2" Background="{DynamicResource ThemePanelBackgroundBrush}" CornerRadius="5 5 0 0"/>
+									<Border Name="TitleBar" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5 5 0 0"/>
+									<StackPanel Orientation="Horizontal" Margin="5 0 0 0" ZIndex="-1">
 										<Image Classes="IconImage" Source="{Binding Icon, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource WindowIconToImageConverter}}" MaxWidth="16" MaxHeight="16"/>
 										<TextBlock Name="TitleTextBlock" VerticalAlignment="Center" Text="{TemplateBinding Title}"/>
 									</StackPanel>
@@ -89,8 +89,11 @@
 									</StackPanel>
 								</Grid>
 							</Border>
-							<ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" Background="{TemplateBinding Background}" CornerRadius="0 0 4.5 4.5"/>
-						</DockPanel>
+							<ContentPresenter Name="Content" Grid.Row="1" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" Background="{TemplateBinding Background}" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" BorderThickness="0 1 0 0"/>
+							<Border Name="BottomPanel" Height="50" Classes="Panel" Grid.Row="2" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.5 4.5">
+								<ContentControl Content="{TemplateBinding BottomPanel}" Margin="10"/>
+							</Border>
+						</Grid>
 					</Border>
 					<Grid Name="ResizeGrid" ColumnDefinitions="8,*,8" RowDefinitions="8,*,8">
 						<Border Name="TopLeft" ZIndex="1"/>

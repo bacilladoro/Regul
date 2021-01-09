@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Styling;
@@ -8,27 +9,36 @@ using System;
 
 namespace Regul.OlibStyle
 {
+    [Flags]
+    public enum WindowButtons
+    {
+        OnlyClose = 0,
+        CloseAndCollapse = 1,
+        CloseAndExpand = 2,
+        All = 3
+    }
+
     public class OlibModalWindow : Window, IStyleable
     {
-        public enum WindowControlButtons
-        {
-            OnlyClose,
-            CloseAndCollapse,
-            CloseAndExpand,
-            All
-        }
-
-        public static readonly StyledProperty<WindowControlButtons> WindowButtonsProperty;
+        public static readonly StyledProperty<WindowButtons> WindowButtonsProperty;
+        public static readonly StyledProperty<Grid> BottomPanelProperty;
 
         static OlibModalWindow()
         {
-            WindowButtonsProperty = AvaloniaProperty.Register<OlibModalWindow, WindowControlButtons>(nameof(WindowButtons));
+            WindowButtonsProperty = AvaloniaProperty.Register<OlibModalWindow, WindowButtons>(nameof(WindowButtons));
+            BottomPanelProperty = AvaloniaProperty.Register<OlibModalWindow, Grid>(nameof(BottomPanel));
         }
 
-        public WindowControlButtons WindowButtons
+        public WindowButtons WindowButtons
         {
             get => GetValue(WindowButtonsProperty);
             set => SetValue(WindowButtonsProperty, value);
+        }
+
+        public Grid BottomPanel
+        {
+            get => GetValue(BottomPanelProperty);
+            set => SetValue(BottomPanelProperty, value);
         }
 
         private void SetupSide(string name, StandardCursorType cursor, WindowEdge edge, ref TemplateAppliedEventArgs e)
@@ -59,7 +69,7 @@ namespace Regul.OlibStyle
                 {
                     titleBar.DoubleTapped += (s, ep) =>
                     {
-                        if (WindowButtons == WindowControlButtons.CloseAndExpand || WindowButtons == WindowControlButtons.All)
+                        if (WindowButtons == WindowButtons.CloseAndExpand || WindowButtons == WindowButtons.All)
                             window.WindowState = ((Window)this.GetVisualRoot()).WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
                     };
                 }
@@ -68,6 +78,12 @@ namespace Regul.OlibStyle
                 {
                     window.PlatformImpl?.BeginMoveDrag(ep);
                 };
+
+                if (BottomPanel == null)
+                {
+                    GetControl<Border>(e, "BottomPanel").IsVisible = false;
+                    GetControl<ContentPresenter>(e, "Content").CornerRadius = CornerRadius.Parse("0 0 4.5 4.5");
+                }
 
                 try
                 {
@@ -96,14 +112,18 @@ namespace Regul.OlibStyle
                 {
                     window.WindowState = WindowState.Minimized;
                 };
-                if (WindowButtons != WindowControlButtons.CloseAndCollapse || WindowButtons != WindowControlButtons.All) minimizeButton.IsVisible = false;
 
                 Button maximizeButton = GetControl<Button>(e, "MaximizeButton");
                 maximizeButton.Click += (s, ep) =>
                 {
                     window.WindowState = window.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
                 };
-                if (WindowButtons != WindowControlButtons.CloseAndCollapse || WindowButtons != WindowControlButtons.All) maximizeButton.IsVisible = false;
+
+                if (WindowButtons != WindowButtons.All)
+                {
+                    if (WindowButtons != WindowButtons.CloseAndCollapse) minimizeButton.IsVisible = false;
+                    if (WindowButtons != WindowButtons.CloseAndExpand) maximizeButton.IsVisible = false;
+                }
 
                 GetControl<Button>(e, "CloseButton").Click += (s, ep) =>
                 {

@@ -15,6 +15,7 @@
 		<v:String x:Key="SaveClear">Save clear</v:String>
 		<v:String x:Key="Close">Close</v:String>
 		<v:String x:Key="CheckForUpdates">Check for updates</v:String>
+		<v:String x:Key="HEXNumberConverter">HEX number converter</v:String>
 		<!-- MainWindow -->
 		
 		<!-- WelcomeWindow -->
@@ -45,6 +46,10 @@
 		<v:String x:Key="Paste">Paste</v:String>
 		<v:String x:Key="Copy">Copy</v:String>
 		<!-- TextBoxContextMenu -->
+		
+		<!-- HEXNumberConverter -->
+		<v:String x:Key="Decimal">Decimal</v:String>
+		<!-- HEXNumberConverter -->
 		
 		<!-- MessageBox -->
 		<v:String x:Key="Yes">Yes</v:String>
@@ -107,6 +112,17 @@
 		<v:String x:Key="Export">Export</v:String>
 		<v:String x:Key="ToFileE">To file...</v:String>
 		<v:String x:Key="ToPackageE">To package...</v:String>
+		
+		<v:String x:Key="Name">Name</v:String>
+		<v:String x:Key="Tag">Tag</v:String>
+		<v:String x:Key="Type">Type</v:String>
+		<v:String x:Key="Group">Group</v:String>
+		<v:String x:Key="Instance">Instance</v:String>
+		<v:String x:Key="Chunkoffset">Chunkoffset</v:String>
+		<v:String x:Key="Filesize">Filesize</v:String>
+		<v:String x:Key="Memsize">Memsize</v:String>
+		<v:String x:Key="Unknown2">Unknown2</v:String>
+		<v:String x:Key="IsDeleted">IsDeleted</v:String>
 		<!-- TheSims3TypeContent -->
 
 		<v:String x:Key="NoName">No name</v:String>

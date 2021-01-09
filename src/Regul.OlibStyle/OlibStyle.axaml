@@ -16,6 +16,7 @@
 	<StyleInclude Source="/Controls/TabItem.axaml"/>
 	<StyleInclude Source="/Controls/GridSplitter.axaml"/>
 	<StyleInclude Source="/Controls/ToggleButton.axaml"/>
+	<StyleInclude Source="/Controls/DataGrid.axaml"/>
 	
 	<Style Selector="TextBlock.Heading">
             <Setter Property="FontWeight" Value="Bold"/>

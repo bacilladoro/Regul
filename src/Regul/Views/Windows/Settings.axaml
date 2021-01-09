@@ -12,21 +12,22 @@
                       ShowInTaskbar="False"
 					  Background="{DynamicResource ThemeBackgroundBrush}"
                       Title="{DynamicResource Settings}">
-    <Grid RowDefinitions="*,50">
-        <StackPanel Spacing="5" Margin="5">
-            <DockPanel>
-                <TextBlock Text="{DynamicResource ThemeC}"/>
-                <ComboBox Margin="5 0 0 0" SelectedIndex="{Binding Theme}">
-                    <ComboBoxItem Content="{DynamicResource Dazzling}"/>
-                    <ComboBoxItem Content="{DynamicResource Gloomy}"/>
-                    <ComboBoxItem Content="{DynamicResource Mysterious}"/>
-                    <ComboBoxItem Content="{DynamicResource Turquoise}"/>
-                    <ComboBoxItem Content="{DynamicResource Emerald}"/>
-                </ComboBox>
-            </DockPanel>
-        </StackPanel>
-        <Border Classes="Panel" Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.5 4.5">
-            <Button Margin="10" Content="{DynamicResource Close}" Command="{Binding CloseWindow}" HorizontalAlignment="Right"/>
-        </Border>
-    </Grid>
+	<StackPanel Spacing="5" Margin="5">
+		<DockPanel>
+			<TextBlock Text="{DynamicResource ThemeC}"/>
+			<ComboBox Margin="5 0 0 0" SelectedIndex="{Binding Theme}">
+				<ComboBoxItem Content="{DynamicResource Dazzling}"/>
+				<ComboBoxItem Content="{DynamicResource Gloomy}"/>
+				<ComboBoxItem Content="{DynamicResource Mysterious}"/>
+				<ComboBoxItem Content="{DynamicResource Turquoise}"/>
+				<ComboBoxItem Content="{DynamicResource Emerald}"/>
+			</ComboBox>
+		</DockPanel>
+	</StackPanel>
+
+	<olib:OlibModalWindow.BottomPanel>
+		<Grid>
+			<Button Content="{DynamicResource Close}" Command="{Binding CloseWindow}" HorizontalAlignment="Right"/>
+		</Grid>
+	</olib:OlibModalWindow.BottomPanel>
 </olib:OlibModalWindow>

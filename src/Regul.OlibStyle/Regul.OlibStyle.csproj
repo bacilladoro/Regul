@@ -1,54 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <AvaloniaXaml Remove="Controls\Button.axaml" />
-    <AvaloniaXaml Remove="Controls\CheckBox.axaml" />
-    <AvaloniaXaml Remove="Controls\ComboBox.axaml" />
-    <AvaloniaXaml Remove="Controls\GridSplitter.axaml" />
-    <AvaloniaXaml Remove="Controls\ListBox.axaml" />
-    <AvaloniaXaml Remove="Controls\ListBoxItem.axaml" />
-    <AvaloniaXaml Remove="Controls\Menu.axaml" />
-    <AvaloniaXaml Remove="Controls\OlibMainWindow.axaml" />
-    <AvaloniaXaml Remove="Controls\ProgressBar.axaml" />
-    <AvaloniaXaml Remove="Controls\ScrollBar.axaml" />
-    <AvaloniaXaml Remove="Controls\TabControl.axaml" />
-    <AvaloniaXaml Remove="Controls\TabItem.axaml" />
-    <AvaloniaXaml Remove="Controls\TextBox.axaml" />
-    <AvaloniaXaml Remove="Controls\ToggleButton.axaml" />
-    <AvaloniaXaml Remove="OlibStyle.axaml" />
-    <AvaloniaXaml Remove="Themes\Dazzling.axaml" />
-    <AvaloniaXaml Remove="Themes\Emerald.axaml" />
-    <AvaloniaXaml Remove="Themes\Gloomy.axaml" />
-    <AvaloniaXaml Remove="Themes\Mysterious.axaml" />
-    <AvaloniaXaml Remove="Themes\Turquoise.axaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AvaloniaResource Include="Controls\Button.axaml" />
-    <AvaloniaResource Include="Controls\CheckBox.axaml" />
-    <AvaloniaResource Include="Controls\ComboBox.axaml" />
-    <AvaloniaResource Include="Controls\ToggleButton.axaml" />
-    <AvaloniaResource Include="Controls\GridSplitter.axaml" />
-    <AvaloniaResource Include="Controls\ListBox.axaml" />
-    <AvaloniaResource Include="Controls\ListBoxItem.axaml" />
-    <AvaloniaResource Include="Controls\Menu.axaml" />
-    <AvaloniaResource Include="Controls\OlibMainWindow.axaml" />
-    <AvaloniaResource Include="Controls\ProgressBar.axaml" />
-    <AvaloniaResource Include="Controls\ScrollBar.axaml" />
-    <AvaloniaResource Include="Controls\TabControl.axaml" />
-    <AvaloniaResource Include="Controls\TabItem.axaml" />
-    <AvaloniaResource Include="Controls\TextBox.axaml" />
-    <AvaloniaResource Include="OlibStyle.axaml" />
-    <AvaloniaResource Include="Themes\Dazzling.axaml" />
-    <AvaloniaResource Include="Themes\Emerald.axaml" />
-    <AvaloniaResource Include="Themes\Gloomy.axaml" />
-    <AvaloniaResource Include="Themes\Mysterious.axaml" />
-    <AvaloniaResource Include="Themes\Turquoise.axaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.0-rc1" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc1" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<AvaloniaResource Include="Controls\**" />
+		<AvaloniaResource Include="Themes\**" />
+		<AvaloniaResource Include="OlibStyle.axaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="0.10.0-rc1" />
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc1" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.0-rc1" />
+	</ItemGroup>
 </Project>

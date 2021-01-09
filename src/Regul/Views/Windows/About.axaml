@@ -13,42 +13,41 @@
                       CanResize="False"
 					  Background="{StaticResource ThemeBackgroundBrush}"
                       Title="{StaticResource AboutTheProgram}">
-    <Grid RowDefinitions="*,50">
-        <Grid ColumnDefinitions="*,1.5*">
-            <Image Source="{StaticResource RegulImage}" Margin="50"/>
-            <Image VerticalAlignment="Bottom" Source="{StaticResource OnebeldImage}" Margin="50 10"/>
-            <Border Grid.Column="1" Classes="BorderStyle" Margin="10">
-                <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Margin="10">
-                        <Image Source="{StaticResource TextRegul}" Height="50"/>
-                        <TextBlock Text="©2020-2021 Dmitry Zhutkov (Onebeld)" TextAlignment="Center" FontSize="14" Margin="0 5"/>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="{StaticResource VersionC}" Margin="0 0 5 0"/>
-                            <TextBlock Text="0.1.0-beta"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="{StaticResource LicenseC}" Margin="0 0 5 0"/>
-                            <TextBlock Text="MIT"/>
-                        </StackPanel>
-                        <TextBlock Text="{StaticResource RegulDescription}" TextWrapping="Wrap" TextAlignment="Center" Margin="0 20"/>
-                        <Separator/>
-                        <TextBlock Text="{StaticResource LibrariesUsedC}" TextAlignment="Center" FontWeight="Bold" FontSize="14"/>
-                        <TextBlock Text="Avalonia 0.10.0-rc1" TextAlignment="Center"/>
-						<TextBlock Text="OlibStyle by Dmitry Zhutkov (Onebeld) 1.0.0" TextAlignment="Center"/>
-                        <TextBlock Text="Sims 3 Package Interface (s3pi) by Peter L Jones" TextAlignment="Center"/>
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
-        </Grid>
-        <Border Classes="Panel" Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.5 4.5">
-            <Grid ColumnDefinitions="Auto,*,Auto" Margin="10">
-                <StackPanel Orientation="Horizontal" Spacing="5">
-                    <Button Padding="0" Command="{Binding GitHubSite}">
-                        <Path Name="GitHubIcon" Margin="5 0" Data="M9 0A9.12 9.12 0 0 0 0 9.23 9.2 9.2 0 0 0 6.16 18c.45.09.61-.2.61-.44s0-.8 0-1.57c-2.51.56-3-1.24-3-1.24a2.46 2.46 0 0 0-1-1.35c-.82-.57.06-.56.06-.56a1.92 1.92 0 0 1 1.38.95 1.89 1.89 0 0 0 2.62.77 1.94 1.94 0 0 1 .57-1.23c-2-.24-4.1-1-4.1-4.56a3.64 3.64 0 0 1 .92-2.48 3.41 3.41 0 0 1 .09-2.44s.76-.25 2.48.94A8.91 8.91 0 0 1 9 4.46a8.91 8.91 0 0 1 2.25.31c1.72-1.19 2.48-.94 2.48-.94a3.41 3.41 0 0 1 .09 2.44 3.64 3.64 0 0 1 .92 2.48c0 3.54-2.1 4.32-4.11 4.55A2.24 2.24 0 0 1 11.24 15c0 1.23 0 2.23 0 2.53s.16.53.62.44A9.21 9.21 0 0 0 18 9.23 9.12 9.12 0 0 0 9 0Z"/>
-                    </Button>
-                </StackPanel>
-                <Button Grid.Column="2" Content="{DynamicResource Close}" Command="{Binding CloseWindow}" HorizontalAlignment="Right"/>
-            </Grid>
-        </Border>
-    </Grid>
+	<Grid ColumnDefinitions="*,1.5*">
+		<Image Source="{StaticResource RegulImage}" Margin="50"/>
+		<Image VerticalAlignment="Bottom" Source="{StaticResource OnebeldImage}" Margin="50 10"/>
+		<Border Grid.Column="1" Classes="BorderStyle" Margin="10">
+			<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+				<StackPanel Margin="10">
+					<Image Source="{StaticResource TextRegul}" Height="50"/>
+					<TextBlock Text="©2020-2021 Dmitry Zhutkov (Onebeld)" TextAlignment="Center" FontSize="14" Margin="0 5"/>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+						<TextBlock Text="{StaticResource VersionC}" Margin="0 0 5 0"/>
+						<TextBlock Text="0.1.0-beta"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+						<TextBlock Text="{StaticResource LicenseC}" Margin="0 0 5 0"/>
+						<TextBlock Text="MIT"/>
+					</StackPanel>
+					<TextBlock Text="{StaticResource RegulDescription}" TextWrapping="Wrap" TextAlignment="Center" Margin="0 20"/>
+					<Separator/>
+					<TextBlock Text="{StaticResource LibrariesUsedC}" TextAlignment="Center" FontWeight="Bold" FontSize="14"/>
+					<TextBlock Text="Avalonia 0.10.0-rc1" TextAlignment="Center"/>
+					<TextBlock Text="OlibStyle by Dmitry Zhutkov (Onebeld) 1.0.0" TextAlignment="Center"/>
+					<TextBlock Text="Sims 3 Package Interface (s3pi) by Peter L Jones" TextAlignment="Center"/>
+				</StackPanel>
+			</ScrollViewer>
+		</Border>
+	</Grid>
+	
+	<olib:OlibModalWindow.BottomPanel>
+		<Grid ColumnDefinitions="Auto,*,Auto">
+			<StackPanel Orientation="Horizontal" Spacing="5">
+				<Button Padding="0" Command="{Binding GitHubSite}">
+					<Path Name="GitHubIcon" Margin="5 0" Data="M9 0A9.12 9.12 0 0 0 0 9.23 9.2 9.2 0 0 0 6.16 18c.45.09.61-.2.61-.44s0-.8 0-1.57c-2.51.56-3-1.24-3-1.24a2.46 2.46 0 0 0-1-1.35c-.82-.57.06-.56.06-.56a1.92 1.92 0 0 1 1.38.95 1.89 1.89 0 0 0 2.62.77 1.94 1.94 0 0 1 .57-1.23c-2-.24-4.1-1-4.1-4.56a3.64 3.64 0 0 1 .92-2.48 3.41 3.41 0 0 1 .09-2.44s.76-.25 2.48.94A8.91 8.91 0 0 1 9 4.46a8.91 8.91 0 0 1 2.25.31c1.72-1.19 2.48-.94 2.48-.94a3.41 3.41 0 0 1 .09 2.44 3.64 3.64 0 0 1 .92 2.48c0 3.54-2.1 4.32-4.11 4.55A2.24 2.24 0 0 1 11.24 15c0 1.23 0 2.23 0 2.53s.16.53.62.44A9.21 9.21 0 0 0 18 9.23 9.12 9.12 0 0 0 9 0Z"/>
+				</Button>
+			</StackPanel>
+			<Button Grid.Column="2" Content="{DynamicResource Close}" Command="{Binding CloseWindow}" HorizontalAlignment="Right"/>
+		</Grid>
+	</olib:OlibModalWindow.BottomPanel>
 </olib:OlibModalWindow>

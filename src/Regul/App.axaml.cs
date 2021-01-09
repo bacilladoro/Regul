@@ -1,8 +1,6 @@
-﻿using System;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Avalonia.Markup.Xaml.Styling;
 using Regul.ViewModels;
 using Regul.Views;
 using Regul.Views.Windows;
@@ -17,6 +15,7 @@ namespace Regul
         public static SaveClear SaveClear { get; set; }
         public static About About { get; set; }
         public static SelectType SelectType { get; set; }
+        public static HEXNumberConverter HEXNumberConverter { get; set; }
 
         public override void Initialize()
         {

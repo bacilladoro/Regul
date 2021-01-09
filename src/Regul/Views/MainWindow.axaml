@@ -16,7 +16,7 @@
 		<Menu VerticalAlignment="Center">
 			<MenuItem Header="{DynamicResource File}">
 				<MenuItem Header="{DynamicResource New}" Command="{Binding NewPackageCommand}" InputGesture="Ctrl+N" HotKey="Ctrl+N"/>
-				<MenuItem Header="{DynamicResource Open}" InputGesture="Ctrl+O" HotKey="Ctrl+O"/>
+				<MenuItem Header="{DynamicResource Open}" Command="{Binding OpenPackageCommand}" InputGesture="Ctrl+O" HotKey="Ctrl+O"/>
 				<MenuItem Header="Save" InputGesture="Ctrl+S" HotKey="Ctrl+S" IsEnabled="{Binding IsNotNull}"/>
                 <Separator/>
                 <MenuItem Header="{DynamicResource Settings}" Command="{Binding SettingsWindowCommand}"/>
@@ -26,6 +26,7 @@
 				<MenuItem Header="{DynamicResource TheSims3}">
 					<MenuItem Header="{DynamicResource SaveClear}" Command="{Binding SaveClearWindowCommand}"/>
 				</MenuItem>
+				<MenuItem Header="{DynamicResource HEXNumberConverter}" Command="{Binding HEXNumberConverterCommand}"/>
 			</MenuItem>
 			<MenuItem Header="{DynamicResource Reference}">
 				<MenuItem Header="{DynamicResource CheckForUpdates}"/>
