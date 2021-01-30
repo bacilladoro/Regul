@@ -20,7 +20,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Regul.Instruments\Regul.Instruments.csproj" />
-		<ProjectReference Include="..\Regul.OlibStyle\Regul.OlibUI.csproj" />
+		<ProjectReference Include="..\Regul.OlibUI\Regul.OlibUI.csproj" />
 		<ProjectReference Include="..\Regul.S3PI\Regul.S3PI.csproj" />
 	</ItemGroup>
 	<ItemGroup>
