@@ -2,7 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:local="clr-namespace:Regul.Core.Converters;assembly=Regul"
+			 xmlns:local="using:Regul.Core.Converters"
+			 xmlns:instruments="using:Regul.Instruments"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Regul.Views.Controls.ContentTab.TheSims3TypeContent">
 	<UserControl.Resources>
@@ -13,8 +14,12 @@
 	<Border CornerRadius="0 0 4.5 4.5" Background="{DynamicResource ThemePanelBackgroundBrush}" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}">
 		<Grid ColumnDefinitions="*,Auto" RowDefinitions="30,*">
 			<Border Grid.Row="0" Margin="5 5 5 0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5">
-				<Grid ColumnDefinitions="Auto,*,Auto">
-					<Menu Grid.Column="0" VerticalAlignment="Center" Margin="5 0 0 0">
+				<Grid ColumnDefinitions="Auto,Auto,*,Auto">
+					<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5 0 0 0">
+						<TextBlock Text="Count:" Margin="0 0 5 0"/>
+						<TextBlock Text="{Binding Resources.Count}"/>
+					</StackPanel>
+					<Menu Grid.Column="1" VerticalAlignment="Center" Margin="5 0 0 0">
 						<MenuItem Header="{DynamicResource Edit}">
 							<MenuItem Header="{DynamicResource Copy}" InputGesture="Ctrl+C"/>
 							<MenuItem Header="{DynamicResource SavePreviewE}"/>
@@ -45,37 +50,63 @@
 							</MenuItem>
 						</MenuItem>
 					</Menu>
-					<ToggleButton Grid.Column="2" IsChecked="{Binding OpenedMenu}" Content="Menu"/>
+					<ToggleButton Grid.Column="3" IsChecked="{Binding OpenedMenu}" Content="Menu"/>
 				</Grid>
 			</Border>
 
 			<Grid ColumnDefinitions="*,Auto,*" Grid.Row="1">
 				<Border Grid.Column="0" Margin="5 5 0 5" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5">
-					<DataGrid Items="{Binding Resources}">
+					<DataGrid Name="ResourceList" Items="{Binding Resources}" CanUserResizeColumns="True" CanUserReorderColumns="True" CanUserSortColumns="True" HeadersVisibility="All">
 						<DataGrid.Columns>
-							<DataGridTextColumn Header="Name" Width="255" Binding="{Binding ResourceName}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Tag" Width="50" Binding="{Binding Tag}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Type" Width="90" Binding="{Binding ResourceType, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Group" Width="85" Binding="{Binding ResourceGroup, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Instance" Width="145" Binding="{Binding Instance, Converter={StaticResource ULongToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Chunkoffset" Width="85" Binding="{Binding Chunkoffset, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Filesize" Width="80" Binding="{Binding Filesize, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Memsize" Width="80" Binding="{Binding Memsize, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Compressed" Width="80" Binding="{Binding Compressed, Converter={StaticResource UShortToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Unknown2" Width="80" Binding="{Binding Unknown2, Converter={StaticResource UShortToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="IsDeleted" Width="80" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Name" Width="100" Binding="{Binding ResourceName}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Tag" Width="50" Binding="{Binding Tag}" IsReadOnly="True" />
+							<DataGridTextColumn Header="Type" Width="90" Binding="{Binding ResourceIndexEntry.ResourceType, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Group" Width="85" Binding="{Binding ResourceIndexEntry.ResourceGroup, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Instance" Width="145" Binding="{Binding ResourceIndexEntry.Instance, Converter={StaticResource ULongToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Chunkoffset" Width="85" Binding="{Binding ResourceIndexEntry.Chunkoffset, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Filesize" Width="80" Binding="{Binding ResourceIndexEntry.Filesize, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Memsize" Width="80" Binding="{Binding ResourceIndexEntry.Memsize, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Compressed" Width="80" Binding="{Binding ResourceIndexEntry.Compressed, Converter={StaticResource UShortToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Unknown2" Width="80" Binding="{Binding ResourceIndexEntry.Unknown2, Converter={StaticResource UShortToStringConverter}}" IsReadOnly="True"/>
 						</DataGrid.Columns>
 					</DataGrid>
 				</Border>
 				<GridSplitter Grid.Column="1" Width="5" Background="Transparent" Margin="0 5"/>
-				<Border Grid.Column="2" Margin="0 5 5 5" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5"/>
+				<Border Grid.Column="2" Margin="0 5 5 5" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5">
+					<Grid>
+						<instruments:ImageViewer ImageSource="{Binding ImageResource}" IsVisible="{Binding VisibleImageViewer}"/>
+						<TextBox Text="{Binding TextPreview}" IsReadOnly="True" IsVisible="{Binding VisibleTextViewer}" BorderThickness="0" TextWrapping="Wrap"/>
+					</Grid>
+				</Border>
 			</Grid>
 
 			<Grid Grid.Column="1" Grid.RowSpan="2">
 				<Border Width="250" IsVisible="{Binding OpenedMenu}" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1 0 0 0" CornerRadius="0 0 4.5 0">
 					<ScrollViewer HorizontalScrollBarVisibility="Disabled">
-						<StackPanel Margin="5">
-							<Image Source="{Binding ImageResource}"/>
+						<StackPanel Margin="5" Spacing="5">
+							<TextBlock Text="Settings" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
+							<CheckBox HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" IsChecked="{Binding CheckName}">
+								<TextBox Watermark="Name" Text="{Binding Name}"/>
+							</CheckBox>
+							<CheckBox HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" IsChecked="{Binding CheckTag}">
+								<TextBox Watermark="Tag" Text="{Binding Tag}"/>
+							</CheckBox>
+							<CheckBox HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" IsChecked="{Binding CheckResourceType}">
+								<TextBox Watermark="ResourceType" Text="{Binding ResourceType}"/>
+							</CheckBox>
+							<CheckBox HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" IsChecked="{Binding CheckResourceGroup}">
+								<TextBox Watermark="ResourceGroup" Text="{Binding ResourceGroup}"/>
+							</CheckBox>
+							<CheckBox HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" IsChecked="{Binding CheckInstance}">
+								<TextBox Watermark="Instance" Text="{Binding Instance}"/>
+							</CheckBox>
+							<CheckBox HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" IsChecked="{Binding CheckCompressed}">
+								<TextBox Watermark="Compressed" Text="{Binding Compressed}"/>
+							</CheckBox>
+
+							<Separator/>
+
+							
 						</StackPanel>
 					</ScrollViewer>
 				</Border>

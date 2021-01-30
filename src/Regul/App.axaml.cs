@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Regul.ViewModels;
 using Regul.Views;
 using Regul.Views.Windows;
+using Regul.Views.Windows.TheSims3Type;
 
 namespace Regul
 {
@@ -16,6 +17,7 @@ namespace Regul
         public static About About { get; set; }
         public static SelectType SelectType { get; set; }
         public static HEXNumberConverter HEXNumberConverter { get; set; }
+        public static ResourceDetails ResourceDetails { get; set; }
 
         public override void Initialize()
         {

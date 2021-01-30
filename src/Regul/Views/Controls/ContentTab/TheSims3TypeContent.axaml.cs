@@ -16,7 +16,6 @@ namespace Regul.Views.Controls.ContentTab
         {
             InitializeComponent();
             DataContext = ViewModel = new();
-
             ResourceList.SelectionChanged += ResourceList_SelectionChanged;
         }
 
@@ -32,6 +31,7 @@ namespace Regul.Views.Controls.ContentTab
         {
             InitializeComponent();
             DataContext = ViewModel = new(path);
+            ResourceList.SelectionChanged += ResourceList_SelectionChanged;
         }
 
         private void InitializeComponent()

@@ -17,7 +17,7 @@
 		<DrawingImage x:Key="RegulImage">
 			<DrawingImage.Drawing>
 				<DrawingGroup>
-                    <GeometryDrawing Geometry="F1 M220.7,220.7z M0,0z M64,0L156.7,0A63.8,63.8,0,0,1,220.7,64L220.7,156.7A64,64,0,0,1,156.7,220.7L64,220.7A64,64,0,0,1,0,156.7L0,64A63.8,63.8,0,0,1,64,0z">
+					<GeometryDrawing Geometry="F1 M220.7,220.7z M0,0z M64,0L156.7,0A63.8,63.8,0,0,1,220.7,64L220.7,156.7A64,64,0,0,1,156.7,220.7L64,220.7A64,64,0,0,1,0,156.7L0,64A63.8,63.8,0,0,1,64,0z">
 						<GeometryDrawing.Brush>
 							<LinearGradientBrush StartPoint="18.75,18.74" EndPoint="201.95,201.94" SpreadMethod="Pad" Opacity="1">
 								<GradientStop Color="#FF8300AA" Offset="0" />
@@ -55,6 +55,22 @@
 		<DrawingImage x:Key="ErrorIcon">
 			<DrawingImage.Drawing>
 				<GeometryDrawing Brush="{DynamicResource ThemeForegroundBrush}" Geometry="F1 M20.25,20.25z M0,0z M13.83,6.41A1,1,0,0,0,12.42,6.41L12.42,6.41 10.13,8.71 7.83,6.41A1,1,0,0,0,6.41,7.83L8.71,10.12 6.41,12.41A1,1,0,0,0,6.41,13.83L6.41,13.83A1,1,0,0,0,7.83,13.83L7.83,13.83 10.12,11.53 12.41,13.83A1,1,0,0,0,13.83,13.83L13.83,13.83A1,1,0,0,0,13.83,12.42L13.83,12.42 11.53,10.13 13.83,7.84A1,1,0,0,0,13.83,6.43z M17.19,3.05A10,10,0,1,0,2.81,17L3.05,17.24A10,10,0,1,0,17.44,3.3z M15.78,15.78A8,8,0,1,1,18.12,10.12A7.91,7.91,0,0,1,15.78,15.78z" />
+			</DrawingImage.Drawing>
+		</DrawingImage>
+
+		<DrawingImage x:Key="TheSims4Icon">
+			<DrawingImage.Drawing>
+				<GeometryDrawing Brush="{DynamicResource ThemeForegroundBrush}" Geometry="F1 M440.5,393.6z M0,0z M124,0L0,183 70,394 191,211z M147,212C147,212,74,386,73,385L130,209 66,200C64,228,70,364,70,385L45,197 1,183 48,181 123,5 65,184 132,193 124,5C129,29,149,196,149,196L189,211z M441,293L403,293 403,357 339,357 339,293 211,293 211,247 343,47 403,47 403,242 440,242z M339,242C339,206,339,160,342,125L340,125C331,153,285,216,269,242z" />
+			</DrawingImage.Drawing>
+		</DrawingImage>
+		<DrawingImage x:Key="TheSims3Icon">
+			<DrawingImage.Drawing>
+				<GeometryDrawing Brush="{DynamicResource ThemeForegroundBrush}" Geometry="F1 M431,393.6z M0,0z M124,0L0,183 70,394 191,211z M147,212C147,212,74,386,73,385L130,209 66,200C64,228,70,364,70,385L45,197 1,183 48,181 123,5 65,184 132,193 124,5C129,29,149,196,149,196L189,211z M422,121C423,161,392,190,355,198L355,199C400,205 431,226 431,271 431,298 422,322 401,339 354,376 275,371 221,349L221,293C256,312 343,332 362,286 382,225 312,224 269,226L269,180C299,179 340,183 354,152 375,85 289,92 254,121L221,78C276,34,419,28,422,121z" />
+			</DrawingImage.Drawing>
+		</DrawingImage>
+		<DrawingImage x:Key="TheSims2Icon">
+			<DrawingImage.Drawing>
+				<GeometryDrawing Brush="{DynamicResource ThemeForegroundBrush}" Geometry="F1 M425,393.6z M0,0z M124,0L0,183 70,394 191,211z M147,212C147,212,74,386,73,385L130,209 66,200C64,228,70,364,70,385L45,197 1,183 48,181 123,5 65,184 132,193 124,5C129,29,149,196,149,196L189,211z M425,356L217,356 217,311 315,205C329,190 340,175 347,156 365,107 329,83 284,105 274,111 263,118 252,129L216,86C291,7 449,35 410,164 389,217 337,257 299,298L299,301 425,301z" />
 			</DrawingImage.Drawing>
 		</DrawingImage>
 	</Style.Resources>

@@ -2,9 +2,12 @@
 					 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					 xmlns:olib="clr-namespace:Regul.OlibStyle;assembly=Regul.OlibStyle"
+					 xmlns:olib="using:Regul.OlibStyle"
+					 xmlns:structures="using:Regul.Structures"
+					 xmlns:viewmodels="using:Regul.ViewModels"
 					 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 					 x:Class="Regul.Views.MainWindow"
+					 x:DataType="viewmodels:MainWindowViewModel"
 					 Width="800" Height="450"
 					 MinWidth="600" MinHeight="350"
 					 WindowStartupLocation="CenterScreen"
@@ -17,7 +20,7 @@
 			<MenuItem Header="{DynamicResource File}">
 				<MenuItem Header="{DynamicResource New}" Command="{Binding NewPackageCommand}" InputGesture="Ctrl+N" HotKey="Ctrl+N"/>
 				<MenuItem Header="{DynamicResource Open}" Command="{Binding OpenPackageCommand}" InputGesture="Ctrl+O" HotKey="Ctrl+O"/>
-				<MenuItem Header="Save" InputGesture="Ctrl+S" HotKey="Ctrl+S" IsEnabled="{Binding IsNotNull}"/>
+				<MenuItem Header="{DynamicResource Save}" InputGesture="Ctrl+S" HotKey="Ctrl+S" IsEnabled="{Binding IsNotNull}"/>
                 <Separator/>
                 <MenuItem Header="{DynamicResource Settings}" Command="{Binding SettingsWindowCommand}"/>
 				<MenuItem Header="{DynamicResource ExitFromRegul}" Command="{Binding ExitCommand}" InputGesture="Ctrl+Q" HotKey="Ctrl+Q"/>
@@ -39,29 +42,29 @@
     </olib:OlibMainWindow.KeyBindings>
     <DockPanel>
 		<Grid ColumnDefinitions="*,*">
-			<TabControl Items="{Binding Tabs}" Grid.ColumnSpan="2" ZIndex="1" SelectedItem="{Binding SelectedTabItem}"/>
+			<TabControl Items="{CompiledBinding Tabs}" Grid.ColumnSpan="2" ZIndex="1" SelectedItem="{CompiledBinding SelectedTabItem}"/>
 
 			<Image Source="{DynamicResource RegulHoveredImage}" Margin="50"/>
 			<Grid RowDefinitions="Auto,*,Auto,Auto" Grid.Column="1" Margin="20">
 				<TextBlock Text="{DynamicResource RecentProjects}" Classes="Heading" Margin="0 0 0 5" HorizontalAlignment="Center" FontSize="16"/>
                 <ListBox Grid.Row="1" Classes="BottomNotCornerRadius" Background="{DynamicResource ThemeBackgroundBrush}" Items="{Binding Projects}" SelectedItem="{Binding SelectedProject}">
 					<ListBox.DataTemplates>
-						<DataTemplate>
-                            <TextBlock Text="{Binding ProjectName}"/>
+						<DataTemplate DataType="{x:Type structures:Project}">
+                            <TextBlock Text="{CompiledBinding ProjectName}"/>
                         </DataTemplate>
                     </ListBox.DataTemplates>
                     <ListBox.ContextMenu>
-                        <ContextMenu IsVisible="{Binding SelectedProject, Converter={x:Static ObjectConverters.IsNotNull}}">
-                            <MenuItem Header="Delete" Command="{Binding DeleteProjectCommand}"/>
+                        <ContextMenu IsVisible="{CompiledBinding SelectedProject, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <MenuItem Header="{DynamicResource Delete}" Command="{Binding DeleteProjectCommand}"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>
-				<Button Grid.Row="2" Classes="TopNotCornerRadius" Content="Open project" IsEnabled="{Binding SelectedProject, Converter={x:Static ObjectConverters.IsNotNull}}" BorderThickness="1 0 1 1"/>
+				<Button Grid.Row="2" Classes="TopNotCornerRadius" Content="{DynamicResource OpenProject}" IsEnabled="{CompiledBinding SelectedProject, Converter={x:Static ObjectConverters.IsNotNull}}" BorderThickness="1 0 1 1"/>
 				<StackPanel Grid.Row="3" Spacing="5" Margin="0 5 0 0">
 					<TextBlock Text="{DynamicResource Welcome}" HorizontalAlignment="Center"/>
-                    <TextBox Margin="0 0 0 5" Text="{Binding CreatorName}" Watermark="{DynamicResource CreatorName}" FontWeight="Bold" TextAlignment="Center"/>
+                    <TextBox Margin="0 0 0 5" Text="{CompiledBinding CreatorName}" Watermark="{DynamicResource CreatorName}" FontWeight="Bold" TextAlignment="Center"/>
                     <Button Content="{DynamicResource New}" Command="{Binding NewPackageCommand}"/>
-					<Button Content="{DynamicResource Open}"/>
+					<Button Content="{DynamicResource Open}" Command="{Binding OpenPackageCommand}"/>
                 </StackPanel>
             </Grid>
         </Grid>

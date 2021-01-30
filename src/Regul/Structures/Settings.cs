@@ -10,6 +10,8 @@ namespace Regul.Structures
 
         public bool FirstRun { get; set; } = true;
 
+        public bool HardwareAcceleration { get; set; }
+
         public List<Project> Projects { get; set; } = new();
     }
 }

@@ -5,11 +5,13 @@
         <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
         <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
 		
-		<StyleInclude Source="avares://Regul.OlibStyle/Themes/Dazzling.axaml"/>
+		<StyleInclude Source="avares://Regul.OlibUI/Themes/Dazzling.axaml"/>
 		<StyleInclude Source="/Assets/Images.axaml"/>
 		<StyleInclude Source="/Assets/Local/Lang.en-US.axaml"/>
 		
-		<StyleInclude Source="avares://Regul.OlibStyle/OlibStyle.axaml"/>
+		<StyleInclude Source="avares://Regul.OlibUI/OlibUI.axaml"/>
+		
+		<StyleInclude Source="avares://Regul.Instruments/Instruments.axaml"/>
 
         <Style Selector="Window">
             <Setter Property="FontFamily" Value="/Assets/Fonts#Noto Sans"/>

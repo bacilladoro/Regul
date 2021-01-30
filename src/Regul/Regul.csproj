@@ -11,19 +11,26 @@
 		<AvaloniaResource Include="Assets\Fonts\NotoSans-Regular.ttf" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="0.10.0-rc1" />
-		<PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.0-rc1" />
-		<PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc1" />
-		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0-rc1" />
-		<PackageReference Include="Avalonia.X11" Version="0.10.0-rc1" />
+		<PackageReference Include="Avalonia" Version="0.10.999-cibuild0012713-beta" />
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0012713-beta" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.999-cibuild0012713-beta" />
+		<PackageReference Include="Avalonia.X11" Version="0.10.999-cibuild0012713-beta" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.999-cibuild0012713-beta" />
+		<PackageReference Include="Avalonia.Diagnostics" Version="0.10.999-cibuild0012713-beta" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\Regul.OlibStyle\Regul.OlibStyle.csproj" />
+		<ProjectReference Include="..\Regul.Instruments\Regul.Instruments.csproj" />
+		<ProjectReference Include="..\Regul.OlibStyle\Regul.OlibUI.csproj" />
 		<ProjectReference Include="..\Regul.S3PI\Regul.S3PI.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <AvaloniaXaml Update="Assets\Local\Lang.en-US.axaml">
-	    <SubType>Designer</SubType>
-	  </AvaloniaXaml>
+		<AvaloniaXaml Update="Assets\Local\Lang.en-US.axaml">
+			<SubType>Designer</SubType>
+		</AvaloniaXaml>
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Views\Windows\TheSims3Type\ResourceDetails.axaml.cs">
+	    <DependentUpon>ResourceDetails.axaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 </Project>

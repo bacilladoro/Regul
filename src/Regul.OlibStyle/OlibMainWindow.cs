@@ -12,21 +12,29 @@ using System.Globalization;
 using System.IO;
 using Icon = System.Drawing.Icon;
 
-namespace Regul.OlibStyle
+namespace Regul.OlibUI
 {
     public class OlibMainWindow : Window, IStyleable
     {
-        public static readonly StyledProperty<Menu> TitleBarMenuProperty;
+        public static readonly StyledProperty<Menu> TitleBarMenuProperty =
+            AvaloniaProperty.Register<OlibMainWindow, Menu>(nameof(TitleBarMenu));
+        public static readonly StyledProperty<bool> InLoadModeProperty =
+            AvaloniaProperty.Register<OlibMainWindow, bool>(nameof(InLoadMode));
 
         static OlibMainWindow()
         {
-            TitleBarMenuProperty = AvaloniaProperty.Register<OlibMainWindow, Menu>(nameof(TitleBarMenu));
         }
 
         public Menu TitleBarMenu
         {
             get => GetValue(TitleBarMenuProperty);
             set => SetValue(TitleBarMenuProperty, value);
+        }
+
+        public bool InLoadMode
+        {
+            get => GetValue(InLoadModeProperty);
+            set => SetValue(InLoadModeProperty, value);
         }
 
         private void SetupSide(string name, StandardCursorType cursor, WindowEdge edge, ref TemplateAppliedEventArgs e)
@@ -44,6 +52,9 @@ namespace Regul.OlibStyle
 
         T GetControl<T>(TemplateAppliedEventArgs e, string name) where T : class => e.NameScope.Get<T>(name);
 
+        private MenuItem ExpandMenuItem;
+        private MenuItem ReestablishMenuItem;
+
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
             base.OnApplyTemplate(e);
@@ -53,17 +64,40 @@ namespace Regul.OlibStyle
             {
                 Control titleBar = GetControl<Control>(e, "TitleBar");
 
+                ReestablishMenuItem = GetControl<MenuItem>(e, "ReestablishMenuItem");
+                ExpandMenuItem = GetControl<MenuItem>(e, "ExpandMenuItem");
+
+                ReestablishMenuItem.IsEnabled = false;
+
                 if (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 {
                     titleBar.DoubleTapped += (s, ep) =>
                     {
-                        window.WindowState = ((Window)this.GetVisualRoot()).WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+                        if (((Window)this.GetVisualRoot()).WindowState == WindowState.Maximized)
+                        {
+
+                            window.WindowState = WindowState.Normal;
+                            ReestablishMenuItem.IsEnabled = false;
+                            ExpandMenuItem.IsEnabled = true;
+                        }
+                        else
+                        {
+                            window.WindowState = WindowState.Maximized;
+                            ReestablishMenuItem.IsEnabled = true;
+                            ExpandMenuItem.IsEnabled = false;
+                        }
                     };
                 }
 
                 titleBar.PointerPressed += (s, ep) =>
                 {
+                    GetControl<ContextMenu>(e, "GlobalContextMenu").Close();
                     window.PlatformImpl?.BeginMoveDrag(ep);
+                };
+
+                window.PointerReleased += (s, ep) =>
+                {
+                    GetControl<ContextMenu>(e, "GlobalContextMenu").Close();
                 };
 
                 try
@@ -89,11 +123,46 @@ namespace Regul.OlibStyle
                 };
                 GetControl<Button>(e, "MaximizeButton").Click += (s, ep) =>
                 {
-                    window.WindowState = window.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+                    if (window.WindowState == WindowState.Maximized)
+                    {
+
+                        window.WindowState = WindowState.Normal;
+                        ReestablishMenuItem.IsEnabled = false;
+                        ExpandMenuItem.IsEnabled = true;
+                    }
+                    else
+                    {
+                        window.WindowState = WindowState.Maximized;
+                        ReestablishMenuItem.IsEnabled = true;
+                        ExpandMenuItem.IsEnabled = false;
+                    }
                 };
                 GetControl<Button>(e, "CloseButton").Click += (s, ep) =>
                 {
                     window.Close();
+                };
+
+
+                ReestablishMenuItem.Click += (s, ep) =>
+                {
+                    window.WindowState = WindowState.Normal;
+                    ExpandMenuItem.IsEnabled = true;
+                    ReestablishMenuItem.IsEnabled = false;
+                };
+                ExpandMenuItem.Click += (s, ep) =>
+                {
+                    window.WindowState = WindowState.Maximized;
+                    ExpandMenuItem.IsEnabled = false;
+                    ReestablishMenuItem.IsEnabled = true;
+                };
+
+                GetControl<MenuItem>(e, "CloseMenuItem").Click += (s, ep) =>
+                {
+                    window.Close();
+                };
+                GetControl<MenuItem>(e, "CollapseMenuItem").Click += (s, ep) =>
+                {
+                    window.WindowState = WindowState.Minimized;
                 };
             }
             catch { }

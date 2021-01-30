@@ -1,9 +1,19 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:sys="clr-namespace:System;assembly=netstandard">
+             xmlns:sys="using:System">
+	<Design.PreviewWith>
+		<Menu Margin="10 10 10 50">
+			<MenuItem Header="MenuItem 1">
+				<MenuItem Header="SubMenu 1"/>
+			</MenuItem>
+			<MenuItem Header="MenuItem 2"/>
+		</Menu>
+	</Design.PreviewWith>
+	
 	<Style Selector="MenuItem:selected /template/ Border#root">
 		<Setter Property="Background" Value="{DynamicResource ThemeHoverBackgroundBrush}"/>
 		<Setter Property="BorderBrush" Value="{DynamicResource ThemeHoverBackgroundBrush}"/>
+		<Setter Property="CornerRadius" Value="5"/>
 	</Style>
 
 	<Style Selector="MenuItem">
@@ -39,7 +49,7 @@
 							  VerticalAlignment="Center"/>
 						<ContentPresenter Name="PART_HeaderPresenter"
 										  Content="{TemplateBinding Header}"
-										  Margin="{TemplateBinding Padding}"
+										  Margin="0 0 30 0"
 										  VerticalAlignment="Center"
 										  Grid.Column="2">
 							<ContentPresenter.DataTemplates>
@@ -61,8 +71,11 @@
 						<Popup Name="PART_Popup"
 							   PlacementMode="Right"
 							   IsLightDismissEnabled="True"
+							   WindowManagerAddShadowHint="False"
+							   StaysOpen="True"
 							   IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
-							<Border Background="{TemplateBinding Background}"
+							<Border Background="{DynamicResource ThemeBackgroundBrush}"
+									CornerRadius="5"
 									BorderBrush="{DynamicResource ThemeGlobalBorderBrush}"
 									BorderThickness="{TemplateBinding BorderThickness}">
 								<ScrollViewer Classes="menuscroller">
@@ -79,44 +92,47 @@
 			</ControlTemplate>
 		</Setter>
 	</Style>
-	
+
 	<Style Selector="Menu > MenuItem">
-    <Setter Property="Padding" Value="6 0"/>
-    <Setter Property="Template">
-      <ControlTemplate>
-        <Border Name="root"
-                Background="{TemplateBinding Background}"
-                BorderBrush="{TemplateBinding BorderBrush}"
-                BorderThickness="{TemplateBinding BorderThickness}">
-          <Panel>
-            <ContentPresenter Name="PART_HeaderPresenter"
-                              Content="{TemplateBinding Header}"
-                              Margin="{TemplateBinding Padding}">
-              <ContentPresenter.DataTemplates>
-                <DataTemplate DataType="sys:String">
-                  <AccessText Text="{Binding}"/>
-                </DataTemplate>
-              </ContentPresenter.DataTemplates>
-            </ContentPresenter>
-            <Popup Name="PART_Popup"
-                   IsLightDismissEnabled="True"
-                   OverlayInputPassThroughElement="{Binding $parent[Menu]}"
-                   IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
-              <Border Background="{TemplateBinding Background}"
-                      BorderBrush="{DynamicResource ThemeGlobalBorderBrush}"
-                      BorderThickness="{TemplateBinding BorderThickness}">
-                <ScrollViewer Classes="menuscroller">
-                  <ItemsPresenter Name="PART_ItemsPresenter"
-                                  Items="{TemplateBinding Items}"
-                                  ItemsPanel="{TemplateBinding ItemsPanel}"
-                                  ItemTemplate="{TemplateBinding ItemTemplate}"
-                                  Grid.IsSharedSizeScope="True"/>
-                </ScrollViewer>
-              </Border>
-            </Popup>
-          </Panel>
-        </Border>
-      </ControlTemplate>
-    </Setter>
-  </Style>
+		<Setter Property="Padding" Value="6 0"/>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="root"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}">
+					<Panel>
+						<ContentPresenter Name="PART_HeaderPresenter"
+										  Content="{TemplateBinding Header}"
+										  Margin="{TemplateBinding Padding}">
+							<ContentPresenter.DataTemplates>
+								<DataTemplate DataType="sys:String">
+									<AccessText Text="{Binding}"/>
+								</DataTemplate>
+							</ContentPresenter.DataTemplates>
+						</ContentPresenter>
+						<Popup Name="PART_Popup"
+							   IsLightDismissEnabled="True"
+							   OverlayInputPassThroughElement="{Binding $parent[Menu]}"
+							   WindowManagerAddShadowHint="False"
+							   StaysOpen="True"
+							   IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
+							<Border Background="{DynamicResource ThemeBackgroundBrush}"
+									CornerRadius="5"
+									BorderBrush="{DynamicResource ThemeGlobalBorderBrush}"
+									BorderThickness="{TemplateBinding BorderThickness}">
+								<ScrollViewer Classes="menuscroller">
+									<ItemsPresenter Name="PART_ItemsPresenter"
+													Items="{TemplateBinding Items}"
+													ItemsPanel="{TemplateBinding ItemsPanel}"
+													ItemTemplate="{TemplateBinding ItemTemplate}"
+													Grid.IsSharedSizeScope="True"/>
+								</ScrollViewer>
+							</Border>
+						</Popup>
+					</Panel>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
 </Styles>

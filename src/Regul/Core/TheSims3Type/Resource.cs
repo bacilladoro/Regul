@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Regul.S3PI.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,15 +11,7 @@ namespace Regul.Core.TheSims3Type
     {
         public string ResourceName { get; set; }
         public string Tag { get; set; }
-        public uint ResourceType { get; set; }
-        public uint ResourceGroup { get; set; }
-        public ulong Instance { get; set; }
-        public uint Chunkoffset { get; set; }
-        public uint Filesize { get; set; }
-        public uint Memsize { get; set; }
-        public ushort Compressed { get; set; }
-        public ushort Unknown2 { get; set; }
 
-        public byte[] Data { get; set; }
+        public IResourceIndexEntry ResourceIndexEntry { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using Regul.OlibStyle;
+using Regul.OlibUI;
 using System.Threading.Tasks;
 
 namespace Regul.Views

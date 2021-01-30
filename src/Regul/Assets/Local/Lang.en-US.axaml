@@ -1,6 +1,6 @@
 ﻿<Style xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:v="clr-namespace:System;assembly=netstandard">
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:v="using:System">
 	<Style.Resources>
 		<!-- MainWindow -->
 		<v:String x:Key="File">File</v:String>
@@ -9,29 +9,38 @@
 		<v:String x:Key="Settings">Settings</v:String>
 		<v:String x:Key="New">New</v:String>
 		<v:String x:Key="Open">Open</v:String>
-        <v:String x:Key="AboutTheProgram">About the program</v:String>
+		<v:String x:Key="Save">Save</v:String>
+		<v:String x:Key="AboutTheProgram">About the program</v:String>
 		<v:String x:Key="ExitFromRegul">Exit from Regul</v:String>
 		<v:String x:Key="TheSims3">The Sims 3</v:String>
 		<v:String x:Key="SaveClear">Save clear</v:String>
 		<v:String x:Key="Close">Close</v:String>
 		<v:String x:Key="CheckForUpdates">Check for updates</v:String>
-		<v:String x:Key="HEXNumberConverter">HEX number converter</v:String>
+
+		<v:String x:Key="Collapse">Collapse</v:String>
+		<v:String x:Key="Expand">Expand</v:String>
+		<v:String x:Key="Reestablish">Reestablish</v:String>
 		<!-- MainWindow -->
-		
+
 		<!-- WelcomeWindow -->
 		<v:String x:Key="CreatorName">Creator name</v:String>
 		<v:String x:Key="Welcome">Welcome!</v:String>
 		<v:String x:Key="RecentProjects">Recent projects</v:String>
+		<v:String x:Key="OpenProject">Open project</v:String>
+
+		<v:String x:Key="Delete">Delete</v:String>
 		<!-- WelcomeWindow -->
 
 		<!-- Settings -->
 		<v:String x:Key="ThemeC">Theme:</v:String>
+		<v:String x:Key="LanguageC">Language:</v:String>
+		<v:String x:Key="HardwareAcceleration">Hardware acceleration (restart required)</v:String>
 
-        <v:String x:Key="Dazzling">Dazzling</v:String>
-        <v:String x:Key="Gloomy">Gloomy</v:String>
-        <v:String x:Key="Mysterious">Mysterious</v:String>
-        <v:String x:Key="Turquoise">Turquoise</v:String>
-        <v:String x:Key="Emerald">Emerald</v:String>
+		<v:String x:Key="Dazzling">Dazzling</v:String>
+		<v:String x:Key="Gloomy">Gloomy</v:String>
+		<v:String x:Key="Mysterious">Mysterious</v:String>
+		<v:String x:Key="Turquoise">Turquoise</v:String>
+		<v:String x:Key="Emerald">Emerald</v:String>
 		<!-- Settings -->
 
 		<!-- About the program -->
@@ -40,27 +49,29 @@
 		<v:String x:Key="RegulDescription">Regul - a unified editor for package files for games from Maxis, written in C#, running on Avalonia and .NET 5.</v:String>
 		<v:String x:Key="LibrariesUsedC">Libraries used:</v:String>
 		<!-- About the program -->
-		
+
 		<!-- TextBoxContextMenu -->
 		<v:String x:Key="Cut">Cut</v:String>
 		<v:String x:Key="Paste">Paste</v:String>
 		<v:String x:Key="Copy">Copy</v:String>
 		<!-- TextBoxContextMenu -->
-		
+
 		<!-- HEXNumberConverter -->
+		<v:String x:Key="HEXNumberConverter">HEX number converter</v:String>
 		<v:String x:Key="Decimal">Decimal</v:String>
 		<!-- HEXNumberConverter -->
-		
+
 		<!-- MessageBox -->
 		<v:String x:Key="Yes">Yes</v:String>
 		<v:String x:Key="No">No</v:String>
 		<v:String x:Key="OK">OK</v:String>
-		
+		<v:String x:Key="Cancel">Cancel</v:String>
+
 		<v:String x:Key="Error">Error</v:String>
 		<v:String x:Key="Successfully">Successfully</v:String>
 		<v:String x:Key="Information">Information</v:String>
 		<!-- MessageBox -->
-		
+
 		<!-- SaveClear -->
 		<v:String x:Key="Select">Select</v:String>
 		<v:String x:Key="PathBackup">The path for creating a backup</v:String>
@@ -72,13 +83,13 @@
 		<v:String x:Key="ToolTipDeletingCharacterPortraits">Portraits are displayed in the relationship panel, in the CAS, when choosing clothes and in the panel of the selected active character. It is recommended to enable</v:String>
 		<v:String x:Key="ToolTipRemovingLotThumbnails">Displayed when moving and in the main menu. If you are afraid that after deleting your save will not load, do not enable (deleting is safe)</v:String>
 		<v:String x:Key="ToolTipRemovingPhotosAndTextures">The textures of the unloaded lot and photos are stored. If you don't want to delete photos, please do not include</v:String>
-	
+
 		<v:String x:Key="AnErrorHasOccurred">An error has occurred. Details below.</v:String>
 		<v:String x:Key="SaveFilesCleanedSuccessfully">Save files cleaned successfully!</v:String>
 		<v:String x:Key="SaveFilesNotFound">Save files not found</v:String>
 		<v:String x:Key="NoSelectedSaveFile">You haven't selected a save file!</v:String>
 		<v:String x:Key="NotFindFolderTheSims3">Could not find the "The Sims 3" folder. Select the folder manually.</v:String>
-		
+
 		<v:String x:Key="ProcessingCreateBackup">Create backup...</v:String>
 		<v:String x:Key="ProcessingCompressingSave">Compressing save...</v:String>
 		<v:String x:Key="ProcessingClearingSave">Clearing save...</v:String>
@@ -87,13 +98,24 @@
 
 		<!-- SelectPackageType -->
 		<v:String x:Key="PackageType">Package type</v:String>
-        <v:String x:Key="PackageTypeC">Package type:</v:String>
+		<v:String x:Key="PackageTypeC">Package type:</v:String>
 		<!-- SelectPackageType -->
-		
+
+		<!-- ResourceDetails -->
+		<v:String x:Key="ResourceDetails">Resource details</v:String>
+		<v:String x:Key="ImportFile">Import file</v:String>
+		<v:String x:Key="CopyRK">Copy RK</v:String>
+		<v:String x:Key="PsteRK">Paste RK</v:String>
+		<v:String x:Key="FilenameC">Filename:</v:String>
+		<v:String x:Key="Compress">Compress</v:String>
+		<v:String x:Key="UseResourceName">Use resource name</v:String>
+		<v:String x:Key="RenameIfPresent">Rename if present</v:String>
+		<!-- ResourceDetails -->
+
 		<!-- TheSims3TypeContent -->
 		<v:String x:Key="Edit">Edit</v:String>
 		<v:String x:Key="Resource">Resource</v:String>
-		
+
 		<v:String x:Key="SavePreviewE">Save preview...</v:String>
 		<v:String x:Key="AddE">Add...</v:String>
 		<v:String x:Key="PasteE">Paste...</v:String>
@@ -112,7 +134,7 @@
 		<v:String x:Key="Export">Export</v:String>
 		<v:String x:Key="ToFileE">To file...</v:String>
 		<v:String x:Key="ToPackageE">To package...</v:String>
-		
+
 		<v:String x:Key="Name">Name</v:String>
 		<v:String x:Key="Tag">Tag</v:String>
 		<v:String x:Key="Type">Type</v:String>
@@ -124,6 +146,10 @@
 		<v:String x:Key="Unknown2">Unknown2</v:String>
 		<v:String x:Key="IsDeleted">IsDeleted</v:String>
 		<!-- TheSims3TypeContent -->
+
+		<!-- ImageViewer -->
+		<v:String x:Key="SizeC">Size:</v:String>
+		<!-- ImageViewer -->
 
 		<v:String x:Key="NoName">No name</v:String>
 	</Style.Resources>

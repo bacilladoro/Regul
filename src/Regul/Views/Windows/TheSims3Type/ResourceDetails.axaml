@@ -1,0 +1,82 @@
+﻿<olib:OlibModalWindow xmlns="https://github.com/avaloniaui"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		              xmlns:olib="using:Regul.OlibStyle"
+					  xmlns:converters="using:Regul.Core.Converters"
+                      mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="290"
+                      Width="500" Height="290"
+                      x:Class="Regul.Views.Windows.TheSims3Type.ResourceDetails"
+                      WindowStartupLocation="CenterOwner"
+					  HasSystemDecorations="False"
+					  CanResize="False"
+                      ShowInTaskbar="False"
+					  Background="{StaticResource ThemeBackgroundBrush}"
+					  Icon="avares://Regul/icon.ico"
+                      Title="{StaticResource ResourceDetails}">
+	<olib:OlibModalWindow.Resources>
+		<converters:UIntToStringConverter x:Key="UIntToStringConverter"/>
+		<converters:ULongToStringConverter x:Key="ULongToStringConverter"/>
+	</olib:OlibModalWindow.Resources>
+	
+	<StackPanel Spacing="5" Margin="5">
+		<DockPanel>
+			<TextBlock Text="Type:" Margin="0 0 5 0"/>
+			<ComboBox Items="{Binding ResourceTypes}" SelectedItem="{Binding SelectedResourceType}" SelectedIndex="0">
+				<ComboBox.DataTemplates>
+					<DataTemplate>
+						<StackPanel Orientation="Horizontal" Spacing="5">
+							<TextBlock Text="{Binding Type, Converter={StaticResource UIntToStringConverter}}"/>
+							<TextBlock Text="{Binding Tag}"/>
+						</StackPanel>
+					</DataTemplate>
+				</ComboBox.DataTemplates>
+			</ComboBox>
+		</DockPanel>
+		<DockPanel>
+			<TextBlock Text="Group:" Margin="0 0 5 0"/>
+			<TextBox Text="{Binding Group, Converter={StaticResource UIntToStringConverter}}"/>
+		</DockPanel>
+		<DockPanel>
+			<TextBlock Text="Instance:" Margin="0 0 5 0"/>
+			<TextBox Text="{Binding Instance, Converter={StaticResource ULongToStringConverter}}"/>
+		</DockPanel>
+		
+		<StackPanel Orientation="Horizontal" Spacing="5" Margin="0 5">
+			<CheckBox Content="{StaticResource Compress}" IsChecked="{Binding Compress}"/>
+			<CheckBox Content="{StaticResource UseResourceName}" IsChecked="{Binding UseResourceName}"/>
+			<CheckBox Content="{StaticResource RenameIfPresent}"/>
+		</StackPanel>
+		
+		<Grid ColumnDefinitions="Auto,*,Auto" IsEnabled="{Binding UseResourceName}">
+			<TextBlock Text="Name:"/>
+			<TextBox Grid.Column="1" Margin="5 0" Text="{Binding ResourceName}"/>
+			<StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="5" IsEnabled="{Binding ResourceName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+				<Button Content="FNV64" Padding="5 0" Command="{Binding FNV64Convert}"/>
+				<Button Content="CLIP IID" Padding="5 0" Command="{Binding CLIPIIDConvert}"/>
+				<Button Content="FNV32" Padding="5 0" Command="{Binding FNV32Convert}"/>
+			</StackPanel>
+		</Grid>
+		
+		<Separator/>
+		
+		<Button Content="{StaticResource ImportFile}" Command="{Binding ImportFile}"/>
+		<DockPanel IsVisible="{Binding ImportedFile}">
+			<TextBlock Text="{StaticResource FilenameC}" Margin="0 0 5 0"/>
+			<TextBox IsReadOnly="True" Text="{Binding Filename}"/>
+		</DockPanel>
+	</StackPanel>
+	
+	<olib:OlibModalWindow.BottomPanel>
+		<Grid ColumnDefinitions="Auto,*,Auto">
+			<StackPanel Orientation="Horizontal" Spacing="5">
+				<Button Content="{StaticResource CopyRK}" Command="{Binding CopyResourceKeyDetails}"/>
+				<Button Content="{StaticResource PasteRK}" Command="{Binding PasteResourceKeyDetails}"/>
+			</StackPanel>
+			<StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="5">
+				<Button Content="{StaticResource Cancel}" Command="{Binding Cancel}"/>
+				<Button Content="{StaticResource OK}" Command="{Binding OK}"/>
+			</StackPanel>
+		</Grid>
+	</olib:OlibModalWindow.BottomPanel>
+</olib:OlibModalWindow>

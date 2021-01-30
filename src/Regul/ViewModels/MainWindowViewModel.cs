@@ -14,6 +14,7 @@ using Regul.ViewModels.Controls.Tab;
 using Regul.Views.Controls.ContentTab;
 using Regul.Views.Controls.Tab;
 using System.Collections.Generic;
+using Avalonia.Media;
 
 namespace Regul.ViewModels
 {
@@ -106,11 +107,11 @@ namespace Regul.ViewModels
             Application.Current.Styles[2] = !string.IsNullOrEmpty(Program.Settings.Theme)
                 ? new StyleInclude(new Uri("resm:Styles?assembly=Regul"))
                 {
-                    Source = new Uri($"avares://Regul.OlibStyle/Themes/{Program.Settings.Theme}.axaml")
+                    Source = new Uri($"avares://Regul.OlibUI/Themes/{Program.Settings.Theme}.axaml")
                 }
                 : new StyleInclude(new Uri("resm:Styles?assembly=Regul"))
                 {
-                    Source = new Uri("avares://Regul.OlibStyle/Themes/Dazzling.axaml")
+                    Source = new Uri("avares://Regul.OlibUI/Themes/Dazzling.axaml")
                 };
             
             CreatorName = Program.Settings.CreatorName;
@@ -157,6 +158,7 @@ namespace Regul.ViewModels
                     {
                         ViewModel =
                         {
+                            Icon = (DrawingImage)Application.Current.FindResource("TheSims3Icon"),
                             NameTab = (string)Application.Current.FindResource("NoName"), 
                             CloseTabAction = CloseTab, 
                             ID = Guid.NewGuid().ToString("N"),
@@ -188,10 +190,12 @@ namespace Regul.ViewModels
                     {
                         ViewModel =
                         {
+                            Icon = (DrawingImage)Application.Current.FindResource("TheSims3Icon"),
                             NameTab = System.IO.Path.GetFileNameWithoutExtension(files[0]),
                             CloseTabAction = CloseTab,
                             ID = Guid.NewGuid().ToString("N"),
-                            PackageType = ((SelectTypeViewModel)App.SelectType.DataContext).Type
+                            PackageType = ((SelectTypeViewModel)App.SelectType.DataContext).Type,
+                            IsSave = true
                         }
                     },
                     Content = ((SelectTypeViewModel)App.SelectType.DataContext).Type switch

@@ -1,5 +1,9 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
-       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<ToggleButton Content="Toggle Button" Margin="10"/>
+	</Design.PreviewWith>
+	
 	<Style Selector="ToggleButton">
 		<Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
 		<Setter Property="BorderThickness" Value="1"/>

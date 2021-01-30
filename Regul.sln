@@ -10,7 +10,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regul", "src\Regul\Regul.cs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regul.S3PI", "src\Regul.S3PI\Regul.S3PI.csproj", "{C72762A8-2012-49C8-BD36-10A7138CAE05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regul.OlibStyle", "src\Regul.OlibStyle\Regul.OlibStyle.csproj", "{5BB4D1C6-C87F-4E6A-A6B3-50A03974C159}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regul.OlibUI", "src\Regul.OlibStyle\Regul.OlibUI.csproj", "{5BB4D1C6-C87F-4E6A-A6B3-50A03974C159}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regul.Instruments", "src\Regul.Instruments\Regul.Instruments.csproj", "{AA17DBB6-FF7B-4EB6-90AB-6EED66E957EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +32,10 @@ Global
 		{5BB4D1C6-C87F-4E6A-A6B3-50A03974C159}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BB4D1C6-C87F-4E6A-A6B3-50A03974C159}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BB4D1C6-C87F-4E6A-A6B3-50A03974C159}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA17DBB6-FF7B-4EB6-90AB-6EED66E957EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA17DBB6-FF7B-4EB6-90AB-6EED66E957EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA17DBB6-FF7B-4EB6-90AB-6EED66E957EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA17DBB6-FF7B-4EB6-90AB-6EED66E957EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

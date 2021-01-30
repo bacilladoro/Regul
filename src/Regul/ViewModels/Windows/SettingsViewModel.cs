@@ -5,9 +5,11 @@ using ReactiveUI;
 
 namespace Regul.ViewModels.Windows
 {
-    class SettingsViewModel : ReactiveObject
+    public class SettingsViewModel : ReactiveObject
     {
         private int _theme;
+
+        private bool _hardwareAcceleration;
 
         #region Properties
 
@@ -29,13 +31,22 @@ namespace Regul.ViewModels.Windows
 
                 Application.Current.Styles[2] = new StyleInclude(new Uri("resm:Style?assembly=Regul"))
                 {
-                    Source = new Uri($"avares://Regul.OlibStyle/Themes/{Program.Settings.Theme}.axaml")
+                    Source = new Uri($"avares://Regul.OlibUI/Themes/{Program.Settings.Theme}.axaml")
                 };
+            }
+        }
+        private bool HardwareAcceleration
+        {
+            get => _hardwareAcceleration;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _hardwareAcceleration, value);
+                Program.Settings.HardwareAcceleration = value;
             }
         }
 
         #endregion
-        
+
         public SettingsViewModel()
         {
             Initialize();
@@ -43,6 +54,8 @@ namespace Regul.ViewModels.Windows
         
         private void Initialize()
         {
+            HardwareAcceleration = Program.Settings.HardwareAcceleration;
+
             Theme = Program.Settings.Theme switch
             {
                 "Gloomy" => 1,
@@ -56,11 +69,6 @@ namespace Regul.ViewModels.Windows
         private void CloseWindow()
         {
             App.Settings.Close();
-        }
-
-        public void Exit()
-        {
-
         }
     }
 }

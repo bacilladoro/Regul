@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Regul.OlibStyle;
+using Regul.OlibUI;
 using Regul.ViewModels.Windows;
 
 namespace Regul.Views.Windows
@@ -12,13 +12,6 @@ namespace Regul.Views.Windows
         public Settings()
         {
             InitializeComponent();
-            
-            Closing += OnClosing;
-        }
-
-        private void OnClosing(object sender, CancelEventArgs e)
-        {
-            ((SettingsViewModel)DataContext)?.Exit();
         }
 
         private void InitializeComponent()

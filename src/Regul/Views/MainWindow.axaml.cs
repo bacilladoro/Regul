@@ -1,6 +1,6 @@
 ﻿using System;
 using Avalonia.Markup.Xaml;
-using Regul.OlibStyle;
+using Regul.OlibUI;
 
 namespace Regul.Views
 {

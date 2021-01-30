@@ -1,6 +1,6 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:local="clr-namespace:Regul.OlibStyle;assembly=Regul.OlibStyle">
+		xmlns:local="using:Regul.OlibUI">
 	<Styles.Resources>
 		<local:WindowIconToImageConverter x:Key="WindowIconToImageConverter"/>
 	</Styles.Resources>
@@ -14,12 +14,44 @@
 			<ControlTemplate>
 				<Grid>
 					<Border Classes="OuterBorder" CornerRadius="5">
-						<Grid RowDefinitions="30,*,Auto">
-							<Border Grid.Row="0" Background="{DynamicResource ThemePanelBackgroundBrush}" CornerRadius="4.5 4.5 0 0">
+						<Grid RowDefinitions="31,*,Auto">
+							<Border Background="Black" ZIndex="5" Grid.Row="1" Grid.RowSpan="2" Opacity="0.2" IsVisible="{TemplateBinding InLoadMode}" CornerRadius="0 0 4.5 4.5"/>
+							<Border Grid.Row="0" Background="{DynamicResource ThemePanelBackgroundBrush}" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" BorderThickness="0 0 0 1" CornerRadius="4.5 4.5 0 0">
 								<Grid
 								  ColumnDefinitions="Auto,*,Auto">
-									<Border ZIndex="-5" Grid.ColumnSpan="2" Background="{DynamicResource ThemePanelBackgroundBrush}" CornerRadius="5 5 0 0"/>
-									<Border Name="TitleBar" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5 5 0 0"/>
+									<Border Name="TitleBar" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5 5 0 0">
+										<Border.ContextMenu>
+											<ContextMenu Name="GlobalContextMenu">
+												<MenuItem Header="Reestablish" Name="ReestablishMenuItem">
+													<MenuItem.Icon>
+														<Grid Width="10" Height="10">
+															<Border BorderThickness="2" BorderBrush="{DynamicResource ThemeForegroundBrush}" Width="7" Height="7" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+															<Grid Width="7" Height="7" HorizontalAlignment="Right" VerticalAlignment="Top">
+																<Border BorderThickness="0 2 2 0" BorderBrush="{DynamicResource ThemeForegroundBrush}"/>
+															</Grid>
+														</Grid>
+													</MenuItem.Icon>
+												</MenuItem>
+												<MenuItem Header="Collapse" Name="CollapseMenuItem">
+													<MenuItem.Icon>
+														<Rectangle Width="10" Height="2" StrokeThickness="2" Stroke="{DynamicResource ThemeForegroundBrush}"/>
+													</MenuItem.Icon>
+												</MenuItem>
+												<MenuItem Header="Expand" Name="ExpandMenuItem">
+													<MenuItem.Icon>
+														<Rectangle Width="10" Height="10" StrokeThickness="2" Stroke="{DynamicResource ThemeForegroundBrush}"/>
+													</MenuItem.Icon>
+												</MenuItem>
+												<Separator Name="ContextMenuSeparator"/>
+												
+												<MenuItem Header="Close" Name="CloseMenuItem" InputGesture="Ctrl+Q">
+													<MenuItem.Icon>
+														<Path Margin="4" Stretch="Fill" StrokeThickness="2" Stroke="{DynamicResource ThemeForegroundBrush}" Data="M 0 0 L 5 5 M 5 0 L 0 5"/>
+													</MenuItem.Icon>
+												</MenuItem>
+											</ContextMenu>
+										</Border.ContextMenu>
+									</Border>
 									<StackPanel Orientation="Horizontal" Margin="5 0 0 0" ZIndex="-1">
 										<Image Classes="IconImage" Source="{Binding Icon, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource WindowIconToImageConverter}}" MaxWidth="16" MaxHeight="16"/>
 										<TextBlock Name="TitleTextBlock" VerticalAlignment="Center" Text="{TemplateBinding Title}"/>
@@ -77,8 +109,6 @@
 													<Border BorderThickness="2" Width="7" Height="7" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
 													<Grid Width="7" Height="7" HorizontalAlignment="Right" VerticalAlignment="Top">
 														<Border BorderThickness="0 2 2 0"/>
-														<Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" Width="2" Height="3"/>
-														<Rectangle HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="3" Height="2"/>
 													</Grid>
 												</Grid>
 											</Grid>
@@ -89,7 +119,7 @@
 									</StackPanel>
 								</Grid>
 							</Border>
-							<ContentPresenter Name="Content" Grid.Row="1" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" Background="{TemplateBinding Background}" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" BorderThickness="0 1 0 0"/>
+							<ContentPresenter Name="Content" Grid.Row="1" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" Background="{TemplateBinding Background}"/>
 							<Border Name="BottomPanel" Height="50" Classes="Panel" Grid.Row="2" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" CornerRadius="0 0 4.5 4.5">
 								<ContentControl Content="{TemplateBinding BottomPanel}" Margin="10"/>
 							</Border>
@@ -163,10 +193,7 @@
 	<Style Selector="local|OlibModalWindow[HasSystemDecorations=True] /template/ Grid#ResizeGrid">
 		<Setter Property="IsVisible" Value="False"/>
 	</Style>
-	<Style Selector="local|OlibModalWindow[IsActive=false]">
-		<Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMidBrush}"/>
-	</Style>
-	<Style Selector="local|OlibModalWindow[IsActive=false] /template/ ContentControl">
+	<Style Selector="local|OlibModalWindow[IsActive=false] /template/ TextBlock#TitleTextBlock">
 		<Setter Property="Opacity" Value="0.5"/>
 	</Style>
 </Styles>

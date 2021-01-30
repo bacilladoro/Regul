@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Regul.OlibStyle;
+using Regul.OlibUI;
 using Regul.ViewModels.Windows;
 using System;
 using System.Reactive.Linq;

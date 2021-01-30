@@ -7,7 +7,7 @@ using Avalonia.Styling;
 using Avalonia.VisualTree;
 using System;
 
-namespace Regul.OlibStyle
+namespace Regul.OlibUI
 {
     [Flags]
     public enum WindowButtons
@@ -22,11 +22,13 @@ namespace Regul.OlibStyle
     {
         public static readonly StyledProperty<WindowButtons> WindowButtonsProperty;
         public static readonly StyledProperty<Grid> BottomPanelProperty;
+        public static readonly StyledProperty<bool> InLoadModeProperty;
 
         static OlibModalWindow()
         {
             WindowButtonsProperty = AvaloniaProperty.Register<OlibModalWindow, WindowButtons>(nameof(WindowButtons));
             BottomPanelProperty = AvaloniaProperty.Register<OlibModalWindow, Grid>(nameof(BottomPanel));
+            InLoadModeProperty = AvaloniaProperty.Register<OlibModalWindow, bool>(nameof(InLoadMode));
         }
 
         public WindowButtons WindowButtons
@@ -39,6 +41,12 @@ namespace Regul.OlibStyle
         {
             get => GetValue(BottomPanelProperty);
             set => SetValue(BottomPanelProperty, value);
+        }
+
+        public bool InLoadMode
+        {
+            get => GetValue(InLoadModeProperty);
+            set => SetValue(InLoadModeProperty, value);
         }
 
         private void SetupSide(string name, StandardCursorType cursor, WindowEdge edge, ref TemplateAppliedEventArgs e)
@@ -56,10 +64,22 @@ namespace Regul.OlibStyle
 
         T GetControl<T>(TemplateAppliedEventArgs e, string name) where T : class => e.NameScope.Get<T>(name);
 
+        private MenuItem ExpandMenuItem;
+        private MenuItem ReestablishMenuItem;
+        private MenuItem CollapseMenuItem;
+        private Separator ContextMenuSeparator;
+
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
             base.OnApplyTemplate(e);
             OlibModalWindow window = this;
+
+            ReestablishMenuItem = GetControl<MenuItem>(e, "ReestablishMenuItem");
+            ExpandMenuItem = GetControl<MenuItem>(e, "ExpandMenuItem");
+            CollapseMenuItem = GetControl<MenuItem>(e, "CollapseMenuItem");
+            ContextMenuSeparator = GetControl<Separator>(e, "ContextMenuSeparator");
+
+            ReestablishMenuItem.IsEnabled = false;
 
             try
             {
@@ -70,13 +90,41 @@ namespace Regul.OlibStyle
                     titleBar.DoubleTapped += (s, ep) =>
                     {
                         if (WindowButtons == WindowButtons.CloseAndExpand || WindowButtons == WindowButtons.All)
-                            window.WindowState = ((Window)this.GetVisualRoot()).WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+                        {
+                            if (((Window)this.GetVisualRoot()).WindowState == WindowState.Maximized)
+                            {
+
+                                window.WindowState = WindowState.Normal;
+                                ReestablishMenuItem.IsEnabled = false;
+                                ExpandMenuItem.IsEnabled = true;
+                            }
+                            else
+                            {
+                                window.WindowState = WindowState.Maximized;
+                                ReestablishMenuItem.IsEnabled = true;
+                                ExpandMenuItem.IsEnabled = false;
+                            }
+                        }
                     };
                 }
 
+                window.KeyDown += (s, ep) =>
+                {
+                    if (ep.KeyModifiers == KeyModifiers.Control && ep.Key == Key.Q)
+                    {
+                        window.Close();
+                    }
+                };
+
                 titleBar.PointerPressed += (s, ep) =>
                 {
+                    GetControl<ContextMenu>(e, "GlobalContextMenu").Close();
                     window.PlatformImpl?.BeginMoveDrag(ep);
+                };
+
+                window.PointerReleased += (s, ep) =>
+                {
+                    GetControl<ContextMenu>(e, "GlobalContextMenu").Close();
                 };
 
                 if (BottomPanel == null)
@@ -129,6 +177,45 @@ namespace Regul.OlibStyle
                 {
                     window.Close();
                 };
+
+                ReestablishMenuItem.Click += (s, ep) =>
+                {
+                    window.WindowState = WindowState.Normal;
+                    ExpandMenuItem.IsEnabled = true;
+                    ReestablishMenuItem.IsEnabled = false;
+                };
+                ExpandMenuItem.Click += (s, ep) =>
+                {
+                    window.WindowState = WindowState.Maximized;
+                    ExpandMenuItem.IsEnabled = false;
+                    ReestablishMenuItem.IsEnabled = true;
+                };
+                CollapseMenuItem.Click += (s, ep) =>
+                {
+                    window.WindowState = WindowState.Minimized;
+                };
+
+                GetControl<MenuItem>(e, "CloseMenuItem").Click += (s, ep) =>
+                {
+                    window.Close();
+                };
+
+                if (WindowButtons == WindowButtons.CloseAndCollapse)
+                {
+                    ExpandMenuItem.IsVisible = false;
+                    ReestablishMenuItem.IsVisible = false;
+                }
+                else if (WindowButtons == WindowButtons.CloseAndExpand)
+                {
+                    CollapseMenuItem.IsVisible = false;
+                }
+                else if (WindowButtons == WindowButtons.OnlyClose)
+                {
+                    ExpandMenuItem.IsVisible = false;
+                    ReestablishMenuItem.IsVisible = false;
+                    CollapseMenuItem.IsVisible = false;
+                    ContextMenuSeparator.IsVisible = false;
+                }
             }
             catch { }
         }

@@ -1,4 +1,6 @@
 ﻿using System;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using ReactiveUI;
 
 namespace Regul.ViewModels.Controls.Tab
@@ -7,6 +9,8 @@ namespace Regul.ViewModels.Controls.Tab
     {
         private string _nameTab;
         private bool _isSave;
+
+        private DrawingImage _icon;
         
         public string ID { get; set; }
         public string PathPackage { get; set; }
@@ -24,6 +28,12 @@ namespace Regul.ViewModels.Controls.Tab
         {
             get => _isSave;
             set => this.RaiseAndSetIfChanged(ref _isSave, value);
+        }
+
+        public DrawingImage Icon
+        {
+            get => _icon;
+            set => this.RaiseAndSetIfChanged(ref _icon, value);
         }
 
         private void CloseTab() => CloseTabAction?.Invoke(ID);

@@ -2,7 +2,8 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		              xmlns:olib="clr-namespace:Regul.OlibStyle;assembly=Regul.OlibStyle"
+		              xmlns:olib="using:Regul.OlibUI"
+					  xmlns:viewmodels="using:Regul.ViewModels.Windows"
                       mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="300"
                       Height="300" Width="500"
                       x:Class="Regul.Views.Windows.Settings"
@@ -23,6 +24,7 @@
 				<ComboBoxItem Content="{DynamicResource Emerald}"/>
 			</ComboBox>
 		</DockPanel>
+		<CheckBox IsChecked="{Binding HardwareAcceleration}" Content="{DynamicResource HardwareAcceleration}" />
 	</StackPanel>
 
 	<olib:OlibModalWindow.BottomPanel>

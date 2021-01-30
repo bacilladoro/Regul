@@ -1,6 +1,14 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:sys="clr-namespace:System;assembly=netstandard">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"	
+        xmlns:sys="using:System">
+	<Design.PreviewWith>
+		<ComboBox Width="200" SelectedIndex="0" Margin="10 10 10 70">
+			<ComboBoxItem Content="Item 1"/>
+			<ComboBoxItem Content="Item 2"/>
+			<ComboBoxItem Content="Item 3"/>
+		</ComboBox>
+	</Design.PreviewWith>
+
 	<Style Selector="ComboBox">
 		<Setter Property="Padding" Value="5 0"/>
 		<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
@@ -20,27 +28,30 @@
 										HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
 						<ToggleButton Name="toggle"
 									  BorderThickness="0"
+									  Padding="3 0"
 									  Background="Transparent"
 									  ClickMode="Press"
 									  Focusable="False"
 									  IsChecked="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
 									  Grid.Column="1">
-							<Path Fill="{DynamicResource ThemeForegroundBrush}"
+							<Path
 								  Width="8"
 								  Height="4"
-								  Stretch="Uniform"
+								  Stretch="UniformToFill"
 								  HorizontalAlignment="Center"
 								  VerticalAlignment="Center"
 								  Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z" />
 						</ToggleButton>
 						<Popup Name="PART_Popup"
 							   IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+							   WindowManagerAddShadowHint="False"
 							   MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
 							   MaxHeight="{TemplateBinding MaxDropDownHeight}"
 							   PlacementTarget="{TemplateBinding}"
 							   StaysOpen="False">
 							<Border BorderBrush="{DynamicResource ThemeGlobalBorderBrush}"
 									Background="{DynamicResource ThemeBackgroundBrush}"
+									CornerRadius="5"
 									BorderThickness="1">
 								<ScrollViewer>
 									<ItemsPresenter Name="PART_ItemsPresenter"
@@ -63,21 +74,14 @@
 	<Style Selector="ComboBox:pointerover /template/ Border#border">
 		<Setter Property="BorderBrush" Value="{DynamicResource ThemeSelectedControlBrush}"/>
 	</Style>
-	<Style Selector="ComboBox /template/ ToggleButton /template/ ContentPresenter">
-		<Setter Property="CornerRadius" Value="5"/>
-	</Style>
-	<Style Selector="ComboBox /template/ ToggleButton:checked /template/ ContentPresenter">
-		<Setter Property="Background" Value="{DynamicResource ThemeHoverBackgroundBrush}"/>
-		<Setter Property="BorderBrush" Value="{DynamicResource ThemeHoverBackgroundBrush}"/>
-	</Style>
 
 	<Style Selector="ComboBoxItem">
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Border Name="back">
+				<Border Name="back" CornerRadius="5">
 					<Grid ColumnDefinitions="5,*">
-						<Border Name="border" ZIndex="5"/>
+						<Border Name="border" ZIndex="5" CornerRadius="5 0 0 5"/>
 						<ContentPresenter Grid.Column="1" Name="PART_ContentPresenter"
 										Background="{TemplateBinding Background}"
 										BorderBrush="{TemplateBinding BorderBrush}"

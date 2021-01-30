@@ -1,14 +1,10 @@
 ﻿using Avalonia.Data.Converters;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Regul.Core.Converters
 {
-    class ULongToStringConverter : IValueConverter
+    public class ULongToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -17,8 +13,18 @@ namespace Regul.Core.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string str = value.ToString();
-            return System.Convert.ToUInt64(str, str.StartsWith("0x") ? 16 : 10);
+            try
+            {
+                string str = value.ToString();
+                checked
+                {
+                    return System.Convert.ToUInt64(str, str.StartsWith("0x") ? 16 : 10);
+                }
+            }
+            catch
+            {
+                return 0;
+            }
         }
     }
 }
