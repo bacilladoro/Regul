@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Regul.S3PI.Interfaces;
+using System;
 using System.IO;
-using Regul.S3PI.Interfaces;
 
 namespace Regul.S3PI.GenericRCOLResource
 {
@@ -9,30 +9,27 @@ namespace Regul.S3PI.GenericRCOLResource
     /// </summary>
     public sealed class DefaultRCOL : ARCOLBlock
     {
-        byte[] data = new byte[0];
+        private byte[] data = Array.Empty<byte>();
 
         /// <summary>
         /// <see cref="DefaultRCOL"/> does not provide a constructor that <see cref="GenericRCOLResourceHandler.CreateRCOLBlock"/> can call.
         /// <para>Calling this constructor throws a <see cref="NotImplementedException"/>.</para>
         /// </summary>
-        /// <param name="APIversion">Unused.</param>
         /// <param name="handler">Unused.</param>
         /// <exception cref="NotImplementedException">Thrown if this constructor is called.</exception>
-        public DefaultRCOL(int APIversion, EventHandler handler) : base(APIversion, handler, null) { throw new NotImplementedException(); }
+        public DefaultRCOL(EventHandler handler) : base(handler, null) { throw new NotImplementedException(); }
         /// <summary>
         /// Read the block data from the <see cref="Stream"/> provided.
         /// </summary>
-        /// <param name="APIversion">Unused; requested API version.</param>
         /// <param name="handler">Unused; change <see cref="EventHandler"/>.</param>
         /// <param name="s"><see cref="Stream"/> containing the data to read.</param>
-        public DefaultRCOL(int APIversion, EventHandler handler, Stream s) : base(APIversion, handler, s) { }
+        public DefaultRCOL(EventHandler handler, Stream s) : base(handler, s) { }
         /// <summary>
         /// Create a new instance from an existing instance.
         /// </summary>
-        /// <param name="APIversion">Unused; requested API version.</param>
         /// <param name="handler">Unused; change <see cref="EventHandler"/>.</param>
         /// <param name="basis">An existing <see cref="DefaultRCOL"/> to use as a basis.</param>
-        public DefaultRCOL(int APIversion, EventHandler handler, DefaultRCOL basis) : base(APIversion, null, null) { this.handler = handler; data = (byte[])basis.data.Clone(); }
+        public DefaultRCOL(EventHandler handler, DefaultRCOL basis) : base(null, null) { this.handler = handler; data = (byte[])basis.data.Clone(); }
 
         /// <summary>
         /// Read the data.

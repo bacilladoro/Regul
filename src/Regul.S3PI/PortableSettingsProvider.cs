@@ -12,7 +12,7 @@ namespace System.Configuration
     {
         #region Template XML
         /* Define some static strings later used in our XML creation */
-        
+
         // XML Root node
         private const string XMLROOT = "configuration";
 
@@ -26,7 +26,7 @@ namespace System.Configuration
         private const string USERNODE = "userSettings";
 
         // Application Specific Node
-        private static string APPNODE = ExecutableName + ".Properties.Settings";
+        private static readonly string APPNODE = ExecutableName + ".Properties.Settings";
 
         private static System.Xml.XmlDocument _xmlDocTemplate
         {
@@ -76,7 +76,7 @@ namespace System.Configuration
             }
         }
         #endregion
-        
+
         /// <summary>
         /// Initializes the provider.
         /// </summary>
@@ -87,7 +87,7 @@ namespace System.Configuration
         /// <exception cref="InvalidOperationException">An attempt is made to call System.Configuration.Provider.ProviderBase.Initialize(System.String,System.Collections.Specialized.NameValueCollection) on a provider after the provider has already been initialized.</exception>
         public override void Initialize(string name, NameValueCollection config)
         {
-            base.Initialize(this.ApplicationName, config);
+            base.Initialize(ApplicationName, config);
         }
 
         private static Assembly _mainAssembly = null;
@@ -209,9 +209,11 @@ namespace System.Configuration
             // to our collection of return values.
             foreach (SettingsProperty sProp in settingsColl)
             {
-                setVal = new SettingsPropertyValue(sProp);
-                setVal.IsDirty = false;
-                setVal.SerializedValue = GetSetting(sProp);
+                setVal = new SettingsPropertyValue(sProp)
+                {
+                    IsDirty = false,
+                    SerializedValue = GetSetting(sProp)
+                };
                 retValues.Add(setVal);
             }
             return retValues;
@@ -270,7 +272,7 @@ namespace System.Configuration
 
             // Search for the specific settings node we are looking for in the configuration file.
             XmlNode SettingNode = XMLConfig.SelectSingleNode("//setting[@name='" + setProp.Name + "']");
-            SettingNode = SettingNode == null ? null : SettingNode.FirstChild;
+            SettingNode = SettingNode?.FirstChild;
 
             // If it exists, return the InnerText or InnerXML of its first child node, depending on the setting type.
             if (SettingNode != null)
@@ -312,8 +314,8 @@ namespace System.Configuration
                         case SettingsSerializeAs.Binary:
                         default:
                             throw new NotSupportedException();
-                        //retVal = "";
-                        //break;
+                            //retVal = "";
+                            //break;
                     }
                 }
                 else
@@ -347,7 +349,7 @@ namespace System.Configuration
                     case SettingsSerializeAs.Binary:
                     default:
                         throw new NotSupportedException();
-                    //break;
+                        //break;
                 }
 
             }
@@ -379,7 +381,7 @@ namespace System.Configuration
                         break;
                     default:
                         throw new NotSupportedException();
-                    //break;
+                        //break;
                 }
 
                 // Append this node to the application settings node (<Appname.Properties.Settings>)

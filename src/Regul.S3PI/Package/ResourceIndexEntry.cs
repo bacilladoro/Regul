@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
-using System.Reflection;
 using Regul.S3PI.Interfaces;
 
 namespace Regul.S3PI.Package
@@ -12,13 +9,7 @@ namespace Regul.S3PI.Package
     /// </summary>
     public class ResourceIndexEntry : AResourceIndexEntry
     {
-        const int recommendedApiVersion = 2;
-
         #region AApiVersionedFields
-        /// <summary>
-        /// The version of the API in use
-        /// </summary>
-        public override int RecommendedApiVersion { get { return recommendedApiVersion; } }
 
         //No ContentFields override as we don't want to make anything more public than AResourceIndexEntry provides
         #endregion
@@ -27,8 +18,6 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// The "type" of the resource
         /// </summary>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override uint ResourceType
         {
             get { return BitConverter.ToUInt32(indexEntry, 4); }
@@ -37,8 +26,6 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// The "group" the resource is part of
         /// </summary>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override uint ResourceGroup
         {
             get { return BitConverter.ToUInt32(indexEntry, 8); }
@@ -47,8 +34,6 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// The "instance" number of the resource
         /// </summary>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override ulong Instance
         {
             get { return ((ulong)BitConverter.ToUInt32(indexEntry, 12) << 32) | (ulong)BitConverter.ToUInt32(indexEntry, 16); }
@@ -62,8 +47,6 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// If the resource was read from a package, the location in the package the resource was read from
         /// </summary>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override uint Chunkoffset
         {
             get { return BitConverter.ToUInt32(indexEntry, 20); }
@@ -72,8 +55,6 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// The number of bytes the resource uses within the package
         /// </summary>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override uint Filesize
         {
             get { return BitConverter.ToUInt32(indexEntry, 24) & 0x7fffffff; }
@@ -82,8 +63,6 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// The number of bytes the resource uses in memory
         /// </summary>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override uint Memsize
         {
             get { return BitConverter.ToUInt32(indexEntry, 28); }
@@ -92,8 +71,6 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// 0xFFFF if Filesize != Memsize, else 0x0000
         /// </summary>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override ushort Compressed
         {
             get { return BitConverter.ToUInt16(indexEntry, 32); }
@@ -102,8 +79,6 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// Always 0x0001
         /// </summary>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override ushort Unknown2
         {
             get { return BitConverter.ToUInt16(indexEntry, 34); }
@@ -113,15 +88,11 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// A MemoryStream covering the index entry bytes
         /// </summary>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override Stream Stream { get { return new MemoryStream(indexEntry); } }
 
         /// <summary>
         /// True if the index entry has been deleted from the package index
         /// </summary>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override bool IsDeleted { get { return isDeleted; } set { if (isDeleted != value) { isDeleted = value; OnElementChanged(); } } }
 
         /// <summary>
@@ -129,8 +100,6 @@ namespace Regul.S3PI.Package
         /// </summary>
         /// <param name="handler">Element change event handler</param>
         /// <returns>Return a copy of this element but with a new change event handler</returns>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override AHandlerElement Clone(EventHandler handler) { return new ResourceIndexEntry(indexEntry); }
         #endregion
 

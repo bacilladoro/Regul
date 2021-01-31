@@ -9,8 +9,6 @@ namespace Regul.S3PI.Interfaces
     /// </summary>
     public abstract class ARCOLBlock : AHandlerElement, IRCOLBlock, IEquatable<ARCOLBlock>
     {
-        const int recommendedApiVersion = 1;
-
         /// <summary>
         /// For ValueBuilder purposes, the list of external resource keys is passed down here.
         /// Not all RCOLs need it, so it may end up unused.  Override this property to take
@@ -18,10 +16,6 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         public virtual DependentList<TGIBlock> ParentTGIBlocks { get; set; }
 
-        /// <summary>
-        /// Holds the requested API version.
-        /// </summary>
-        protected int requestedAPIversion;
         /// <summary>
         /// Holds the stream from which the block was read.
         /// </summary>
@@ -31,12 +25,11 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Create a new instance based on the data in the supplied <see cref="Stream"/>.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The change event handler for the resource.</param>
         /// <param name="s">The <see cref="Stream"/> containing the data.</param>
         /// <seealso cref="Parse"/>
-        public ARCOLBlock(int APIversion, EventHandler handler, Stream s)
-            : base(APIversion, handler)
+        public ARCOLBlock(EventHandler handler, Stream s)
+            : base(handler)
         {
             stream = s;
             if (stream == null) { stream = UnParse(); OnElementChanged(); }
@@ -77,16 +70,11 @@ namespace Regul.S3PI.Interfaces
         {
             get
             {
-                List<string> res = GetContentFields(requestedApiVersion, this.GetType());
+                List<string> res = GetContentFields(GetType());
                 res.Remove("ParentTGIBlocks");
                 return res;
             }
         }
-
-        /// <summary>
-        /// Unless overridden in an implementing class, returns <c>1</c>.
-        /// </summary>
-        public override int RecommendedApiVersion { get { return recommendedApiVersion; } }
 
         // /// <summary>
         // /// Implementing classes must provide a means of creating a copy of themselves.
@@ -174,7 +162,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="obj">An object to compare with this <see cref="ARCOLBlock"/>.</param>
         /// <returns><c>true</c> if the current <see cref="ARCOLBlock"/> is equal to the <paramref name="obj"/> parameter;
         /// otherwise, <c>false</c>.</returns>
-        public override bool Equals(object obj) => obj is ARCOLBlock && Equals((ARCOLBlock) obj);
+        public override bool Equals(object obj) => obj is ARCOLBlock block && Equals(block);
 
         /// <summary>
         /// Serves as a hash function for an <see cref="ARCOLBlock"/>.
@@ -201,7 +189,7 @@ namespace Regul.S3PI.Interfaces
                 if (value.BaseStream.CanSeek) { value.BaseStream.Position = 0; Parse(value.BaseStream); }
                 else
                 {
-                    MemoryStream ms = new MemoryStream();
+                    MemoryStream ms = new();
                     byte[] buffer = new byte[1024 * 1024];
                     for (int read = value.BaseStream.Read(buffer, 0, buffer.Length); read > 0; read = value.BaseStream.Read(buffer, 0, buffer.Length))
                         ms.Write(buffer, 0, read);

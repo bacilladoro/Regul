@@ -105,7 +105,7 @@
 		<v:String x:Key="ResourceDetails">Resource details</v:String>
 		<v:String x:Key="ImportFile">Import file</v:String>
 		<v:String x:Key="CopyRK">Copy RK</v:String>
-		<v:String x:Key="PsteRK">Paste RK</v:String>
+		<v:String x:Key="PasteRK">Paste RK</v:String>
 		<v:String x:Key="FilenameC">Filename:</v:String>
 		<v:String x:Key="Compress">Compress</v:String>
 		<v:String x:Key="UseResourceName">Use resource name</v:String>
@@ -122,7 +122,7 @@
 		<v:String x:Key="Dublicate">Dublicate</v:String>
 		<v:String x:Key="Replace">Replace</v:String>
 		<v:String x:Key="Compressed">Compressed</v:String>
-		<v:String x:Key="Deleted">Deleted</v:String>
+		<v:String x:Key="Remove">Remove</v:String>
 		<v:String x:Key="Details">Details</v:String>
 		<v:String x:Key="SelectAll">Select all</v:String>
 		<v:String x:Key="CopyResourceKey">Copy ResourceKey</v:String>

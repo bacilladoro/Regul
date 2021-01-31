@@ -18,15 +18,31 @@
 	<olib:OlibMainWindow.TitleBarMenu>
 		<Menu VerticalAlignment="Center">
 			<MenuItem Header="{DynamicResource File}">
-				<MenuItem Header="{DynamicResource New}" Command="{Binding NewPackageCommand}" InputGesture="Ctrl+N" HotKey="Ctrl+N"/>
+				<MenuItem Header="{DynamicResource New}" Command="{Binding NewPackageCommand}" InputGesture="Ctrl+N" HotKey="Ctrl+N">
+					<MenuItem.Icon>
+						<Image Source="{DynamicResource NewFileIcon}" Margin="1" />
+					</MenuItem.Icon>
+				</MenuItem>
 				<MenuItem Header="{DynamicResource Open}" Command="{Binding OpenPackageCommand}" InputGesture="Ctrl+O" HotKey="Ctrl+O"/>
 				<MenuItem Header="{DynamicResource Save}" InputGesture="Ctrl+S" HotKey="Ctrl+S" IsEnabled="{Binding IsNotNull}"/>
                 <Separator/>
-                <MenuItem Header="{DynamicResource Settings}" Command="{Binding SettingsWindowCommand}"/>
-				<MenuItem Header="{DynamicResource ExitFromRegul}" Command="{Binding ExitCommand}" InputGesture="Ctrl+Q" HotKey="Ctrl+Q"/>
+                <MenuItem Header="{DynamicResource Settings}" Command="{Binding SettingsWindowCommand}">
+					<MenuItem.Icon>
+						<Image Source="{DynamicResource SettingsIcon}" Margin="1"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="{DynamicResource ExitFromRegul}" Command="{Binding ExitCommand}" InputGesture="Ctrl+Q" HotKey="Ctrl+Q">
+					<MenuItem.Icon>
+						<Image Source="{DynamicResource ExitIcon}" Margin="1"/>
+					</MenuItem.Icon>
+				</MenuItem>
 			</MenuItem>
 			<MenuItem Header="{DynamicResource Tools}">
 				<MenuItem Header="{DynamicResource TheSims3}">
+					<MenuItem.Icon>
+						<Image Source="{DynamicResource TheSims3Icon}" Margin="1"/>
+					</MenuItem.Icon>
+						
 					<MenuItem Header="{DynamicResource SaveClear}" Command="{Binding SaveClearWindowCommand}"/>
 				</MenuItem>
 				<MenuItem Header="{DynamicResource HEXNumberConverter}" Command="{Binding HEXNumberConverterCommand}"/>
@@ -59,6 +75,7 @@
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>
+				<TextBlock Grid.Row="1" Text="No projects" HorizontalAlignment="Center" IsVisible="{Binding !Projects.Count}" VerticalAlignment="Center" Foreground="{DynamicResource ThemeForegroundOpacityBrush}"/>
 				<Button Grid.Row="2" Classes="TopNotCornerRadius" Content="{DynamicResource OpenProject}" IsEnabled="{CompiledBinding SelectedProject, Converter={x:Static ObjectConverters.IsNotNull}}" BorderThickness="1 0 1 1"/>
 				<StackPanel Grid.Row="3" Spacing="5" Margin="0 5 0 0">
 					<TextBlock Text="{DynamicResource Welcome}" HorizontalAlignment="Center"/>

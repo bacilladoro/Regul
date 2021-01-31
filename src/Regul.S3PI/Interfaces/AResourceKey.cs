@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace Regul.S3PI.Interfaces
 {
@@ -26,27 +25,24 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Initialize a new instance
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AResourceKey"/> changes.</param>
-        public AResourceKey(int APIversion, EventHandler handler) : base(APIversion, handler) { }
+        public AResourceKey(EventHandler handler) : base(handler) { }
         /// <summary>
         /// Initialize a new instance
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AResourceKey"/> changes.</param>
         /// <param name="basis">The <see cref="IResourceKey"/> values to use to initialise the instance.</param>
-        public AResourceKey(int APIversion, EventHandler handler, IResourceKey basis)
-            : this(APIversion, handler, basis.ResourceType, basis.ResourceGroup, basis.Instance) { }
+        public AResourceKey(EventHandler handler, IResourceKey basis)
+            : this(handler, basis.ResourceType, basis.ResourceGroup, basis.Instance) { }
         /// <summary>
         /// Initialize a new instance
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AResourceKey"/> changes.</param>
         /// <param name="resourceType">The type of the resource.</param>
         /// <param name="resourceGroup">The group of the resource.</param>
         /// <param name="instance">The instance of the resource.</param>
-        public AResourceKey(int APIversion, EventHandler handler, uint resourceType, uint resourceGroup, ulong instance)
-            : base(APIversion, handler)
+        public AResourceKey(EventHandler handler, uint resourceType, uint resourceGroup, ulong instance)
+            : base(handler)
         {
             this.resourceType = resourceType;
             this.resourceGroup = resourceGroup;
@@ -106,16 +102,16 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="other">An <see cref="IResourceKey"/> instance to compare with this instance.</param>
         /// <returns>true if the current instance is equal to the <paramref name="other"/> parameter; otherwise, false.</returns>
-        public bool Equals(IResourceKey other) { return this.CompareTo(other) == 0; }
+        public bool Equals(IResourceKey other) { return CompareTo(other) == 0; }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="AResourceKey"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="AResourceKey"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="AResourceKey"/>.</param>
-        /// <returns>true if the specified <see cref="System.Object"/> is equal to the current <see cref="AResourceKey"/>; otherwise, false.</returns>
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="AResourceKey"/>.</param>
+        /// <returns>true if the specified <see cref="object"/> is equal to the current <see cref="AResourceKey"/>; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return obj as AResourceKey != null ? this.Equals(obj as AResourceKey) : false;
+            return obj as AResourceKey != null ? Equals(obj as AResourceKey) : false;
         }
 
         #endregion
@@ -172,7 +168,7 @@ namespace Regul.S3PI.Interfaces
             {
                 string[] tgi = value.Trim().ToLower().Split('-');
                 if (tgi.Length != 3) return false;
-                foreach (var x in tgi) if (!x.StartsWith("0x")) return false;
+                foreach (string x in tgi) if (!x.StartsWith("0x")) return false;
 
                 if (!uint.TryParse(tgi[0].Substring(2), System.Globalization.NumberStyles.HexNumber, null, out t)) return false;
                 if (!uint.TryParse(tgi[1].Substring(2), System.Globalization.NumberStyles.HexNumber, null, out g)) return false;

@@ -170,7 +170,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s"><see cref="Stream"/> containing data.</param>
         /// <returns>New list element.</returns>
-        protected override HandlerElement<T> CreateElement(Stream s) { return new(0, elementHandler, createElement == null ? default(T) : createElement(s)); }
+        protected override HandlerElement<T> CreateElement(Stream s) { return new(elementHandler, createElement == null ? default(T) : createElement(s)); }
         /// <summary>
         /// Writes the value of a list element to <paramref name="s"/>.
         /// </summary>
@@ -228,7 +228,7 @@ namespace Regul.S3PI.Interfaces
         /// <returns>True on success</returns>
         /// <exception cref="InvalidOperationException">Thrown when list size exceeded.</exception>
         /// <exception cref="NotSupportedException">The <see cref="SimpleList{T}"/> is read-only.</exception>
-        public virtual void Add(T item) { base.Add(new HandlerElement<T>(0, elementHandler, item)); }
+        public virtual void Add(T item) { base.Add(new HandlerElement<T>(elementHandler, item)); }
 
         /// <summary>
         /// Adds the elements of the specified collection to the end of the <see cref="SimpleList{T}"/>.
@@ -336,7 +336,7 @@ namespace Regul.S3PI.Interfaces
         ///     cannot find an implementation of the <see cref="System.IComparable{T}"/> generic interface
         ///     or the <see cref="System.IComparable"/> interface for type T.
         /// </exception>
-        public int BinarySearch(int index, int count, T item, IComparer<T> comparer) { return base.BinarySearch(index, count, new HandlerElement<T>(0, null, item), new SimpleComparer(comparer)); }
+        public int BinarySearch(int index, int count, T item, IComparer<T> comparer) { return base.BinarySearch(index, count, new HandlerElement<T>(null, item), new SimpleComparer(comparer)); }
 
         /// <summary>
         ///     Converts the elements in the current <see cref="SimpleList{T}"/> to
@@ -939,7 +939,7 @@ namespace Regul.S3PI.Interfaces
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="index"/> is not a valid index in the <see cref="SimpleList{T}"/>.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown when list size exceeded.</exception>
         /// <exception cref="System.NotSupportedException">The <see cref="SimpleList{T}"/> is read-only.</exception>
-        public virtual void Insert(int index, T item) { base.Insert(index, new HandlerElement<T>(0, elementHandler, item)); }
+        public virtual void Insert(int index, T item) { base.Insert(index, new HandlerElement<T>(elementHandler, item)); }
         #endregion
 
         #region IEnumerable<T>

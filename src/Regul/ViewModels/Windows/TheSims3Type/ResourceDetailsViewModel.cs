@@ -188,7 +188,7 @@ namespace Regul.ViewModels.Windows.TheSims3Type
 
         private async void PasteResourceKeyDetails()
         {
-            TGIBlock item = new TGIBlock(0, null);
+            TGIBlock item = new TGIBlock(null);
             if (!TGIBlock.TryParse(await Application.Current.Clipboard.GetTextAsync(), item)) return;
 
             Group = item.ResourceGroup;

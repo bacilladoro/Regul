@@ -9,8 +9,6 @@ namespace Regul.S3PI.Interfaces
     /// </summary>
     public class Quaternion : AHandlerElement, IEquatable<Quaternion>
     {
-        const int recommendedApiVersion = 1;
-
         #region Attributes
         float a = 0f;
         float b = 0f;
@@ -24,22 +22,22 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
-        public Quaternion(int APIversion, EventHandler handler) : base(APIversion, handler) { }
+        public Quaternion(EventHandler handler) : base(handler) { }
         /// <summary>
         /// Create a Quaternion from a <see cref="Stream"/>.
         /// </summary>
         /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="s"><see cref="Stream"/> containing coordinates.</param>
-        public Quaternion(int APIversion, EventHandler handler, Stream s) : base(APIversion, handler) { Parse(s); }
+        public Quaternion(EventHandler handler, Stream s) : base(handler) { Parse(s); }
         /// <summary>
         /// Create a Quaternion from a given value.
         /// </summary>
         /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="basis"><see cref="Quaternion"/> to copy.</param>
-        public Quaternion(int APIversion, EventHandler handler, Quaternion basis)
-            : this(APIversion, handler, basis.a, basis.b, basis.c, basis.d) { }
+        public Quaternion(EventHandler handler, Quaternion basis)
+            : this(handler, basis.a, basis.b, basis.c, basis.d) { }
         /// <summary>
         /// Create a Quaternion { a, b, c, d }.
         /// </summary>
@@ -49,8 +47,8 @@ namespace Regul.S3PI.Interfaces
         /// <param name="b">Q 'b' value.</param>
         /// <param name="c">Q 'c' value.</param>
         /// <param name="d">Q 'd' value.</param>
-        public Quaternion(int APIversion, EventHandler handler, float a, float b, float c, float d)
-            : base(APIversion, handler)
+        public Quaternion(EventHandler handler, float a, float b, float c, float d)
+            : base(handler)
         {
             this.a = a;
             this.b = b;
@@ -85,14 +83,9 @@ namespace Regul.S3PI.Interfaces
 
         #region AHandlerElement Members
         /// <summary>
-        /// The best supported version of the API available
-        /// </summary>
-        public override int RecommendedApiVersion { get { return recommendedApiVersion; } }
-
-        /// <summary>
         /// The list of available field names on this API object.
         /// </summary>
-        public override List<string> ContentFields { get { return GetContentFields(requestedApiVersion, this.GetType()); } }
+        public override List<string> ContentFields { get { return GetContentFields(GetType()); } }
 
         // /// <summary>
         // /// Get a copy of the <see cref="Quaternion"/> but with a new change <see cref="EventHandler"/>.

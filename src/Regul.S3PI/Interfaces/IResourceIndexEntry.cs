@@ -6,7 +6,7 @@ namespace Regul.S3PI.Interfaces
     /// <summary>
     /// An index entry within a package
     /// </summary>
-    public interface IResourceIndexEntry : IApiVersion, IContentFields, IResourceKey, IEquatable<IResourceIndexEntry>
+    public interface IResourceIndexEntry : IContentFields, IResourceKey, IEquatable<IResourceIndexEntry>
     {
         /// <summary>
         /// If the resource was read from a package, the location in the package the resource was read from

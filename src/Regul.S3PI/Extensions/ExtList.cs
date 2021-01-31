@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Regul.S3PI.Extensions.Properties;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Regul.S3PI.Extensions.Properties;
 
 namespace Regul.S3PI.Extensions
 {
@@ -12,7 +12,7 @@ namespace Regul.S3PI.Extensions
     /// <seealso cref="TGIN"/>
     public class ExtList : Dictionary<string, List<string>>
     {
-        static ExtList e = null;
+        static readonly ExtList e = null;
         static ExtList() { e = new ExtList(); }
         /// <summary>
         /// A look-up from resource type to resource &quot;tag&quot; and file extension.
@@ -22,16 +22,16 @@ namespace Regul.S3PI.Extensions
 
         ExtList()
         {
-            StringReader sr = new StringReader(Resources.Extensions);
+            using StringReader sr = new(Resources.Extensions);
             string s;
             while ((s = sr.ReadLine()) != null)
             {
                 if (s.StartsWith(";")) continue;
-                List<string> t = new List<string>(s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+                List<string> t = new(s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
                 if (t.Count < 2) continue;
                 string t0 = t[0];
                 t.RemoveAt(0);
-                this.Add(t0, t);
+                Add(t0, t);
             }
         }
 
@@ -57,7 +57,7 @@ namespace Regul.S3PI.Extensions
         /// <exception cref="InvalidOperationException">An attempt was made to set a value.</exception>
         public new List<string> this[string key]
         {
-            get { return this.ContainsKey(key) ? base[key] : base["*"]; }
+            get { return ContainsKey(key) ? base[key] : base["*"]; }
             set { throw new InvalidOperationException(); }
         }
     }

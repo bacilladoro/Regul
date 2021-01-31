@@ -58,7 +58,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="basis">The TGIBlock to use for the <see cref="Order"/> and <see cref="IResourceKey"/> values.</param>
-        public TGIBlock(int APIversion, EventHandler handler, TGIBlock basis) : this(APIversion, handler, basis.order, (IResourceKey)basis) { }
+        public TGIBlock(EventHandler handler, TGIBlock basis) : this(handler, basis.order, (IResourceKey)basis) { }
 
         /// <summary>
         /// Initialize a new TGIBlock
@@ -66,7 +66,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
-        public TGIBlock(int APIversion, EventHandler handler) : base(APIversion, handler, 0, 0, 0) { }
+        public TGIBlock(EventHandler handler) : base(handler, 0, 0, 0) { }
         /// <summary>
         /// Initialize a new TGIBlock
         /// with the specified order.
@@ -74,7 +74,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="order">A <see cref="string"/> representing the <see cref="Order"/> to use to store the <see cref="IResourceKey"/> values.</param>
-        public TGIBlock(int APIversion, EventHandler handler, string order) : this(APIversion, handler) { ok(order); this.order = order; }
+        public TGIBlock(EventHandler handler, string order) : this(handler) { ok(order); this.order = order; }
         /// <summary>
         /// Initialize a new TGIBlock
         /// with the specified order.
@@ -82,7 +82,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="order">The <see cref="Order"/> to use to store the <see cref="IResourceKey"/> values.</param>
-        public TGIBlock(int APIversion, EventHandler handler, Order order) : this(APIversion, handler) { ok(order); this.order = "" + order; }
+        public TGIBlock(EventHandler handler, Order order) : this(handler) { ok(order); this.order = "" + order; }
 
         /// <summary>
         /// Initialize a new TGIBlock
@@ -93,8 +93,8 @@ namespace Regul.S3PI.Interfaces
         /// <param name="resourceType">The resource type value.</param>
         /// <param name="resourceGroup">The resource group value.</param>
         /// <param name="instance">The resource instance value.</param>
-        public TGIBlock(int APIversion, EventHandler handler, uint resourceType, uint resourceGroup, ulong instance)
-            : base(APIversion, handler, resourceType, resourceGroup, instance) { }
+        public TGIBlock(EventHandler handler, uint resourceType, uint resourceGroup, ulong instance)
+            : base(handler, resourceType, resourceGroup, instance) { }
         /// <summary>
         /// Initialize a new TGIBlock
         /// with the specified order and values.
@@ -105,8 +105,8 @@ namespace Regul.S3PI.Interfaces
         /// <param name="resourceType">The resource type value.</param>
         /// <param name="resourceGroup">The resource group value.</param>
         /// <param name="instance">The resource instance value.</param>
-        public TGIBlock(int APIversion, EventHandler handler, string order, uint resourceType, uint resourceGroup, ulong instance)
-            : this(APIversion, handler, resourceType, resourceGroup, instance) { ok(order); this.order = order; }
+        public TGIBlock(EventHandler handler, string order, uint resourceType, uint resourceGroup, ulong instance)
+            : this(handler, resourceType, resourceGroup, instance) { ok(order); this.order = order; }
         /// <summary>
         /// Initialize a new TGIBlock
         /// with the specified order and values.
@@ -117,8 +117,8 @@ namespace Regul.S3PI.Interfaces
         /// <param name="resourceType">The resource type value.</param>
         /// <param name="resourceGroup">The resource group value.</param>
         /// <param name="instance">The resource instance value.</param>
-        public TGIBlock(int APIversion, EventHandler handler, Order order, uint resourceType, uint resourceGroup, ulong instance)
-            : this(APIversion, handler, resourceType, resourceGroup, instance) { ok(order); this.order = "" + order; }
+        public TGIBlock(EventHandler handler, Order order, uint resourceType, uint resourceGroup, ulong instance)
+            : this(handler, resourceType, resourceGroup, instance) { ok(order); this.order = "" + order; }
 
         /// <summary>
         /// Initialize a new TGIBlock
@@ -127,7 +127,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="rk">The <see cref="IResourceKey"/> values.</param>
-        public TGIBlock(int APIversion, EventHandler handler, IResourceKey rk) : base(APIversion, handler, rk) { }
+        public TGIBlock(EventHandler handler, IResourceKey rk) : base(handler, rk) { }
         /// <summary>
         /// Initialize a new TGIBlock
         /// with the specified order and <see cref="IResourceKey"/> values.
@@ -136,7 +136,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="order">A <see cref="string"/> representing the <see cref="Order"/> to use to store the <see cref="IResourceKey"/> values.</param>
         /// <param name="rk">The <see cref="IResourceKey"/> values.</param>
-        public TGIBlock(int APIversion, EventHandler handler, string order, IResourceKey rk) : this(APIversion, handler, rk) { ok(order); this.order = order; }
+        public TGIBlock(EventHandler handler, string order, IResourceKey rk) : this(handler, rk) { ok(order); this.order = order; }
         /// <summary>
         /// Initialize a new TGIBlock
         /// with the specified order and <see cref="IResourceKey"/> values.
@@ -145,7 +145,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="order">The <see cref="Order"/> to use to store the <see cref="IResourceKey"/> values.</param>
         /// <param name="rk">The <see cref="IResourceKey"/> values.</param>
-        public TGIBlock(int APIversion, EventHandler handler, Order order, IResourceKey rk) : this(APIversion, handler, rk) { ok(order); this.order = "" + order; }
+        public TGIBlock(EventHandler handler, Order order, IResourceKey rk) : this(handler, rk) { ok(order); this.order = "" + order; }
 
         /// <summary>
         /// Initialize a new TGIBlock
@@ -154,7 +154,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="s">The <see cref="System.IO.Stream"/> from which to read the <see cref="IResourceKey"/> values.</param>
-        public TGIBlock(int APIversion, EventHandler handler, Stream s) : base(APIversion, handler) { Parse(s); }
+        public TGIBlock(EventHandler handler, Stream s) : base(handler) { Parse(s); }
         /// <summary>
         /// Initialize a new TGIBlock
         /// with the specified order and values read from the specified <see cref="System.IO.Stream"/>.
@@ -163,7 +163,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="order">A <see cref="string"/> representing the <see cref="Order"/> of the <see cref="IResourceKey"/> values.</param>
         /// <param name="s">The <see cref="System.IO.Stream"/> from which to read the <see cref="IResourceKey"/> values.</param>
-        public TGIBlock(int APIversion, EventHandler handler, string order, Stream s) : base(APIversion, handler) { ok(order); this.order = order; Parse(s); }
+        public TGIBlock(EventHandler handler, string order, Stream s) : base(handler) { ok(order); this.order = order; Parse(s); }
         /// <summary>
         /// Initialize a new TGIBlock
         /// with the specified order and values read from the specified <see cref="System.IO.Stream"/>.
@@ -172,7 +172,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="order">The <see cref="Order"/> of the <see cref="IResourceKey"/> values.</param>
         /// <param name="s">The <see cref="System.IO.Stream"/> from which to read the <see cref="IResourceKey"/> values.</param>
-        public TGIBlock(int APIversion, EventHandler handler, Order order, Stream s) : base(APIversion, handler) { ok(order); this.order = "" + order; Parse(s); }
+        public TGIBlock(EventHandler handler, Order order, Stream s) : base(handler) { ok(order); this.order = "" + order; Parse(s); }
         #endregion
 
         #region Data I/O
@@ -213,11 +213,8 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// The list of available field names on this API object
         /// </summary>
-        public override List<string> ContentFields { get { return GetContentFields(requestedApiVersion, this.GetType()); } }
-        /// <summary>
-        /// The best supported version of the API available
-        /// </summary>
-        public override int RecommendedApiVersion { get { return recommendedApiVersion; } }
+        public override List<string> ContentFields { get { return GetContentFields(GetType()); } }
+
         // /// <summary>
         // /// Get a copy of the <see cref="TGIBlock"/> but with a new change <see cref="EventHandler"/>.
         // /// </summary>

@@ -16,7 +16,6 @@ namespace Regul.S3PI.GenericRCOLResource
     public class GenericRCOLResource : AResource
     {
         static bool checking = Settings.Settings.Checking;
-        const int recommendedApiVersion = 1;
 
         #region Attributes
         /// <summary>
@@ -47,7 +46,7 @@ namespace Regul.S3PI.GenericRCOLResource
         /// </summary>
         /// <param name="APIversion">Unused; requested API version.</param>
         /// <param name="s">The <see cref="Stream"/> to read the resource in from.</param>
-        public GenericRCOLResource(int APIversion, Stream s) : base(APIversion, s) { if (stream == null) { stream = UnParse(); OnResourceChanged(this, EventArgs.Empty); } stream.Position = 0; Parse(stream); }
+        public GenericRCOLResource(Stream s) : base(s) { if (stream == null) { stream = UnParse(); OnResourceChanged(this, EventArgs.Empty); } stream.Position = 0; Parse(stream); }
         #endregion
 
         #region Data I/O
@@ -61,7 +60,7 @@ namespace Regul.S3PI.GenericRCOLResource
             int countResources = r.ReadInt32();
             int countChunks = r.ReadInt32();
             TGIBlock[] chunks = new TGIBlock[countChunks];
-            for (int i = 0; i < countChunks; i++) chunks[i] = new TGIBlock(0, OnResourceChanged, "ITG", s);
+            for (int i = 0; i < countChunks; i++) chunks[i] = new TGIBlock(OnResourceChanged, "ITG", s);
             resources = new CountedTGIBlockList(OnResourceChanged, "ITG", countResources, s);
 
             RCOLIndexEntry[] index = new RCOLIndexEntry[countChunks];
@@ -74,7 +73,7 @@ namespace Regul.S3PI.GenericRCOLResource
                     chunks[0].ResourceType = RCOLTypesForTag(new string(r.ReadChars(4))).FirstOrDefault();
             }
 
-            blockList = new ChunkEntryList(requestedApiVersion, OnResourceChanged, s, chunks, index) { ParentTGIBlocks = resources, };
+            blockList = new ChunkEntryList(OnResourceChanged, s, chunks, index) { ParentTGIBlocks = resources, };
         }
 
         /// <summary>
@@ -120,14 +119,6 @@ namespace Regul.S3PI.GenericRCOLResource
         }
         #endregion
 
-        #region AApiVersionedFields
-        /// <summary>
-        /// Return the version number that this wrapper prefers to be called with (the default if passed zero).
-        /// </summary>
-        /// <remarks>This wrapper returns <c>1</c> and is not sensitive to API version.</remarks>
-        public override int RecommendedApiVersion { get { return recommendedApiVersion; } }
-        #endregion
-
         #region Sub-types
         internal struct RCOLIndexEntry
         {
@@ -157,29 +148,22 @@ namespace Regul.S3PI.GenericRCOLResource
             /// <summary>
             /// Create a ChunkEntry from an existing <see cref="ChunkEntry"/>.
             /// </summary>
-            /// <param name="APIversion">Unused; the requested API version.</param>
             /// <param name="handler">The change event handler.</param>
             /// <param name="basis">An existing <see cref="ChunkEntry"/> to use as a basis.</param>
-            public ChunkEntry(int APIversion, EventHandler handler, ChunkEntry basis) : this(APIversion, handler, basis.tgiBlock, basis.rcolBlock) { }
+            public ChunkEntry(EventHandler handler, ChunkEntry basis) : this(handler, basis.tgiBlock, basis.rcolBlock) { }
             /// <summary>
             /// Create a ChunkEntry from an existing <see cref="TGIBlock"/> and an existing <see cref="ARCOLBlock"/>.
             /// </summary>
-            /// <param name="APIversion">Unused; the requested API version.</param>
             /// <param name="handler">The change event handler.</param>
             /// <param name="tgiBlock">An existing <see cref="T:TGIBlock"/>.</param>
             /// <param name="rcolBlock">An existing <see cref="ARCOLBlock"/>.</param>
-            public ChunkEntry(int APIversion, EventHandler handler, TGIBlock tgiBlock, ARCOLBlock rcolBlock) : base(APIversion, handler)
+            public ChunkEntry(EventHandler handler, TGIBlock tgiBlock, ARCOLBlock rcolBlock) : base(handler)
             {
                 this.tgiBlock = tgiBlock.Clone(handler) as TGIBlock;
                 this.rcolBlock = rcolBlock.Clone(handler) as ARCOLBlock;
             }
 
             #region AHandlerElement Members
-            /// <summary>
-            /// Return the version number that this class prefers to be called with (the default if passed zero).
-            /// </summary>
-            /// <remarks>This class returns <c>1</c> and is not sensitive to API version.</remarks>
-            public override int RecommendedApiVersion { get { return recommendedApiVersion; } }
 
             /// <summary>
             /// The visible-to-API list of fields in this class.
@@ -188,7 +172,7 @@ namespace Regul.S3PI.GenericRCOLResource
             {
                 get
                 {
-                    List<string> res = GetContentFields(requestedApiVersion, this.GetType());
+                    List<string> res = GetContentFields(GetType());
                     res.Remove("ParentTGIBlocks");
                     return res;
                 }
@@ -230,7 +214,7 @@ namespace Regul.S3PI.GenericRCOLResource
             /// The <see cref="T:TGIBlock"/> that identifies the RCOL block.
             /// </summary>
             [ElementPriority(1)]
-            public TGIBlock TGIBlock { get { return tgiBlock; } set { if (tgiBlock != value) { tgiBlock = new TGIBlock(0, handler, value); OnElementChanged(); } } }
+            public TGIBlock TGIBlock { get { return tgiBlock; } set { if (tgiBlock != value) { tgiBlock = new TGIBlock(handler, value); OnElementChanged(); } } }
             /// <summary>
             /// The RCOL block.
             /// </summary>
@@ -246,8 +230,8 @@ namespace Regul.S3PI.GenericRCOLResource
                 {
                     System.Text.StringBuilder sb = new System.Text.StringBuilder();
                     sb.Append("--- " + tgiBlock + " - " + rcolBlock.Tag + " ---");
-                    if (GetContentFields(0, rcolBlock.GetType()).Contains("Value") &&
-                            typeof(string).IsAssignableFrom(GetContentFieldTypes(requestedApiVersion, rcolBlock.GetType())["Value"]))
+                    if (GetContentFields(rcolBlock.GetType()).Contains("Value") &&
+                            typeof(string).IsAssignableFrom(GetContentFieldTypes(rcolBlock.GetType())["Value"]))
                         sb.Append("\n" + (string)rcolBlock["Value"].Value);
                     sb.Append("\n----");
                     return sb.ToString();
@@ -274,7 +258,7 @@ namespace Regul.S3PI.GenericRCOLResource
                 } }
             }
 
-            internal ChunkEntryList(int requestedApiVersion, EventHandler handler, Stream s, TGIBlock[] chunks, RCOLIndexEntry[] index)
+            internal ChunkEntryList(EventHandler handler, Stream s, TGIBlock[] chunks, RCOLIndexEntry[] index)
                 : base(null, -1)
             {
                 elementHandler = handler;
@@ -288,7 +272,7 @@ namespace Regul.S3PI.GenericRCOLResource
                     ms.Write(data, 0, data.Length);
                     ms.Position = 0;
 
-                    Add(new ChunkEntry(0, elementHandler, chunks[i], RCOLDealer(requestedApiVersion, elementHandler, chunks[i].ResourceType, ms)));
+                    Add(new ChunkEntry(elementHandler, chunks[i], RCOLDealer(elementHandler, chunks[i].ResourceType, ms)));
                 }
 
                 this.handler = handler;
@@ -376,7 +360,7 @@ namespace Regul.S3PI.GenericRCOLResource
             /// <summary>
             /// Returns the list of fields for the type.
             /// </summary>
-            public override List<string> ContentFields { get { List<string> res = GetContentFields(requestedApiVersion, this.GetType()); res.Remove("ParentTGIBlocks"); return res; } }
+            public override List<string> ContentFields { get { List<string> res = GetContentFields(GetType()); res.Remove("ParentTGIBlocks"); return res; } }
 
 
             #region Attributes
@@ -389,32 +373,32 @@ namespace Regul.S3PI.GenericRCOLResource
             /// </summary>
             /// <param name="APIversion">Unused; requested API version.</param>
             /// <param name="handler">Change <see cref="EventHandler"/> delegate.</param>
-            public ChunkReference(int APIversion, EventHandler handler)
-                : this(APIversion, handler, 0) { }
+            public ChunkReference(EventHandler handler)
+                : this(handler, 0) { }
             /// <summary>
             /// Create a new instance from data in the provided <see cref="Stream"/>.
             /// </summary>
             /// <param name="APIversion">Unused; requested API version.</param>
             /// <param name="handler">Change <see cref="EventHandler"/> delegate.</param>
             /// <param name="s">The <see cref="Stream"/> containing the data.</param>
-            public ChunkReference(int APIversion, EventHandler handler, Stream s)
-                : base(APIversion, handler) { Parse(s); }
+            public ChunkReference(EventHandler handler, Stream s)
+                : base(handler) { Parse(s); }
             /// <summary>
             /// Create a new instance based on the provided existing instance.
             /// </summary>
             /// <param name="APIversion">Unused; requested API version.</param>
             /// <param name="handler">Change <see cref="EventHandler"/> delegate.</param>
             /// <param name="basis">An existing instance.</param>
-            public ChunkReference(int APIversion, EventHandler handler, ChunkReference basis)
-                : this(APIversion, handler, basis.chunkReference) { }
+            public ChunkReference(EventHandler handler, ChunkReference basis)
+                : this(handler, basis.chunkReference) { }
             /// <summary>
             /// Create a new instance from the provided <see cref="uint"/> value.
             /// </summary>
             /// <param name="APIversion">Unused; requested API version.</param>
             /// <param name="handler">Change <see cref="EventHandler"/> delegate.</param>
             /// <param name="chunkReference">The chunk reference as a &quot;raw&quot; <see cref="uint"/>.</param>
-            public ChunkReference(int APIversion, EventHandler handler, uint chunkReference)
-                : base(APIversion, handler) { this.chunkReference = chunkReference; }
+            public ChunkReference(EventHandler handler, uint chunkReference)
+                : base(handler) { this.chunkReference = chunkReference; }
             #endregion
 
             #region Data I/O
@@ -425,14 +409,6 @@ namespace Regul.S3PI.GenericRCOLResource
             /// </summary>
             /// <param name="s">The <see cref="Stream"/> to write out to.</param>
             public void UnParse(Stream s) { new BinaryWriter(s).Write(chunkReference); }
-            #endregion
-
-            #region AHandlerElement Members
-            /// <summary>
-            /// Return the version number that this wrapper prefers to be called with (the default if passed zero).
-            /// </summary>
-            /// <remarks>This wrapper returns <c>1</c> and is not sensitive to API version.</remarks>
-            public override int RecommendedApiVersion { get { return recommendedApiVersion; } }
             #endregion
 
             #region IEquatable<ChunkReference> Members
@@ -587,7 +563,7 @@ namespace Regul.S3PI.GenericRCOLResource
             /// <remarks>Note that the value will be zero (i.e. indicating an invalid entry) if the <paramref name="rk"/>
             /// value supplied is not found either in the <see cref="GenericRCOLResource.ChunkEntries"/> or
             /// <see cref="GenericRCOLResource.Resources"/> lists.</remarks>
-            public static ChunkReference CreateReference(GenericRCOLResource rcol, IResourceKey rk) => new(0, null, CreateReferenceHelper(rcol, rk));
+            public static ChunkReference CreateReference(GenericRCOLResource rcol, IResourceKey rk) => new(null, CreateReferenceHelper(rcol, rk));
 
             static uint CreateReferenceHelper(GenericRCOLResource rcol, IResourceKey rk)
             {
@@ -763,10 +739,10 @@ namespace Regul.S3PI.GenericRCOLResource
         /// <param name="type">Resource type of RCOL block.</param>
         /// <returns>A new, initialised instance of the requested RCOL block <paramref name="type"/>,
         /// or <c>null</c> if the <paramref name="type"/> is not supported.</returns>
-        public static ARCOLBlock CreateRCOLBlock(int APIversion, EventHandler handler, uint type)
+        public static ARCOLBlock CreateRCOLBlock(EventHandler handler, uint type)
         {
             Type[] types = { typeof(int), typeof(EventHandler) };
-            object[] args = { APIversion, handler };
+            object[] args = { handler };
             if (typeRegistry.ContainsKey(type))
                 return (ARCOLBlock) typeRegistry[type].GetConstructor(types)?.Invoke(args);
             if (tagRegistry.ContainsKey("*"))
@@ -785,10 +761,10 @@ namespace Regul.S3PI.GenericRCOLResource
         /// <returns>A new instance of the requested RCOL block <paramref name="type"/>,
         /// initialised from the supplied <see cref="Stream"/>,
         /// or <c>null</c> if the <paramref name="type"/> is not supported.</returns>
-        public static ARCOLBlock RCOLDealer(int APIversion, EventHandler handler, uint type, Stream s)
+        public static ARCOLBlock RCOLDealer(EventHandler handler, uint type, Stream s)
         {
             Type[] types = { typeof(int), typeof(EventHandler), typeof(Stream) };
-            object[] args = { APIversion, handler, s };
+            object[] args = { handler, s };
             if (typeRegistry.ContainsKey(type))
                 return (ARCOLBlock) typeRegistry[type].GetConstructor(types)?.Invoke(args);
             if (tagRegistry.ContainsKey("*"))
@@ -807,7 +783,7 @@ namespace Regul.S3PI.GenericRCOLResource
         /// <returns>A new instance of the requested RCOL block <paramref name="type"/>,
         /// initialised from the supplied <paramref name="fields"/>,
         /// or <c>null</c> if the <paramref name="type"/> is not supported.</returns>
-        public static ARCOLBlock RCOLDealer(int APIversion, EventHandler handler, uint type, params object[] fields)
+        public static ARCOLBlock RCOLDealer(EventHandler handler, uint type, params object[] fields)
         {
             Type[] types = new Type[2 + fields.Length];
             types[0] = typeof(int);
@@ -815,7 +791,6 @@ namespace Regul.S3PI.GenericRCOLResource
             for (int i = 0; i < fields.Length; i++) types[2 + i] = fields[i].GetType();
 
             object[] args = new object[2 + fields.Length];
-            args[0] = APIversion;
             args[1] = handler;
             Array.Copy(fields, 0, args, 2, fields.Length);
 

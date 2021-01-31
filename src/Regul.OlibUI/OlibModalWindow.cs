@@ -93,7 +93,6 @@ namespace Regul.OlibUI
                         {
                             if (((Window)this.GetVisualRoot()).WindowState == WindowState.Maximized)
                             {
-
                                 window.WindowState = WindowState.Normal;
                                 ReestablishMenuItem.IsEnabled = false;
                                 ExpandMenuItem.IsEnabled = true;
@@ -137,7 +136,6 @@ namespace Regul.OlibUI
                 {
                     if (window.CanResize)
                     {
-
                         SetupSide("Left_top", StandardCursorType.LeftSide, WindowEdge.West, ref e);
                         SetupSide("Left_mid", StandardCursorType.LeftSide, WindowEdge.West, ref e);
                         SetupSide("Left_bottom", StandardCursorType.LeftSide, WindowEdge.West, ref e);

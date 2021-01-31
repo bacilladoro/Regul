@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Regul.S3PI.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using Regul.S3PI.Interfaces;
 
 namespace Regul.S3PI.Package
 {
@@ -11,15 +10,9 @@ namespace Regul.S3PI.Package
     /// </summary>
     public class Package : APackage
     {
-        static bool checking = Settings.Settings.Checking;
-
-        const int recommendedApiVersion = 1;
+        static readonly bool checking = Settings.Settings.Checking;
 
         #region AApiVersionedFields
-        /// <summary>
-        /// The version of the API in use
-        /// </summary>
-        public override int RecommendedApiVersion { get { return recommendedApiVersion; } }
 
         //No ContentFields override as we don't want to make anything more public than APackage provides
         #endregion
@@ -29,8 +22,6 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// Tell the package to save itself to wherever it believes it came from
         /// </summary>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override void SavePackage()
         {
             if (checking) if (packageStream == null)
@@ -75,18 +66,16 @@ namespace Regul.S3PI.Package
         /// Save the package to a given stream
         /// </summary>
         /// <param name="s">Stream to save to</param>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override void SaveAs(Stream s)
         {
             BinaryWriter w = new BinaryWriter(s);
             w.Write(header);
 
-            List<uint> lT = new List<uint>();
-            List<uint> lG = new List<uint>();
-            List<uint> lIh = new List<uint>();
+            List<uint> lT = new();
+            List<uint> lG = new();
+            List<uint> lIh = new();
 
-            for (var i = 0; i < Index.Count; i++)
+            for (int i = 0; i < Index.Count; i++)
             {
                 IResourceIndexEntry x = Index[i];
                 if (!lT.Contains(x.ResourceType)) lT.Add(x.ResourceType);
@@ -96,10 +85,10 @@ namespace Regul.S3PI.Package
 
             uint indexType = (uint)(lIh.Count <= 1 ? 0x04 : 0x00) | (uint)(lG.Count <= 1 ? 0x02 : 0x00) | (uint)(lT.Count <= 1 ? 0x01 : 0x00);
 
-            PackageIndex newIndex = new PackageIndex(indexType);
-            for (var i = 0; i < this.Index.Count; i++)
+            PackageIndex newIndex = new(indexType);
+            for (int i = 0; i < Index.Count; i++)
             {
-                IResourceIndexEntry ie = this.Index[i];
+                IResourceIndexEntry ie = Index[i];
                 if (ie.IsDeleted) continue;
 
                 ResourceIndexEntry newIE = (ie as ResourceIndexEntry)?.Clone();
@@ -134,11 +123,9 @@ namespace Regul.S3PI.Package
         /// Save the package to a given file
         /// </summary>
         /// <param name="path">File to save to - will be overwritten or created</param>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override void SaveAs(string path)
         {
-            FileStream fs = new FileStream(path, FileMode.Create);
+            FileStream fs = new(path, FileMode.Create);
             SaveAs(fs);
             fs.Close();
         }
@@ -148,22 +135,12 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// Initialise a new, empty package and return the IPackage reference
         /// </summary>
-        /// <param name="APIversion">(unused)</param>
         /// <returns>IPackage reference to an empty package</returns>
-        public new static IPackage NewPackage(int APIversion) => new Package(APIversion);
-
-        /// <summary>
-        /// Initialise a new, empty package and return the IPackage reference
-        /// </summary>
-        /// <param name="APIversion">(unused)</param>
-        /// <param name="major">Major version for the DBPF package.</param>
-        /// <returns>IPackage reference to an empty package</returns>
-        public new static IPackage NewPackage(int APIversion, int major) => new Package(APIversion, major);
+        public static new IPackage NewPackage() => new Package();
 
         /// <summary>
         /// Open an existing package by filename, read only
         /// </summary>
-        /// <param name="APIversion">(unused)</param>
         /// <param name="packagePath">Fully qualified filename of the package</param>
         /// <returns>IPackage reference to an existing package on disk</returns>
         /// <exception cref="ArgumentNullException"><paramref name="packagePath"/> is null.</exception>
@@ -183,7 +160,7 @@ namespace Regul.S3PI.Package
         /// </exception>
         /// <exception cref="System.Security.SecurityException">The caller does not have the required permission.</exception>
         /// <exception cref="InvalidDataException">Thrown if the package header is malformed.</exception>
-        public new static IPackage OpenPackage(int APIversion, string packagePath) { return OpenPackage(APIversion, packagePath, false); }
+        public static new IPackage OpenPackage(string packagePath) { return OpenPackage(packagePath, false); }
         /// <summary>
         /// Open an existing package by filename, optionally readwrite
         /// </summary>
@@ -212,16 +189,15 @@ namespace Regul.S3PI.Package
         /// such as when access is ReadWrite and the file or directory is set for read-only access.
         /// </exception>
         /// <exception cref="InvalidDataException">Thrown if the package header is malformed.</exception>
-        public new static IPackage OpenPackage(int APIversion, string packagePath, bool readwrite) => new Package(APIversion, new FileStream(packagePath, FileMode.Open, readwrite ? FileAccess.ReadWrite : FileAccess.Read, FileShare.ReadWrite));
+        public static new IPackage OpenPackage(string packagePath, bool readwrite) => new Package(new FileStream(packagePath, FileMode.Open, readwrite ? FileAccess.ReadWrite : FileAccess.Read, FileShare.ReadWrite));
 
         /// <summary>
         /// Releases any internal references associated with the given package
         /// </summary>
-        /// <param name="APIversion">(unused)</param>
         /// <param name="pkg">IPackage reference to close</param>
-        public new static void ClosePackage(int APIversion, IPackage pkg)
+        public static new void ClosePackage(IPackage pkg)
         {
-            if (!(pkg is Package p)) return;
+            if (pkg is not Package p) return;
             if (p.packageStream != null) { try { p.packageStream.Close(); } catch { } p.packageStream = null; }
             p.header = null;
             p.index = null;
@@ -235,60 +211,50 @@ namespace Regul.S3PI.Package
         [ElementPriority(1)]
         public override byte[] Magic { get { byte[] res = new byte[4]; Array.Copy(header, 0, res, 0, res.Length); return res; } }
         /// <summary>
-        /// Package header: 0x00000002
-        /// </summary>
-        [ElementPriority(2)]
-        public override int Major { get { return BitConverter.ToInt32(header, 4); } }
-        /// <summary>
-        /// Package header: 0x00000000
-        /// </summary>
-        [ElementPriority(3)]
-        public override int Minor { get { return BitConverter.ToInt32(header, 8); } }
-        /// <summary>
         /// Package header: unused
         /// </summary>
-        [ElementPriority(4)]
+        [ElementPriority(2)]
         public override byte[] Unknown1 { get { byte[] res = new byte[24]; Array.Copy(header, 12, res, 0, res.Length); return res; } }
         /// <summary>
         /// Package header: number of entries in the package index
         /// </summary>
-        [ElementPriority(5)]
+        [ElementPriority(3)]
         public override int Indexcount { get { return BitConverter.ToInt32(header, 36); } }
         /// <summary>
         /// Package header: unused
         /// </summary>
-        [ElementPriority(6)]
+        [ElementPriority(4)]
         public override byte[] Unknown2 { get { byte[] res = new byte[4]; Array.Copy(header, 40, res, 0, res.Length); return res; } }
         /// <summary>
         /// Package header: index size on disk in bytes
         /// </summary>
-        [ElementPriority(7)]
+        [ElementPriority(5)]
         public override int Indexsize { get { return BitConverter.ToInt32(header, 44); } }
         /// <summary>
         /// Package header: unused
         /// </summary>
-        [ElementPriority(8)]
+        [ElementPriority(6)]
         public override byte[] Unknown3 { get { byte[] res = new byte[12]; Array.Copy(header, 48, res, 0, res.Length); return res; } }
         /// <summary>
         /// Package header: always 3?
         /// </summary>
-        [ElementPriority(9)]
+        [ElementPriority(7)]
         public override int Indexversion { get { return BitConverter.ToInt32(header, 60); } }
         /// <summary>
         /// Package header: index position in file
         /// </summary>
-        [ElementPriority(10)]
+        [ElementPriority(8)]
         public override int Indexposition { get { int i = BitConverter.ToInt32(header, 64); return i != 0 ? i : BitConverter.ToInt32(header, 40); } }
         /// <summary>
         /// Package header: unused
         /// </summary>
-        [ElementPriority(11)]
+        [ElementPriority(9)]
         public override byte[] Unknown4 { get { byte[] res = new byte[28]; Array.Copy(header, 68, res, 0, res.Length); return res; } }
 
         /// <summary>
         /// A MemoryStream covering the package header bytes
         /// </summary>
-        [ElementPriority(12)]
+        [ElementPriority(10)]
         public override Stream HeaderStream { get { throw new NotImplementedException(); } }
         #endregion
 
@@ -296,13 +262,13 @@ namespace Regul.S3PI.Package
         /// <summary>
         /// Package index: the index format in use
         /// </summary>
-        [ElementPriority(13)]
+        [ElementPriority(11)]
         public override uint Indextype { get { return ((PackageIndex)GetResourceList).Indextype; } }
 
         /// <summary>
         /// Package index: the index
         /// </summary>
-        [ElementPriority(14)]
+        [ElementPriority(12)]
         public override List<IResourceIndexEntry> GetResourceList { get { return Index; } }
 
         static bool FlagMatch(uint flags, IResourceIndexEntry values, IResourceIndexEntry target)
@@ -333,8 +299,6 @@ namespace Regul.S3PI.Package
         /// <param name="flags">True bits enable matching against numerically equivalent <paramref name="values"/> entry</param>
         /// <param name="values">Fields to compare against</param>
         /// <returns>The first match, if any; otherwise null.</returns>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         [Obsolete("Please use Find(Predicate<IResourceIndexEntry> Match)")]
         public override IResourceIndexEntry Find(uint flags, IResourceIndexEntry values) { return Index.Find(x => !x.IsDeleted && FlagMatch(flags, values, x)); }
 
@@ -345,8 +309,6 @@ namespace Regul.S3PI.Package
         /// <param name="names">Names of fields to compare</param>
         /// <param name="values">Fields to compare against</param>
         /// <returns>The first match, if any; otherwise null.</returns>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         [Obsolete("Please use Find(Predicate<IResourceIndexEntry> Match)")]
         public override IResourceIndexEntry Find(string[] names, TypedValue[] values) { return Index.Find(x => !x.IsDeleted && NameMatch(names, values, x)); }
 
@@ -358,8 +320,6 @@ namespace Regul.S3PI.Package
         /// <param name="Match"><c>Predicate&lt;IResourceIndexEntry&gt;</c> defining matching conditions.</param>
         /// <returns>The first matching <see cref="IResourceIndexEntry"/>, if any; otherwise null.</returns>
         /// <remarks>Note that entries marked as deleted will not be returned.</remarks>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override IResourceIndexEntry Find(Predicate<IResourceIndexEntry> Match) { return Index.Find(x => !x.IsDeleted && Match(x)); }
 
         /// <summary>
@@ -370,8 +330,6 @@ namespace Regul.S3PI.Package
         /// <param name="flags">True bits enable matching against numerically equivalent <paramref name="values"/> entry.</param>
         /// <param name="values">Field values to compare against.</param>
         /// <returns>An <c>IList&lt;IResourceIndexEntry&gt;</c> of zero or more matches.</returns>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         [Obsolete("Please use FindAll(Predicate<IResourceIndexEntry> Match)")]
         public override List<IResourceIndexEntry> FindAll(uint flags, IResourceIndexEntry values) { return Index.FindAll(x => !x.IsDeleted && FlagMatch(flags, values, x)); }
 
@@ -383,8 +341,6 @@ namespace Regul.S3PI.Package
         /// <param name="names">Names of <see cref="IResourceIndexEntry"/> fields to compare.</param>
         /// <param name="values">Field values to compare against.</param>
         /// <returns>An <c>IList&lt;IResourceIndexEntry&gt;</c> of zero or more matches.</returns>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         [Obsolete("Please use FindAll(Predicate<IResourceIndexEntry> Match)")]
         public override List<IResourceIndexEntry> FindAll(string[] names, TypedValue[] values) { return Index.FindAll(x => !x.IsDeleted && NameMatch(names, values, x)); }
 
@@ -396,8 +352,6 @@ namespace Regul.S3PI.Package
         /// <param name="Match"><c>Predicate&lt;IResourceIndexEntry&gt;</c> defining matching conditions.</param>
         /// <returns>Zero or more matches.</returns>
         /// <remarks>Note that entries marked as deleted will not be returned.</remarks>
-        [MinimumVersion(1)]
-        [MaximumVersion(recommendedApiVersion)]
         public override List<IResourceIndexEntry> FindAll(Predicate<IResourceIndexEntry> Match) { return Index.FindAll(x => !x.IsDeleted && Match(x)); }
         #endregion
 
@@ -440,26 +394,19 @@ namespace Regul.S3PI.Package
         #region Package implementation
         Stream packageStream;
 
-        private Package(int requestedVersion, int major = 2)
+        private Package()
         {
-            if (!majors.Contains(major))
-                throw new InvalidDataException("Expected major version(s) '" + string.Join(", ", majors) + "'.  Found '" + major.ToString() + "'.");
-
-            requestedApiVersion = requestedVersion;
             header = new byte[96];
 
-            BinaryWriter bw = new BinaryWriter(new MemoryStream(header));
+            BinaryWriter bw = new(new MemoryStream(header));
             bw.Write(stringToBytes(magic));
-            bw.Write(major);
-            bw.Write(minor);
             setIndexsize(bw, new PackageIndex().Size);
             setIndexversion(bw);
             setIndexposition(bw, header.Length);
         }
 
-        private Package(int requestedVersion, Stream s)
+        private Package(Stream s)
         {
-            requestedApiVersion = requestedVersion;
             packageStream = s;
             s.Position = 0;
             header = new BinaryReader(s).ReadBytes(header.Length);
@@ -503,21 +450,19 @@ namespace Regul.S3PI.Package
         static byte[] stringToBytes(string s)
         {
             byte[] bytes = new byte[s.Length]; int i = 0;
-            for (var index1 = 0; index1 < s.Length; index1++) bytes[i++] = (byte) s[index1];
+            for (int index1 = 0; index1 < s.Length; index1++) bytes[i++] = (byte)s[index1];
 
             return bytes;
         }
         static string bytesToString(byte[] bytes)
         {
             string s = "";
-            for (var i = 0; i < bytes.Length; i++) s += (char) bytes[i];
+            for (int i = 0; i < bytes.Length; i++) s += (char)bytes[i];
 
             return s;
         }
 
         const string magic = "DBPF";
-        static int[] majors = { 2, 3 };
-        const int minor = 0;
 
         byte[] header = new byte[96];
 
@@ -533,12 +478,6 @@ namespace Regul.S3PI.Package
 
             if (bytesToString(Magic) != magic)
                 throw new InvalidDataException("Expected magic tag '" + magic + "'.  Found '" + bytesToString(Magic) + "'.");
-
-            if (!majors.Contains(Major))
-                throw new InvalidDataException("Expected major version(s) '" + string.Join(", ", majors) + "'.  Found '" + Major + "'.");
-
-            if (Minor != minor)
-                throw new InvalidDataException("Expected minor version '" + minor + "'.  Found '" + Minor.ToString() + "'.");
         }
         #endregion
 
@@ -570,8 +509,7 @@ namespace Regul.S3PI.Package
         /// <remarks>Used by WrapperDealer to get the data for a resource.</remarks>
         public override Stream GetResource(IResourceIndexEntry rc)
         {
-            ResourceIndexEntry rie = rc as ResourceIndexEntry;
-            if (rie == null) return null;
+            if (rc is not ResourceIndexEntry rie) return null;
             if (rie.ResourceStream != null) return rie.ResourceStream;
 
             if (rc.Chunkoffset == 0xffffffff) return null;
@@ -588,7 +526,7 @@ namespace Regul.S3PI.Package
                 data = Compression.UncompressStream(packageStream, (int)rc.Filesize, (int)rc.Memsize);
             }
 
-            MemoryStream ms = new MemoryStream();
+            MemoryStream ms = new();
             ms.Write(data, 0, data.Length);
             ms.Position = 0;
             return ms;

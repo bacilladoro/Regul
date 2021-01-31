@@ -31,9 +31,9 @@
 							<MenuItem Header="{DynamicResource PasteE}" InputGesture="Ctrl+Shift+V" HotKey="Ctrl+Shift+V"/>
 							<MenuItem Header="{DynamicResource Dublicate}"/>
 							<MenuItem Header="{DynamicResource Replace}"/>
+							<MenuItem Header="{DynamicResource Remove}" Command="{Binding DeleteResource}"/>
 							<Separator/>
 							<MenuItem Header="{DynamicResource Compressed}"/>
-							<MenuItem Header="{DynamicResource Deleted}"/>
 							<MenuItem Header="{DynamicResource Details}" InputGesture="Ctrl+Shift+D" HotKey="Ctrl+Shift+D"/>
 							<Separator/>
 							<MenuItem Header="{DynamicResource SelectAll}"/>
@@ -50,13 +50,15 @@
 							</MenuItem>
 						</MenuItem>
 					</Menu>
-					<ToggleButton Grid.Column="3" IsChecked="{Binding OpenedMenu}" Content="Menu"/>
+					<ToggleButton Grid.Column="3" IsChecked="{Binding OpenedMenu}">
+						<Path Stretch="UniformToFill" Margin="4" Data="F1 M20,12z M0,0z M1,2L19,2A1,1,0,0,0,20,1A1,1,0,0,0,19,0L1,0A1,1,0,0,0,1,2z M19,10L1,10A1,1,0,0,0,0,11A1,1,0,0,0,1,12L19,12A1,1,0,0,0,19,10z M19,5L1,5A1,1,0,0,0,0,6A1,1,0,0,0,1,7L19,7A1,1,0,0,0,19,5z"/>
+					</ToggleButton>
 				</Grid>
 			</Border>
 
 			<Grid ColumnDefinitions="*,Auto,*" Grid.Row="1">
 				<Border Grid.Column="0" Margin="5 5 0 5" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5">
-					<DataGrid Name="ResourceList" Items="{Binding Resources}" CanUserResizeColumns="True" CanUserReorderColumns="True" CanUserSortColumns="True" HeadersVisibility="All">
+					<DataGrid Name="ResourceList" IsVisible="{Binding Resources.Count}" Items="{Binding Resources}" SelectedItem="{Binding SelectedResource}" CanUserResizeColumns="True" CanUserReorderColumns="True" CanUserSortColumns="True" HeadersVisibility="All">
 						<DataGrid.Columns>
 							<DataGridTextColumn Header="Name" Width="100" Binding="{Binding ResourceName}" IsReadOnly="True"/>
 							<DataGridTextColumn Header="Tag" Width="50" Binding="{Binding Tag}" IsReadOnly="True" />
@@ -71,6 +73,7 @@
 						</DataGrid.Columns>
 					</DataGrid>
 				</Border>
+				<TextBlock Grid.Row="0" Text="Empty" HorizontalAlignment="Center" IsVisible="{Binding !Resources.Count}" VerticalAlignment="Center" Foreground="{DynamicResource ThemeForegroundOpacityBrush}"/>
 				<GridSplitter Grid.Column="1" Width="5" Background="Transparent" Margin="0 5"/>
 				<Border Grid.Column="2" Margin="0 5 5 5" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5">
 					<Grid>

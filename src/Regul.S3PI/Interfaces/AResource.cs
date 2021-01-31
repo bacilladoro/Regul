@@ -25,11 +25,9 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Create a new instance of the resource
         /// </summary>
-        /// <param name="APIversion">Requested API version</param>
         /// <param name="s"><see cref="System.IO.Stream"/> to use, or null to create from scratch.</param>
-        protected AResource(int APIversion, Stream s)
+        protected AResource(Stream s)
         {
-            requestedApiVersion = APIversion;
             stream = s;
         }
         #endregion
@@ -38,7 +36,7 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// A <see cref="List{String}"/> of available field names on object
         /// </summary>
-        public override List<string> ContentFields { get { return GetContentFields(requestedApiVersion, this.GetType()); } }
+        public override List<string> ContentFields { get { return GetContentFields(GetType()); } }
         #endregion
 
         #region IResource Members
@@ -66,7 +64,7 @@ namespace Regul.S3PI.Interfaces
         {
             get
             {
-                MemoryStream s = this.Stream as MemoryStream;
+                MemoryStream s = Stream as MemoryStream;
                 if (s != null) return s.ToArray();
 
                 stream.Position = 0;

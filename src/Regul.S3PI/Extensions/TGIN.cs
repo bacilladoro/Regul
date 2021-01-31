@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Regul.S3PI.Interfaces;
+using System;
 using System.IO;
-using Regul.S3PI.Interfaces;
 
 namespace Regul.S3PI.Extensions
 {
@@ -33,7 +33,7 @@ namespace Regul.S3PI.Extensions
         /// Instantiate a new <see cref="TGIN"/> based on the <see cref="IResourceKey"/> and <paramref name="name"/>.
         /// </summary>
         /// <param name="rk">An <see cref="IResourceKey"/>.</param>
-        /// <param name="name">A <see cref="String"/>, the name of the resource.</param>
+        /// <param name="name">A <see cref="string"/>, the name of the resource.</param>
         public TGIN(IResourceKey rk, string name) { ResType = rk.ResourceType; ResGroup = rk.ResourceGroup; ResInstance = rk.Instance; ResName = name; }
 
         /// <summary>
@@ -43,18 +43,19 @@ namespace Regul.S3PI.Extensions
         /// <returns>The equivalent <see cref="TGIN"/> (with no <see cref="ResName"/>).</returns>
         public static implicit operator TGIN(AResourceKey value)
         {
-            TGIN res = new TGIN();
-            res.ResType = value.ResourceType;
-            res.ResGroup = value.ResourceGroup;
-            res.ResInstance = value.Instance;
-            return res;
+            return new()
+            {
+                ResType = value.ResourceType,
+                ResGroup = value.ResourceGroup,
+                ResInstance = value.Instance
+            };
         }
         /// <summary>
         /// Cast a <see cref="TGIN"/> to an <see cref="AResourceKey"/> value.
         /// </summary>
         /// <param name="value">A <see cref="TGIN"/>.</param>
         /// <returns>The equivalent <see cref="AResourceKey"/> value.</returns>
-        public static implicit operator AResourceKey(TGIN value) { return new TGIBlock(0, null, value.ResType, value.ResGroup, value.ResInstance); }
+        public static implicit operator AResourceKey(TGIN value) { return new TGIBlock(null, value.ResType, value.ResGroup, value.ResInstance); }
 
         /// <summary>
         /// Casts a <see cref="string"/> to a <see cref="TGIN"/>.
@@ -66,7 +67,7 @@ namespace Regul.S3PI.Extensions
         /// <returns>The equivalent <see cref="TGIN"/> value.</returns>
         public static implicit operator TGIN(string value)
         {
-            TGIN res = new TGIN();
+            TGIN res = new();
 
             value = System.IO.Path.GetFileNameWithoutExtension(value);
 
@@ -125,7 +126,7 @@ namespace Regul.S3PI.Extensions
                 try
                 {
                     string bad = value.Substring(i + 1, 2);
-                    string rep = new string(new char[] { (char)Convert.ToByte(bad, 16) });
+                    string rep = new(new char[] { (char)Convert.ToByte(bad, 16) });
                     value = value.Replace("%" + bad, rep);
                 }
                 catch { break; }

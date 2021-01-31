@@ -292,7 +292,7 @@ namespace Regul.ViewModels.Windows
 
             while (index2 < files2.Length)
             {
-                IPackage pkg = Package.OpenPackage(1, files2[index2], true);
+                IPackage pkg = Package.OpenPackage(files2[index2], true);
                 for (var index = 0; index < pkg.GetResourceList.Count; index++)
                 {
                     IResourceIndexEntry getResource = pkg.GetResourceList[index];
@@ -301,7 +301,7 @@ namespace Regul.ViewModels.Windows
                 }
 
                 pkg.SavePackage();
-                Package.ClosePackage(1, pkg);
+                Package.ClosePackage(pkg);
                 checked { ++index2; }
             }
 
@@ -311,7 +311,7 @@ namespace Regul.ViewModels.Windows
 
                 if (RemovingPhotosAndTextures)
                 {
-                    IPackage pkg1 = Package.OpenPackage(1, Path.Combine(saveFilePortrait.SaveDir, "TravelDB.package"), true);
+                    IPackage pkg1 = Package.OpenPackage(Path.Combine(saveFilePortrait.SaveDir, "TravelDB.package"), true);
                     for (var i = 0; i < pkg1.GetResourceList.Count; i++)
                     {
                         IResourceIndexEntry getResource = pkg1.GetResourceList[i];
@@ -320,7 +320,7 @@ namespace Regul.ViewModels.Windows
                     }
 
                     pkg1.SavePackage();
-                    Package.ClosePackage(1, pkg1);
+                    Package.ClosePackage(pkg1);
                 }
 
                 string[] files3 = Directory.GetFiles(saveFilePortrait.SaveDir, "*.nhd", SearchOption.AllDirectories);
@@ -331,7 +331,7 @@ namespace Regul.ViewModels.Windows
 
                     if (Path.GetFileNameWithoutExtension(str).Contains(saveFilePortrait.Location))
                     {
-                        IPackage pkg2 = Package.OpenPackage(1, str, true);
+                        IPackage pkg2 = Package.OpenPackage(str, true);
                         for (var i = 0; i < pkg2.GetResourceList.Count; i++)
                         {
                             IResourceIndexEntry getResource = pkg2.GetResourceList[i];
@@ -362,11 +362,11 @@ namespace Regul.ViewModels.Windows
 
                         
                         pkg2.SavePackage();
-                        Package.ClosePackage(0, pkg2);
+                        Package.ClosePackage(pkg2);
                     }
                     else
                     {
-                        IPackage pkg2 = Package.OpenPackage(1, str, true);
+                        IPackage pkg2 = Package.OpenPackage(str, true);
                         for (var i = 0; i < pkg2.GetResourceList.Count; i++)
                         {
                             IResourceIndexEntry getResource = pkg2.GetResourceList[i];
@@ -391,7 +391,7 @@ namespace Regul.ViewModels.Windows
                         }
 
                         pkg2.SavePackage();
-                        Package.ClosePackage(0, pkg2);
+                        Package.ClosePackage(pkg2);
                     }
                     checked { ++index3; }
                 }
@@ -404,7 +404,7 @@ namespace Regul.ViewModels.Windows
                 bgwClean.ReportProgress(40, (string)Application.Current.FindResource("ProcessingCompressingSave"));
                 while (index3 < files3.Length)
                 {
-                    IPackage pkg = Package.OpenPackage(1, files3[index3], true);
+                    IPackage pkg = Package.OpenPackage(files3[index3], true);
                     for (var i = 0; i < pkg.GetResourceList.Count; i++)
                     {
                         IResourceIndexEntry getResource = pkg.GetResourceList[i];
@@ -429,7 +429,7 @@ namespace Regul.ViewModels.Windows
                     }
 
                     pkg.SavePackage();
-                    Package.ClosePackage(1, pkg);
+                    Package.ClosePackage(pkg);
                     checked { ++index3; }
                 }
             }

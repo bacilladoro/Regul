@@ -12,7 +12,7 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Initialize a new instance with the default API version and no change <see cref="EventHandler"/>.
         /// </summary>
-        public AResourceIndexEntry() : base(0, null) { handler += OnResourceIndexEntryChanged; }
+        public AResourceIndexEntry() : base(null) { handler += OnResourceIndexEntryChanged; }
 
         private void OnResourceIndexEntryChanged(object sender, EventArgs e)
         {
@@ -23,7 +23,7 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// The list of available field names on this API object
         /// </summary>
-        public override List<string> ContentFields { get { return GetContentFields(requestedApiVersion, this.GetType()); } }
+        public override List<string> ContentFields { get { return GetContentFields(GetType()); } }
         #endregion
 
         #region IResourceIndexEntry Members
@@ -78,14 +78,11 @@ namespace Regul.S3PI.Interfaces
         public abstract bool Equals(IResourceIndexEntry other);
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="AResourceIndexEntry"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="AResourceIndexEntry"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="AResourceIndexEntry"/>.</param>
-        /// <returns>true if the specified <see cref="System.Object"/> is equal to the current <see cref="AResourceIndexEntry"/>; otherwise, false.</returns>
-        public override bool Equals(object obj)
-        {
-            return obj as AResourceIndexEntry != null ? this.Equals(obj as AResourceIndexEntry) : false;
-        }
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="AResourceIndexEntry"/>.</param>
+        /// <returns>true if the specified <see cref="object"/> is equal to the current <see cref="AResourceIndexEntry"/>; otherwise, false.</returns>
+        public override bool Equals(object obj) => (AResourceIndexEntry)obj != null && Equals(obj as AResourceIndexEntry);
 
         /// <summary>
         /// Returns the hash code for this instance.

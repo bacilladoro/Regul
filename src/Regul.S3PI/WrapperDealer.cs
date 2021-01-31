@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Regul.S3PI.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Regul.S3PI.Interfaces;
 using static System.String;
 
 namespace Regul.S3PI
@@ -16,49 +16,46 @@ namespace Regul.S3PI
         /// <summary>
         /// Create a new Resource of the requested type, allowing the wrapper to initialise it appropriately
         /// </summary>
-        /// <param name="APIversion">API version of request</param>
         /// <param name="resourceType">Type of resource (currently a string like "0xDEADBEEF")</param>
         /// <returns></returns>
-        public static IResource CreateNewResource(int APIversion, string resourceType) => WrapperForType(resourceType, APIversion, null);
+        public static IResource CreateNewResource(string resourceType) => WrapperForType(resourceType, null);
 
 
         /// <summary>
         /// Retrieve a resource from a package, readying the appropriate wrapper
         /// </summary>
-        /// <param name="APIversion">API version of request</param>
         /// <param name="pkg">Package containing <paramref name="rie"/></param>
         /// <param name="rie">Identifies resource to be returned</param>
         /// <returns>A resource from the package</returns>
-        public static IResource GetResource(int APIversion, IPackage pkg, IResourceIndexEntry rie) { return GetResource(APIversion, pkg, rie, false); }
+        public static IResource GetResource(IPackage pkg, IResourceIndexEntry rie) { return GetResource(pkg, rie, false); }
 
 
         /// <summary>
         /// Retrieve a resource from a package, readying the appropriate wrapper or the default wrapper
         /// </summary>
-        /// <param name="APIversion">API version of request</param>
         /// <param name="pkg">Package containing <paramref name="rie"/></param>
         /// <param name="rie">Identifies resource to be returned</param>
         /// <param name="AlwaysDefault">When true, indicates WrapperDealer should always use the DefaultResource wrapper</param>
         /// <returns>A resource from the package</returns>
-        public static IResource GetResource(int APIversion, IPackage pkg, IResourceIndexEntry rie, bool AlwaysDefault)
+        public static IResource GetResource(IPackage pkg, IResourceIndexEntry rie, bool AlwaysDefault)
         {
             typeMap = new List<KeyValuePair<string, Type>>();
             try
             {
                 Type[] ts = Assembly.LoadFrom(Path.GetDirectoryName(typeof(WrapperDealer).Assembly.Location) + "/Regul.S3PI.dll").GetTypes();
-                for (var index = 0; index < ts.Length; index++)
+                for (int index = 0; index < ts.Length; index++)
                 {
                     Type t = ts[index];
                     if (!t.IsSubclassOf(typeof(AResourceHandler))) continue;
 
                     AResourceHandler arh =
-                        (AResourceHandler) t.GetConstructor(new Type[0] { })?.Invoke(new object[0] { });
+                        (AResourceHandler)t.GetConstructor(new Type[0] { })?.Invoke(Array.Empty<object>());
 
                     if (arh == null) continue;
 
                     foreach (Type k in arh.Keys)
                     {
-                        for (var i = 0; i < arh[k].Count; i++)
+                        for (int i = 0; i < arh[k].Count; i++)
                         {
                             string s = arh[k][i];
                             typeMap.Add(new KeyValuePair<string, Type>(s, k));
@@ -66,11 +63,11 @@ namespace Regul.S3PI
                     }
                 }
             }
-            catch (Exception ex) { }
+            catch { }
 
             typeMap.Sort((x, y) => Compare(x.Key, y.Key, StringComparison.Ordinal));
 
-            return WrapperForType(AlwaysDefault ? "*" : rie["ResourceType"], APIversion, (pkg as APackage)?.GetResource(rie));
+            return WrapperForType(AlwaysDefault ? "*" : rie["ResourceType"], (pkg as APackage)?.GetResource(rie));
         }
 
         /// <summary>
@@ -89,9 +86,9 @@ namespace Regul.S3PI
         #region Implementation
         static List<KeyValuePair<string, Type>> typeMap = null;
 
-        static List<KeyValuePair<string, Type>> disabled = new();
+        static readonly List<KeyValuePair<string, Type>> disabled = new();
 
-        static IResource WrapperForType(string type, int APIversion, Stream s)
+        static IResource WrapperForType(string type, Stream s)
         {
             Type t = typeMap.Find(x => !disabled.Contains(x) && x.Key == type).Value;
 
@@ -101,7 +98,7 @@ namespace Regul.S3PI
             if (Settings.Settings.Checking && t == null)
                 throw new InvalidOperationException("Could not find a resource handler");
 
-            return (IResource)t.GetConstructor(new[] { typeof(int), typeof(Stream), })?.Invoke(new object[] { APIversion, s });
+            return (IResource)t.GetConstructor(new[] { typeof(Stream) })?.Invoke(new object[] { s });
         }
         #endregion
     }

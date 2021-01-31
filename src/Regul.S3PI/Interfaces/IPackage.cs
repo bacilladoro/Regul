@@ -7,7 +7,7 @@ namespace Regul.S3PI.Interfaces
     /// <summary>
     /// Representation of a Sims 3 Package
     /// </summary>
-    public interface IPackage : IApiVersion, IContentFields
+    public interface IPackage : IContentFields
     {
         #region Whole package
         /// <summary>
@@ -33,60 +33,50 @@ namespace Regul.S3PI.Interfaces
         [ElementPriority(1)]
         byte[] Magic { get; }
         /// <summary>
-        /// Package header: 0x00000002
-        /// </summary>
-        [ElementPriority(2)]
-        int Major { get; }
-        /// <summary>
-        /// Package header: 0x00000000
-        /// </summary>
-        [ElementPriority(3)]
-        int Minor { get; }
-        /// <summary>
         /// Package header: unused
         /// </summary>
-        [ElementPriority(4)]
+        [ElementPriority(2)]
         byte[] Unknown1 { get; }
         /// <summary>
         /// Package header: number of entries in the package index
         /// </summary>
-        [ElementPriority(5)]
+        [ElementPriority(3)]
         int Indexcount { get; }
         /// <summary>
         /// Package header: unused
         /// </summary>
-        [ElementPriority(6)]
+        [ElementPriority(4)]
         byte[] Unknown2 { get; }
         /// <summary>
         /// Package header: index size on disk in bytes
         /// </summary>
-        [ElementPriority(7)]
+        [ElementPriority(5)]
         int Indexsize { get; }
         /// <summary>
         /// Package header: unused
         /// </summary>
-        [ElementPriority(8)]
+        [ElementPriority(6)]
         byte[] Unknown3 { get; }
         /// <summary>
         /// Package header: always 3?
         /// </summary>
-        [ElementPriority(9)]
+        [ElementPriority(7)]
         int Indexversion { get; }
         /// <summary>
         /// Package header: index position in file
         /// </summary>
-        [ElementPriority(10)]
+        [ElementPriority(8)]
         int Indexposition { get; }
         /// <summary>
         /// Package header: unused
         /// </summary>
-        [ElementPriority(11)]
+        [ElementPriority(9)]
         byte[] Unknown4 { get; }
 
         /// <summary>
         /// A <see cref="MemoryStream"/> covering the package header bytes
         /// </summary>
-        [ElementPriority(12)]
+        [ElementPriority(10)]
         Stream HeaderStream { get; }
         #endregion
 
@@ -99,13 +89,13 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Package index: the index format in use
         /// </summary>
-        [ElementPriority(13)]
+        [ElementPriority(11)]
         uint Indextype { get; }
 
         /// <summary>
         /// Package index: the index as a <see cref="IResourceIndexEntry"/> list
         /// </summary>
-        [ElementPriority(14)]
+        [ElementPriority(12)]
         List<IResourceIndexEntry> GetResourceList { get; }
 
         /// <summary>

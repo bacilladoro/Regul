@@ -110,7 +110,8 @@ namespace Regul.ViewModels.Controls.ContentTab
         }
 
         #endregion
-        #region MyRegion
+
+        #region DataForFilter
 
         private string Name
         {
@@ -219,7 +220,13 @@ namespace Regul.ViewModels.Controls.ContentTab
             {
                 this.RaiseAndSetIfChanged(ref _selectedResource, value);
 
-                if (value == null) return;
+                if (value == null)
+                {
+                    VisibleImageViewer = false;
+                    VisibleTextViewer = false;
+
+                    return;
+                }
 
                 switch (value.Tag)
                 {
@@ -228,13 +235,13 @@ namespace Regul.ViewModels.Controls.ContentTab
                         VisibleImageViewer = true;
                         VisibleTextViewer = false;
 
-                        ImageResource = new Bitmap(WrapperDealer.GetResource(0, CurrentPackage, value.ResourceIndexEntry).Stream);
+                        ImageResource = new Bitmap(WrapperDealer.GetResource(CurrentPackage, value.ResourceIndexEntry).Stream);
                         break;
                     default:
                         VisibleImageViewer = false;
                         VisibleTextViewer = true;
 
-                        IResource res = WrapperDealer.GetResource(0, CurrentPackage, value.ResourceIndexEntry);
+                        IResource res = WrapperDealer.GetResource(CurrentPackage, value.ResourceIndexEntry);
                         string s = "";
 
                         foreach (string prop in res.ContentFields)
@@ -267,21 +274,21 @@ namespace Regul.ViewModels.Controls.ContentTab
 
         public TheSims3TypeContentViewModel()
         {
-            CurrentPackage = Package.NewPackage(1);
+            CurrentPackage = Package.NewPackage();
         }
 
         public TheSims3TypeContentViewModel(string path)
         {
-            CurrentPackage = Package.OpenPackage(1, path, true);
-            foreach (IResourceIndexEntry item in CurrentPackage.GetResourceList)
+            CurrentPackage = Package.OpenPackage(path, true);
+            for (int i = 0; i < CurrentPackage.GetResourceList.Count; i++)
             {
-                Resource res = new Resource
+                IResourceIndexEntry item = CurrentPackage.GetResourceList[i];
+                GlobalResources.Add(new Resource()
                 {
                     ResourceIndexEntry = item,
                     Tag = ResourceTag(item),
                     ResourceName = ResourceName(item)
-                };
-                GlobalResources.Add(res);
+                });
             }
             Resources = GlobalResources;
         }
@@ -306,6 +313,8 @@ namespace Regul.ViewModels.Controls.ContentTab
                     ResourceName = ResourceName(rie),
                     ResourceIndexEntry = rie
                 });
+
+                SearchResources();
             }
         }
 
@@ -338,6 +347,14 @@ namespace Regul.ViewModels.Controls.ContentTab
             //IResourceIndexEntry rie = CurrentPackage.AddResource(SelectedResource.ResourceIndexEntry, )
         }
 
+        private void DeleteResource()
+        {
+            CurrentPackage.DeleteResource(SelectedResource.ResourceIndexEntry);
+            GlobalResources.Remove(SelectedResource);
+
+            SearchResources();
+        }
+
         private void ResourceCompressed()
         {
             ushort target = 0xFFFF;
@@ -364,7 +381,7 @@ namespace Regul.ViewModels.Controls.ContentTab
                 br.Close();
             }
 
-            IResource rres = WrapperDealer.CreateNewResource(0, "*");
+            IResource rres = WrapperDealer.CreateNewResource("*");
             ConstructorInfo ci = rres.GetType().GetConstructor(new Type[] { typeof(int), typeof(Stream) });
             return (IResource)ci.Invoke(new object[] { 0, ms });
         }
@@ -403,7 +420,7 @@ namespace Regul.ViewModels.Controls.ContentTab
 
         private void ExportFile(IResourceIndexEntry rie, string fileName)
         {
-            IResource res = WrapperDealer.GetResource(0, CurrentPackage, rie, true);
+            IResource res = WrapperDealer.GetResource(CurrentPackage, rie, true);
             Stream s = res.Stream;
             s.Position = 0;
 

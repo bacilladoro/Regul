@@ -75,7 +75,7 @@
         };
         #endregion
 
-        private ulong seed64;
+        private readonly ulong seed64;
         private ulong hash64;
 
         /// <summary>
@@ -108,7 +108,7 @@
         /// Finalize the computation of the hash value.
         /// </summary>
         /// <returns>The computed hash code.</returns>
-        protected override byte[] HashFinal() { HashSizeValue = 64; HashValue = BitConverter.GetBytes(~this.hash64); return HashValue; }
+        protected override byte[] HashFinal() { HashSizeValue = 64; HashValue = BitConverter.GetBytes(~hash64); return HashValue; }
 
         /// <summary>
         /// Initialize the Sims3PackCRC by setting the current CRC value to the seed.

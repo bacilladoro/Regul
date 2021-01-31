@@ -19,7 +19,7 @@ namespace Regul.S3PI.Helpers
         static void ReadConfig()
         {
             keywords.AddRange(reserved.ToArray());
-            keywords.AddRange(AApiVersionedFields.GetContentFields(0, typeof(IResourceKey)).ToArray()); // must be correct case
+            keywords.AddRange(AApiVersionedFields.GetContentFields(typeof(IResourceKey)).ToArray()); // must be correct case
 
             helpers = new Dictionary<string, Dictionary<string, string>>();
 
@@ -261,7 +261,7 @@ namespace Regul.S3PI.Helpers
             p.StartInfo.UseShellExecute = false;
 
             try { p.Start(); }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }

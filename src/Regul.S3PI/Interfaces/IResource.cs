@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Regul.S3PI.Interfaces
@@ -7,7 +6,7 @@ namespace Regul.S3PI.Interfaces
     /// <summary>
     /// Minimal resource interface
     /// </summary>
-    public interface IResource : IApiVersion, IContentFields
+    public interface IResource : IContentFields
     {
         /// <summary>
         /// The resource content as a <see cref="System.IO.Stream"/>.

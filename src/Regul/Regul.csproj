@@ -17,6 +17,7 @@
 		<PackageReference Include="Avalonia.X11" Version="0.10.999-cibuild0012713-beta" />
 		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.999-cibuild0012713-beta" />
 		<PackageReference Include="Avalonia.Diagnostics" Version="0.10.999-cibuild0012713-beta" />
+		<PackageReference Include="Avalonia.Win32" Version="0.10.999-cibuild0012713-beta" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Regul.Instruments\Regul.Instruments.csproj" />

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace System
+﻿namespace System
 {
     /// <summary>
     /// Represents an error in the length of an argument to a method
@@ -25,7 +23,7 @@ namespace System
         public ArgumentLengthException(string argument, int length) : base($"{argument} length must be {length}.") { }
         /// <summary>
         /// Initializes a new instance of the System.ArgumentLengthException class with a formatted error message.
-        /// See <see cref="String.Format(string, object[])"/>.
+        /// See <see cref="string.Format(string, object[])"/>.
         /// </summary>
         /// <param name="format">format string</param>
         /// <param name="formatparams">format string substitutions</param>

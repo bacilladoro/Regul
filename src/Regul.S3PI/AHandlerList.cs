@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace System.Collections.Generic
+﻿namespace System.Collections.Generic
 {
     /// <summary>
     /// Abstract extension of <see cref="List{T}"/>
@@ -61,7 +58,7 @@ namespace System.Collections.Generic
             handler = null;
             foreach (T item in collection)
             {
-                this.Add(item);
+                Add(item);
             }
 
             handler = h;
@@ -93,7 +90,7 @@ namespace System.Collections.Generic
             handler = null;
             foreach (T item in collection)
             {
-                this.Insert(index++, item);
+                Insert(index++, item);
             }
 
             handler = h;
@@ -276,6 +273,6 @@ namespace System.Collections.Generic
         /// </summary>
         /// <param name="target">A <see cref="AHandlerList{T}"/> against which to test this list for equality.</param>
         /// <returns>True if this list is equal to <paramref name="target"/>; otherwise false.</returns>
-        public bool Equals(AHandlerList<T> target) { return this.Equals(target); }
+        public bool Equals(AHandlerList<T> target) { return Equals(target); }
     }
 }

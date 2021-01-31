@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace System.Security.Cryptography
@@ -10,8 +9,8 @@ namespace System.Security.Cryptography
     /// </summary>
     public abstract class FNVHash : HashAlgorithm
     {
-        ulong prime;
-        ulong offset;
+        readonly ulong prime;
+        readonly ulong offset;
         /// <summary>
         /// Algorithm result, needs casting to appropriate size by concrete classes (because I'm lazy)
         /// </summary>
@@ -61,7 +60,7 @@ namespace System.Security.Cryptography
         /// <summary>
         /// Initialise the hash algorithm
         /// </summary>
-        public FNV32() : base((uint)0x01000193, (uint)0x811C9DC5) { }
+        public FNV32() : base(0x01000193, 0x811C9DC5) { }
         /// <summary>
         /// Gets the value of the computed hash code.
         /// </summary>
@@ -86,7 +85,7 @@ namespace System.Security.Cryptography
         /// <summary>
         /// Initialise the hash algorithm
         /// </summary>
-        public FNV64() : base((ulong)0x00000100000001B3, (ulong)0xCBF29CE484222325) { }
+        public FNV64() : base(0x00000100000001B3, 0xCBF29CE484222325) { }
         /// <summary>
         /// Gets the value of the computed hash code.
         /// </summary>
@@ -207,7 +206,7 @@ namespace System.Security.Cryptography
             return value;
         }
 
-        static string[] ao = { "a", "o", };
+        static readonly string[] ao = { "a", "o", };
         static byte Mask(string actor) =>
             actor switch
             {

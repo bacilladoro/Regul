@@ -38,7 +38,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="maxSize">Optional; -1 for unlimited size, otherwise the maximum number of elements in the list.</param>
         /// <exception cref="System.InvalidOperationException">Thrown when list size exceeded.</exception>
         /// <remarks>Calls <c>this.Add(...)</c> to ensure a fresh instance is created, rather than passing <paramref name="ilt"/> to the base constructor.</remarks>
-        protected DependentList(EventHandler handler, IEnumerable<T> ilt, long maxSize = -1) : base(null, maxSize) { elementHandler = handler; foreach (var t in ilt) this.Add((T)t.Clone(null)); this.handler = handler; }
+        protected DependentList(EventHandler handler, IEnumerable<T> ilt, long maxSize = -1) : base(null, maxSize) { elementHandler = handler; foreach (T t in ilt) Add((T)t.Clone(null)); this.handler = handler; }
 
         // Add stream-based constructors and support
         /// <summary>
@@ -111,7 +111,7 @@ namespace Regul.S3PI.Interfaces
             if (typeof(T).IsAbstract)
                 throw new NotImplementedException();
 
-            this.Add(typeof(T));
+            Add(typeof(T));
         }
 
 #if OLDVERSION
@@ -225,7 +225,7 @@ namespace Regul.S3PI.Interfaces
             if (!typeof(T).IsAssignableFrom(elementType))
                 throw new ArgumentException("The element type must belong to the generic type of the list.", "elementType");
 
-            T newElement = Activator.CreateInstance(elementType, new object[] { (int)0, elementHandler, }) as T;
+            T newElement = Activator.CreateInstance(elementType, new object[] { 0, elementHandler, }) as T;
             base.Add(newElement);
         }
 
@@ -246,8 +246,8 @@ namespace Regul.S3PI.Interfaces
     /// </summary>
     public class CountedTGIBlockList : DependentList<TGIBlock>
     {
-        int origCount; // count at the time the list was constructed, used to Parse() list from stream
-        string order = "TGI";
+        readonly int origCount; // count at the time the list was constructed, used to Parse() list from stream
+        readonly string order = "TGI";
 
         #region Constructors
         /// <summary>
@@ -338,7 +338,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="count">The number of list elements to read.</param>
         /// <param name="s">The <see cref="System.IO.Stream"/> to read for the initial content of the list.</param>
         /// <param name="size">Optional; -1 for unlimited size, otherwise the maximum number of elements in the list.</param>
-        public CountedTGIBlockList(EventHandler handler, string order, int count, Stream s, long size = -1) : base(null, size) { this.origCount = count; this.order = order; elementHandler = handler; Parse(s); this.handler = handler; }
+        public CountedTGIBlockList(EventHandler handler, string order, int count, Stream s, long size = -1) : base(null, size) { origCount = count; this.order = order; elementHandler = handler; Parse(s); this.handler = handler; }
         #endregion
 
         #region Data I/O
@@ -347,7 +347,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s">Stream containing element data.</param>
         /// <returns>A new element.</returns>
-        protected override TGIBlock CreateElement(Stream s) { return new(0, elementHandler, order, s); }
+        protected override TGIBlock CreateElement(Stream s) { return new(elementHandler, order, s); }
         /// <summary>
         /// Write an element to the stream.
         /// </summary>
@@ -372,7 +372,7 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Add a new default element to the list.
         /// </summary>
-        public override void Add() { base.Add(new TGIBlock(0, elementHandler, order)); } // Need to pass "order"
+        public override void Add() { base.Add(new TGIBlock(elementHandler, order)); } // Need to pass "order"
 
         /// <summary>
         /// Adds a new <see cref="TGIBlock"/> to the list using the values of the specified <see cref="TGIBlock"/>.
@@ -382,7 +382,7 @@ namespace Regul.S3PI.Interfaces
         /// <exception cref="System.NotSupportedException">The <see cref="AHandlerList{T}"/> is read-only.</exception>
         /// <remarks>A new element is created rather than using the element passed
         /// as the order (TGI/ITG/etc) may be different.</remarks>
-        public override void Add(TGIBlock item) { base.Add(new TGIBlock(0, elementHandler, order, item)); } // Need to pass "order" and there's no property
+        public override void Add(TGIBlock item) { base.Add(new TGIBlock(elementHandler, order, item)); } // Need to pass "order" and there's no property
 
         /// <summary>
         /// Adds a new TGIBlock to the list using the values of the IResourceKey.
@@ -390,7 +390,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="rk">The ResourceKey values to use for the TGIBlock.</param>
         /// <remarks>A new element is created rather than using the element passed
         /// as the order (TGI/ITG/etc) may be different.</remarks>
-        public void Add(IResourceKey rk) { base.Add(new TGIBlock(0, elementHandler, order, rk)); } // Need to pass "order"
+        public void Add(IResourceKey rk) { base.Add(new TGIBlock(elementHandler, order, rk)); } // Need to pass "order"
 
         /// <summary>
         /// Inserts a new <see cref="TGIBlock"/> to the list at the specified index using the values of the specified <see cref="TGIBlock"/>.
@@ -403,7 +403,7 @@ namespace Regul.S3PI.Interfaces
         /// <exception cref="System.NotSupportedException">The <see cref="CountedTGIBlockList"/> is read-only.</exception>
         /// <remarks>A new element is created rather than using the element passed
         /// as the order (TGI/ITG/etc) may be different.</remarks>
-        public override void Insert(int index, TGIBlock item) { base.Insert(index, new TGIBlock(0, elementHandler, order, item)); } // Need to pass "order" and there's no property
+        public override void Insert(int index, TGIBlock item) { base.Insert(index, new TGIBlock(elementHandler, order, item)); } // Need to pass "order" and there's no property
     }
 
     /// <summary>
@@ -411,8 +411,8 @@ namespace Regul.S3PI.Interfaces
     /// </summary>
     public class TGIBlockList : DependentList<TGIBlock>
     {
-        bool addEight = false;
-        bool ignoreTgiSize = false;
+        readonly bool addEight = false;
+        readonly bool ignoreTgiSize = false;
 
         #region Constructors
         /// <summary>
@@ -451,7 +451,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s">Stream containing element data.</param>
         /// <returns>A new element.</returns>
-        protected override TGIBlock CreateElement(Stream s) { return new(0, elementHandler, s); }
+        protected override TGIBlock CreateElement(Stream s) { return new(elementHandler, s); }
         /// <summary>
         /// Write an element to the stream.
         /// </summary>

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Regul.S3PI.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Regul.S3PI.Interfaces;
 
 namespace Regul.S3PI.DefaultResource
 {
@@ -10,22 +10,12 @@ namespace Regul.S3PI.DefaultResource
     /// </summary>
     public sealed class DefaultResource : AResource
     {
-        const int recommendedApiVersion = 1;
-
-        #region AApiVersionedFields
-        /// <summary>
-        /// Return the version number that this wrapper prefers to be called with (the default if passed zero).
-        /// </summary>
-        /// <remarks>This wrapper returns <c>1</c> and is not sensitive to API version.</remarks>
-        public override int RecommendedApiVersion { get { return recommendedApiVersion; } }
-        #endregion
 
         /// <summary>
         /// Create a new instance of the resource.
         /// </summary>
-        /// <param name="APIversion">Requested API version</param>
         /// <param name="s">Data stream to use, or null to create from scratch</param>
-        public DefaultResource(int APIversion, Stream s) : base(APIversion, s) { if (stream == null) { stream = new MemoryStream(); dirty = true; } }
+        public DefaultResource(Stream s) : base(s) { if (stream == null) { stream = new MemoryStream(); dirty = true; } }
 
         /// <summary>
         /// <see cref="DefaultResource"/> does not know how to parse anything, so this method is unimplemented.

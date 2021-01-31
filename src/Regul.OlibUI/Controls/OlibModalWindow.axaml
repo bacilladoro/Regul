@@ -1,8 +1,9 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:converters="using:Regul.OlibUI.Converters"
 		xmlns:local="using:Regul.OlibUI">
 	<Styles.Resources>
-		<local:WindowIconToImageConverter x:Key="WindowIconToImageConverter"/>
+		<converters:WindowIconToImageConverter x:Key="WindowIconToImageConverter"/>
 	</Styles.Resources>
 
 	<Style Selector="local|OlibModalWindow">

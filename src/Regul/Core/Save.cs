@@ -20,9 +20,9 @@ namespace Regul.Core
         public Save(string strPath)
         {
             nhdPath = strPath;
-            Package package = (Package)Package.OpenPackage(0, Path.Combine(Path.GetDirectoryName(strPath), "Meta.data"));
+            Package package = (Package)Package.OpenPackage(Path.Combine(Path.GetDirectoryName(strPath), "Meta.data"));
             IResourceIndexEntry rie = package.Find((R => R.ResourceType == 1653241999U));
-            UnParse(S3PI.WrapperDealer.GetResource(0, (IPackage)package, rie).Stream);
+            UnParse(S3PI.WrapperDealer.GetResource((IPackage)package, rie).Stream);
         }
 
         private void UnParse(Stream s)
@@ -55,11 +55,11 @@ namespace Regul.Core
             WorldName = stringBuilder.ToString();
             binaryReader.ReadInt32();
 
-            IPackage pkg = Package.OpenPackage(0, nhdPath);
+            IPackage pkg = Package.OpenPackage(nhdPath);
             ImgInstance = binaryReader.ReadUInt64();
             IResourceIndexEntry rie = pkg.Find((entry => (long) entry.Instance == (long)ImgInstance & entry.ResourceType == 1802339198U));
 
-            FamilyIcon = rie != null ? new Bitmap(S3PI.WrapperDealer.GetResource(0, pkg, rie).Stream) : null;
+            FamilyIcon = rie != null ? new Bitmap(S3PI.WrapperDealer.GetResource(pkg, rie).Stream) : null;
 
             binaryReader.ReadUInt64();
         }

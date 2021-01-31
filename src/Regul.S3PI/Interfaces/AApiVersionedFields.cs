@@ -10,19 +10,8 @@ namespace Regul.S3PI.Interfaces
     /// It will provide versioning support -- when implemented.
     /// It provides ContentFields support
     /// </summary>
-    public abstract class AApiVersionedFields : IApiVersion, IContentFields
+    public abstract class AApiVersionedFields : IContentFields
     {
-        #region IApiVersion Members
-        /// <summary>
-        /// The version of the API in use
-        /// </summary>
-        public int RequestedApiVersion { get { return requestedApiVersion; } }
-        /// <summary>
-        /// The best supported version of the API available
-        /// </summary>
-        public abstract int RecommendedApiVersion { get; }
-
-        #endregion
 
         #region IContentFields Members
         /// <summary>
@@ -41,12 +30,12 @@ namespace Regul.S3PI.Interfaces
             {
                 string[] fields = index.Split('.');
                 object result = this;
-                Type t = this.GetType();
+                Type t = GetType();
                 foreach (string f in fields)
                 {
                     PropertyInfo p = t.GetProperty(f);
                     if (p == null)
-                        throw new ArgumentOutOfRangeException("index", "Unexpected value received in index: " + index);
+                        throw new ArgumentOutOfRangeException(nameof(index), "Unexpected value received in index: " + index);
                     t = p.PropertyType;
                     result = p.GetValue(result, null);
                 }
@@ -56,13 +45,13 @@ namespace Regul.S3PI.Interfaces
             {
                 string[] fields = index.Split('.');
                 object result = this;
-                Type t = this.GetType();
+                Type t = GetType();
                 PropertyInfo p = null;
                 for (int i = 0; i < fields.Length; i++)
                 {
                     p = t.GetProperty(fields[i]);
                     if (p == null)
-                        throw new ArgumentOutOfRangeException("index", "Unexpected value received in index: " + index);
+                        throw new ArgumentOutOfRangeException(nameof(index), "Unexpected value received in index: " + index);
                     if (i < fields.Length - 1)
                     {
                         t = p.PropertyType;
@@ -75,63 +64,34 @@ namespace Regul.S3PI.Interfaces
 
         #endregion
 
-        /// <summary>
-        /// Versioning is not currently implemented
-        /// Set this to the version of the API requested on object creation
-        /// </summary>
-        protected int requestedApiVersion = 0;
-
-        static List<string> banlist;
+        static readonly List<string> banlist;
         static AApiVersionedFields()
         {
             Type t = typeof(AApiVersionedFields);
             banlist = new List<string>();
-            foreach (PropertyInfo m in t.GetProperties()) banlist.Add(m.Name);
-        }
-
-        static int Version(Type attribute, Type type, string field)
-        {
-            foreach (VersionAttribute attr in type.GetProperty(field).GetCustomAttributes(attribute, true)) return attr.Version;
-            return 0;
-        }
-        static int MinimumVersion(Type type, string field) { return Version(typeof(MinimumVersionAttribute), type, field); }
-        static int MaximumVersion(Type type, string field) { return Version(typeof(MaximumVersionAttribute), type, field); }
-        //protected Int32 MinimumVersion(string field) { return AApiVersionedFields.MinimumVersion(this.GetType(), field); }
-        //protected Int32 MaximumVersion(string field) { return AApiVersionedFields.MaximumVersion(this.GetType(), field); }
-        static int getRecommendedApiVersion(Type t)
-        {
-            FieldInfo fi = t.GetField("recommendedApiVersion", BindingFlags.Static | BindingFlags.NonPublic);
-            if (fi == null || fi.FieldType != typeof(int))
-                return 0;
-            return (int)fi.GetValue(null);
-        }
-        static bool checkVersion(Type type, string field, int requestedApiVersion)
-        {
-            if (requestedApiVersion == 0) return true;
-            int min = MinimumVersion(type, field);
-            if (min != 0 && requestedApiVersion < min) return false;
-            int max = MaximumVersion(type, field);
-            if (max != 0 && requestedApiVersion > max) return false;
-            return true;
+            PropertyInfo[] array = t.GetProperties();
+            for (int i = 0; i < array.Length; i++)
+            {
+                PropertyInfo m = array[i];
+                banlist.Add(m.Name);
+            }
         }
 
         /// <summary>
         /// Versioning is not currently implemented
         /// Return the list of fields for a given API Class
         /// </summary>
-        /// <param name="APIversion">Set to 0 (== "best")</param>
         /// <param name="t">The class type for which to get the fields</param>
         /// <returns>List of field names for the given API version</returns>
-        public static List<string> GetContentFields(int APIversion, Type t)
+        public static List<string> GetContentFields(Type t)
         {
-            List<string> fields = new List<string>();
+            List<string> fields = new();
 
-            int recommendedApiVersion = getRecommendedApiVersion(t);//Could be zero if no "recommendedApiVersion" const field
             PropertyInfo[] ap = t.GetProperties();
-            foreach (PropertyInfo m in ap)
+            for (int i = 0; i < ap.Length; i++)
             {
+                PropertyInfo m = ap[i];
                 if (banlist.Contains(m.Name)) continue;
-                if (!checkVersion(t, m.Name, APIversion == 0 ? recommendedApiVersion : APIversion)) continue;
 
                 fields.Add(m.Name);
             }
@@ -169,7 +129,7 @@ namespace Regul.S3PI.Interfaces
 
         class PriorityComparer : IComparer<string>
         {
-            Type t;
+            readonly Type t;
             public PriorityComparer(Type t) { this.t = t; }
             public int Compare(string x, string y)
             {
@@ -179,10 +139,10 @@ namespace Regul.S3PI.Interfaces
             }
         }
 
-        static List<string> valueBuilderBanlist = new(new string[] {
+        static readonly List<string> valueBuilderBanlist = new(new string[] {
             "Value", "Stream", "AsBytes",
         });
-        static List<string> iDictionaryBanlist = new(new string[] {
+        static readonly List<string> iDictionaryBanlist = new(new string[] {
             "Keys", "Values", "Count", "IsReadOnly", "IsFixedSize", "IsSynchronized", "SyncRoot",
         });
 
@@ -193,10 +153,10 @@ namespace Regul.S3PI.Interfaces
         {
             get
             {
-                List<string> fields = this.ContentFields;
+                List<string> fields = ContentFields;
                 fields.RemoveAll(banlist.Contains);
                 fields.RemoveAll(valueBuilderBanlist.Contains);
-                if (typeof(System.Collections.IDictionary).IsAssignableFrom(this.GetType())) fields.RemoveAll(iDictionaryBanlist.Contains);
+                if (typeof(System.Collections.IDictionary).IsAssignableFrom(GetType())) fields.RemoveAll(iDictionaryBanlist.Contains);
                 return fields;
             }
         }
@@ -210,19 +170,20 @@ namespace Regul.S3PI.Interfaces
             {
                 System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
-                List<string> fields = this.ValueBuilderFields;
+                List<string> fields = ValueBuilderFields;
 
                 string headerFmt = "\n--- {0}: {1} (0x{2:X}) ---";
 
-                foreach (string f in fields)
+                for (int i1 = 0; i1 < fields.Count; i1++)
                 {
+                    string f = fields[i1];
                     TypedValue tv = this[f];
 
                     if (typeof(AApiVersionedFields).IsAssignableFrom(tv.Type))
                     {
-                        AApiVersionedFields apiObj = tv.Value as AApiVersionedFields;
+                        AApiVersionedFields apiObj = (AApiVersionedFields)tv.Value;
                         if (apiObj.ContentFields.Contains("Value") &&
-                            typeof(string).IsAssignableFrom(AApiVersionedFields.GetContentFieldTypes(requestedApiVersion, tv.Type)["Value"]))
+                            typeof(string).IsAssignableFrom(AApiVersionedFields.GetContentFieldTypes(tv.Type)["Value"]))
                         {
                             string elem = (string)apiObj["Value"].Value;
                             if (elem.Contains("\n"))
@@ -238,10 +199,9 @@ namespace Regul.S3PI.Interfaces
                         int i = 0;
 
                         sb.Append(string.Format(headerFmt, tv.Type.Name, f, l.Count));
-                        foreach (AHandlerElement v in l)
-                        {
-                            sb.Append(string.Format(fmt, i++, (string)v["Value"].Value));
-                        }
+                        for (int i2 = 0; i2 < l.Count; i2++)
+                            sb.Append(string.Format(fmt, i++, (string)((AHandlerElement)l[i2])["Value"].Value));
+
                         sb.Append("\n---");
                     }
                     else if (tv.Type.BaseType != null && tv.Type.BaseType.Name.Contains("SimpleList`"))
@@ -251,10 +211,9 @@ namespace Regul.S3PI.Interfaces
                         int i = 0;
 
                         sb.Append(string.Format(headerFmt, tv.Type.Name, f, l.Count));
-                        foreach (AHandlerElement v in l)
-                        {
-                            sb.Append(string.Format(fmt, i++, v["Val"].ToString()));
-                        }
+                        for (int i2 = 0; i2 < l.Count; i2++)
+                            sb.Append(string.Format(fmt, i++, ((AHandlerElement)l[i2])["Val"].ToString()));
+
                         sb.Append("\n---");
                     }
                     else if (typeof(DependentList<TGIBlock>).IsAssignableFrom(tv.Type))
@@ -264,8 +223,9 @@ namespace Regul.S3PI.Interfaces
                         int i = 0;
 
                         sb.Append(string.Format(headerFmt, tv.Type.Name, f, l.Count));
-                        foreach (TGIBlock v in l)
-                            sb.Append(string.Format(fmt, i++, v.ToString()));
+                        for (int i2 = 0; i2 < l.Count; i2++)
+                            sb.Append(string.Format(fmt, i++, l[i2].ToString()));
+
                         sb.Append("\n---");
                     }
                     else if (tv.Type.BaseType != null && tv.Type.BaseType.Name.Contains("DependentList`"))
@@ -276,10 +236,11 @@ namespace Regul.S3PI.Interfaces
                         int i = 0;
 
                         sb.Append(string.Format(headerFmt, tv.Type.Name, f, l.Count));
-                        foreach (AHandlerElement v in l)
+                        for (int i2 = 0; i2 < l.Count; i2++)
                         {
+                            AHandlerElement v = (AHandlerElement)l[i2];
                             if (v.ContentFields.Contains("Value") &&
-                                typeof(string).IsAssignableFrom(AApiVersionedFields.GetContentFieldTypes(requestedApiVersion, v.GetType())["Value"]))
+                                typeof(string).IsAssignableFrom(AApiVersionedFields.GetContentFieldTypes(v.GetType())["Value"]))
                             {
                                 string elem = (string)v["Value"].Value;
                                 if (elem.Contains("\n"))
@@ -304,10 +265,7 @@ namespace Regul.S3PI.Interfaces
                             {
                                 int i = Convert.ToInt32(tv.Value);
                                 if (i >= 0 && i < tgis.Count)
-                                {
-                                    TGIBlock tgi = tgis[i];
-                                    suffix = " (" + tgi + ")";
-                                }
+                                    suffix = " (" + tgis[i] + ")";
                             }
                             catch (Exception e)
                             {
@@ -317,13 +275,13 @@ namespace Regul.S3PI.Interfaces
                     }
                 }
 
-                if (typeof(System.Collections.IDictionary).IsAssignableFrom(this.GetType()))
+                if (typeof(System.Collections.IDictionary).IsAssignableFrom(GetType()))
                 {
                     System.Collections.IDictionary l = (System.Collections.IDictionary)this;
                     string fmt = "\n   [{0:X" + l.Count.ToString("X").Length + "}] {1}: {2}";
                     int i = 0;
                     sb.Append("\n--- (0x" + l.Count.ToString("X") + ") ---");
-                    foreach (var key in l.Keys)
+                    foreach (object key in l.Keys)
                         sb.Append(string.Format(fmt, i++,
                             new TypedValue(key.GetType(), key, "X").ToString(),
                             new TypedValue(l[key].GetType(), l[key], "X").ToString()));
@@ -335,9 +293,9 @@ namespace Regul.S3PI.Interfaces
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents the current <see cref="AApiVersionedFields"/> object.
+        /// Returns a <see cref="string"/> that represents the current <see cref="AApiVersionedFields"/> object.
         /// </summary>
-        /// <returns>A <see cref="System.String"/> that represents the current <see cref="AApiVersionedFields"/> object.</returns>
+        /// <returns>A <see cref="string"/> that represents the current <see cref="AApiVersionedFields"/> object.</returns>
         public override string ToString() { return ValueBuilder; }
 
         /// <summary>
@@ -346,24 +304,22 @@ namespace Regul.S3PI.Interfaces
         /// <param name="x">First content field name</param>
         /// <param name="y">Second content field name</param>
         /// <returns>A signed number indicating the relative values of this instance and value.</returns>
-        public int CompareByPriority(string x, string y) { return new PriorityComparer(this.GetType()).Compare(x, y); }
+        public int CompareByPriority(string x, string y) { return new PriorityComparer(GetType()).Compare(x, y); }
 
         /// <summary>
         /// Gets a lookup table from fieldname to type.
         /// </summary>
-        /// <param name="APIversion">Version of API to use</param>
         /// <param name="t">API data type to query</param>
         /// <returns></returns>
-        public static Dictionary<string, Type> GetContentFieldTypes(int APIversion, Type t)
+        public static Dictionary<string, Type> GetContentFieldTypes(Type t)
         {
             Dictionary<string, Type> types = new Dictionary<string, Type>();
 
-            int recommendedApiVersion = getRecommendedApiVersion(t);//Could be zero if no "recommendedApiVersion" const field
             PropertyInfo[] ap = t.GetProperties();
-            foreach (PropertyInfo m in ap)
+            for (int i = 0; i < ap.Length; i++)
             {
+                PropertyInfo m = ap[i];
                 if (banlist.Contains(m.Name)) continue;
-                if (!checkVersion(t, m.Name, APIversion == 0 ? recommendedApiVersion : APIversion)) continue;
 
                 types.Add(m.Name, m.PropertyType);
             }
@@ -414,7 +370,7 @@ namespace Regul.S3PI.Interfaces
         public class Comparer<T> : IComparer<T>
             where T : IContentFields
         {
-            string field;
+            readonly string field;
             /// <summary>
             /// Sort API Objects by <paramref name="field"/>
             /// </summary>
@@ -489,9 +445,8 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Initialize a new instance
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
-        public AHandlerElement(int APIversion, EventHandler handler) { requestedApiVersion = APIversion; this.handler = handler; }
+        public AHandlerElement(EventHandler handler) { this.handler = handler; }
         /// <summary>
         /// Get a copy of the <see cref="AHandlerElement"/> but with a new change <see cref="EventHandler"/>.
         /// </summary>
@@ -499,15 +454,15 @@ namespace Regul.S3PI.Interfaces
         /// <returns>Return a copy of the <see cref="AHandlerElement"/> but with a new change <see cref="EventHandler"/>.</returns>
         public virtual AHandlerElement Clone(EventHandler handler)
         {
-            List<object> args = new List<object>(new object[] { requestedApiVersion, handler, this, });
+            List<object> args = new(new object[] { handler, this, });
 
             // Default values for parameters are resolved by the compiler.
             // Activator.CreateInstance does not simulate this, so we have to do it.
             // Avoid writing a Binder class just for this...
-            var ci = this.GetType().GetConstructors()
+            ConstructorInfo ci = GetType().GetConstructors()
                 .Where(c =>
                 {
-                    var pi = c.GetParameters();
+                    ParameterInfo[] pi = c.GetParameters();
 
                     // Our required arguments followed by one or more optional ones
                     if (pi.Length <= args.Count) return false;
@@ -542,7 +497,7 @@ namespace Regul.S3PI.Interfaces
             if (ci != null)
                 return ci.Invoke(args.ToArray()) as AHandlerElement;
 
-            return Activator.CreateInstance(this.GetType(), args.ToArray(), null) as AHandlerElement;
+            return Activator.CreateInstance(GetType(), args.ToArray(), null) as AHandlerElement;
         }
         //public abstract AHandlerElement Clone(EventHandler handler);
 
@@ -564,39 +519,35 @@ namespace Regul.S3PI.Interfaces
     }
 
     /// <summary>
-    /// An extension to <see cref="AHandlerElement"/>, for simple data types (such as <see cref="UInt32"/>).
+    /// An extension to <see cref="AHandlerElement"/>, for simple data types (such as <see cref="uint"/>).
     /// </summary>
-    /// <typeparam name="T">A simple data type (such as <see cref="UInt32"/>).</typeparam>
+    /// <typeparam name="T">A simple data type (such as <see cref="uint"/>).</typeparam>
     /// <remarks>For an example of use, see <see cref="SimpleList{T}"/>.</remarks>
     /// <seealso cref="SimpleList{T}"/>
     public class HandlerElement<T> : AHandlerElement, IEquatable<HandlerElement<T>>
         where T : struct, IComparable, IConvertible, IEquatable<T>, IComparable<T>
     {
-        const int recommendedApiVersion = 1;
         T val;
 
         /// <summary>
         /// Initialize a new instance with a default value.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
-        public HandlerElement(int APIversion, EventHandler handler) : this(APIversion, handler, default(T)) { }
+        public HandlerElement(EventHandler handler) : this(handler, default(T)) { }
 
         /// <summary>
         /// Initialize a new instance with an initial value of <paramref name="basis"/>.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="basis">Initial value for instance.</param>
-        public HandlerElement(int APIversion, EventHandler handler, T basis) : base(APIversion, handler) { val = basis; }
+        public HandlerElement(EventHandler handler, T basis) : base(handler) { val = basis; }
 
         /// <summary>
         /// Initialize a new instance with an initial value from <paramref name="basis"/>.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="basis">Element containing the initial value for instance.</param>
-        public HandlerElement(int APIversion, EventHandler handler, HandlerElement<T> basis) : base(APIversion, handler) { val = basis.val; }
+        public HandlerElement(EventHandler handler, HandlerElement<T> basis) : base(handler) { val = basis.val; }
 
         #region AHandlerElement
         /// <summary>
@@ -604,20 +555,12 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="handler">The replacement HandlerElement delegate.</param>
         /// <returns>Return a copy of the HandlerElement but with a new change <see cref="EventHandler"/>.</returns>
-        public override AHandlerElement Clone(EventHandler handler) { return new HandlerElement<T>(requestedApiVersion, handler, val); }
-
-        /// <summary>
-        /// The best supported version of the API available
-        /// </summary>
-        public override int RecommendedApiVersion
-        {
-            get { return recommendedApiVersion; }
-        }
+        public override AHandlerElement Clone(EventHandler handler) { return new HandlerElement<T>(handler, val); }
 
         /// <summary>
         /// The list of available field names on this API object.
         /// </summary>
-        public override List<string> ContentFields { get { return GetContentFields(requestedApiVersion, this.GetType()); } }
+        public override List<string> ContentFields { get { return GetContentFields(GetType()); } }
         #endregion
 
         #region IEquatable<HandlerElement<T>>
@@ -629,15 +572,15 @@ namespace Regul.S3PI.Interfaces
         public bool Equals(HandlerElement<T> other) { return val.Equals(other.val); }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="HandlerElement{T}"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="HandlerElement{T}"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="HandlerElement{T}"/>.</param>
-        /// <returns>true if the specified <see cref="System.Object"/> is equal to the current <see cref="HandlerElement{T}"/>; otherwise, false.</returns>
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="HandlerElement{T}"/>.</param>
+        /// <returns>true if the specified <see cref="object"/> is equal to the current <see cref="HandlerElement{T}"/>; otherwise, false.</returns>
         /// <exception cref="System.NullReferenceException">The obj parameter is null.</exception>
         public override bool Equals(object obj)
         {
-            if (obj is T) return val.Equals((T)obj);
-            else if (obj is HandlerElement<T>) return this.Equals(obj as HandlerElement<T>);
+            if (obj is T t) return val.Equals(t);
+            else if (obj is HandlerElement<T>) return Equals(obj as HandlerElement<T>);
             return false;
         }
 
@@ -677,13 +620,12 @@ namespace Regul.S3PI.Interfaces
     /// <summary>
     /// An extension to <see cref="AHandlerElement"/>, for lists of TGIBlockList indices.
     /// </summary>
-    /// <typeparam name="T">A simple data type (such as <see cref="Int32"/>).</typeparam>
+    /// <typeparam name="T">A simple data type (such as <see cref="int"/>).</typeparam>
     /// <remarks>For an example of use, see <see cref="IndexList{T}"/>.</remarks>
     /// <seealso cref="IndexList{T}"/>
     public class TGIBlockListIndex<T> : AHandlerElement, IEquatable<TGIBlockListIndex<T>>
         where T : struct, IComparable, IConvertible, IEquatable<T>, IComparable<T>
     {
-        const int recommendedApiVersion = 1;
         /// <summary>
         /// Reference to list into which this is an index.
         /// </summary>
@@ -694,31 +636,28 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Initialize a new instance with a default value.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="ParentTGIBlocks">Reference to list into which this is an index.</param>
-        public TGIBlockListIndex(int APIversion, EventHandler handler, DependentList<TGIBlock> ParentTGIBlocks = null)
-            : this(APIversion, handler, default(T), ParentTGIBlocks) { }
+        public TGIBlockListIndex(EventHandler handler, DependentList<TGIBlock> ParentTGIBlocks = null)
+            : this(handler, default(T), ParentTGIBlocks) { }
 
         /// <summary>
         /// Initialize a new instance with an initial value from <paramref name="basis"/>.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="basis">Element containing the initial value for instance.</param>
         /// <param name="ParentTGIBlocks">Reference to list into which this is an index, or null to use that in <paramref name="basis"/>.</param>
-        public TGIBlockListIndex(int APIversion, EventHandler handler, TGIBlockListIndex<T> basis, DependentList<TGIBlock> ParentTGIBlocks = null)
-            : this(APIversion, handler, basis.data, ParentTGIBlocks ?? basis.ParentTGIBlocks) { }
+        public TGIBlockListIndex(EventHandler handler, TGIBlockListIndex<T> basis, DependentList<TGIBlock> ParentTGIBlocks = null)
+            : this(handler, basis.data, ParentTGIBlocks ?? basis.ParentTGIBlocks) { }
 
         /// <summary>
         /// Initialize a new instance with an initial value of <paramref name="value"/>.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="value">Initial value for instance.</param>
         /// <param name="ParentTGIBlocks">Reference to list into which this is an index.</param>
-        public TGIBlockListIndex(int APIversion, EventHandler handler, T value, DependentList<TGIBlock> ParentTGIBlocks = null)
-            : base(APIversion, handler) { this.ParentTGIBlocks = ParentTGIBlocks; data = value; }
+        public TGIBlockListIndex(EventHandler handler, T value, DependentList<TGIBlock> ParentTGIBlocks = null)
+            : base(handler) { this.ParentTGIBlocks = ParentTGIBlocks; data = value; }
 
         #region AHandlerElement
         // /// <summary>
@@ -728,18 +667,11 @@ namespace Regul.S3PI.Interfaces
         // /// <returns>Return a copy of the HandlerElement but with a new change <see cref="EventHandler"/>.</returns>
         // public override AHandlerElement Clone(EventHandler handler) { return new TGIBlockListIndex<T>(requestedApiVersion, handler, data) { ParentTGIBlocks = ParentTGIBlocks }; }
 
-        /// <summary>
-        /// The best supported version of the API available
-        /// </summary>
-        public override int RecommendedApiVersion
-        {
-            get { return recommendedApiVersion; }
-        }
 
         /// <summary>
         /// The list of available field names on this API object.
         /// </summary>
-        public override List<string> ContentFields { get { List<string> res = GetContentFields(requestedApiVersion, this.GetType()); res.Remove("ParentTGIBlocks"); return res; } }
+        public override List<string> ContentFields { get { List<string> res = GetContentFields(GetType()); res.Remove("ParentTGIBlocks"); return res; } }
         #endregion
 
         #region IEquatable<TGIBlockListIndex<T>>
@@ -751,15 +683,15 @@ namespace Regul.S3PI.Interfaces
         public bool Equals(TGIBlockListIndex<T> other) { return data.Equals(other.data); }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="HandlerElement{T}"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="HandlerElement{T}"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="HandlerElement{T}"/>.</param>
-        /// <returns>true if the specified <see cref="System.Object"/> is equal to the current <see cref="HandlerElement{T}"/>; otherwise, false.</returns>
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="HandlerElement{T}"/>.</param>
+        /// <returns>true if the specified <see cref="object"/> is equal to the current <see cref="HandlerElement{T}"/>; otherwise, false.</returns>
         /// <exception cref="System.NullReferenceException">The obj parameter is null.</exception>
         public override bool Equals(object obj)
         {
             if (obj is T) return data.Equals((T)obj);
-            else if (obj is TGIBlockListIndex<T>) return this.Equals(obj as TGIBlockListIndex<T>);
+            else if (obj is TGIBlockListIndex<T>) return Equals(obj as TGIBlockListIndex<T>);
             return false;
         }
 

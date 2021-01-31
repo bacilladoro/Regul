@@ -9,8 +9,6 @@ namespace Regul.S3PI.Interfaces
     /// </summary>
     public class Vertex : AHandlerElement, IEquatable<Vertex>
     {
-        const int recommendedApiVersion = 1;
-
         #region Attributes
         float x = 0f;
         float y = 0f;
@@ -21,34 +19,30 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Create a vertex at { 0, 0, 0 }.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
-        public Vertex(int APIversion, EventHandler handler) : base(APIversion, handler) { }
+        public Vertex(EventHandler handler) : base(handler) { }
         /// <summary>
         /// Create a vertex from a <see cref="Stream"/>.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="s"><see cref="Stream"/> containing coordinates.</param>
-        public Vertex(int APIversion, EventHandler handler, Stream s) : base(APIversion, handler) { Parse(s); }
+        public Vertex(EventHandler handler, Stream s) : base(handler) { Parse(s); }
         /// <summary>
         /// Create a vertex from a given value.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="basis"><see cref="Vertex"/> to copy.</param>
-        public Vertex(int APIversion, EventHandler handler, Vertex basis)
-            : this(APIversion, handler, basis.x, basis.y, basis.z) { }
+        public Vertex(EventHandler handler, Vertex basis)
+            : this(handler, basis.x, basis.y, basis.z) { }
         /// <summary>
         /// Create a vertex at { x, y, z }.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="z">Z coordinate.</param>
-        public Vertex(int APIversion, EventHandler handler, float x, float y, float z)
-            : base(APIversion, handler)
+        public Vertex(EventHandler handler, float x, float y, float z)
+            : base(handler)
         {
             this.x = x;
             this.y = y;
@@ -60,9 +54,9 @@ namespace Regul.S3PI.Interfaces
         void Parse(Stream s)
         {
             BinaryReader r = new BinaryReader(s);
-            this.x = r.ReadSingle();
-            this.y = r.ReadSingle();
-            this.z = r.ReadSingle();
+            x = r.ReadSingle();
+            y = r.ReadSingle();
+            z = r.ReadSingle();
         }
 
         /// <summary>
@@ -80,14 +74,9 @@ namespace Regul.S3PI.Interfaces
 
         #region AHandlerElement Members
         /// <summary>
-        /// The best supported version of the API available
-        /// </summary>
-        public override int RecommendedApiVersion { get { return recommendedApiVersion; } }
-
-        /// <summary>
         /// The list of available field names on this API object.
         /// </summary>
-        public override List<string> ContentFields { get { return GetContentFields(requestedApiVersion, this.GetType()); } }
+        public override List<string> ContentFields { get { return GetContentFields(GetType()); } }
 
         // /// <summary>
         // /// Get a copy of the <see cref="Vertex"/> but with a new change <see cref="EventHandler"/>.
@@ -106,17 +95,17 @@ namespace Regul.S3PI.Interfaces
         /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
         public bool Equals(Vertex other)
         {
-            return this.x == other.x && this.y == other.y && this.z == other.z;
+            return x == other.x && y == other.y && z == other.z;
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Vertex"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="Vertex"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Vertex"/>.</param>
-        /// <returns>true if the specified <see cref="System.Object"/> is equal to the current <see cref="Vertex"/>; otherwise, false.</returns>
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="Vertex"/>.</param>
+        /// <returns>true if the specified <see cref="object"/> is equal to the current <see cref="Vertex"/>; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return obj as Vertex != null ? this.Equals(obj as Vertex) : false;
+            return obj as Vertex != null ? Equals(obj as Vertex) : false;
         }
 
         /// <summary>
@@ -160,8 +149,6 @@ namespace Regul.S3PI.Interfaces
     /// </summary>
     public class BoundingBox : AHandlerElement, IEquatable<BoundingBox>
     {
-        const int recommendedApiVersion = 1;
-
         #region Attributes
         Vertex min;
         Vertex max;
@@ -171,48 +158,44 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Create an zero-sized bounding box.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
-        public BoundingBox(int APIversion, EventHandler handler) : base(APIversion, handler)
+        public BoundingBox(EventHandler handler) : base(handler)
         {
-            min = new Vertex(requestedApiVersion, handler);
-            max = new Vertex(requestedApiVersion, handler);
+            min = new Vertex(handler);
+            max = new Vertex(handler);
         }
         /// <summary>
         /// Create a bounding box from a <see cref="Stream"/>.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="s"><see cref="Stream"/> containing vertices.</param>
-        public BoundingBox(int APIversion, EventHandler handler, Stream s) : base(APIversion, handler) { Parse(s); }
+        public BoundingBox(EventHandler handler, Stream s) : base(handler) { Parse(s); }
         /// <summary>
         /// Create a bounding box from a given value.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="basis"><see cref="BoundingBox"/> to copy.</param>
-        public BoundingBox(int APIversion, EventHandler handler, BoundingBox basis)
-            : this(APIversion, handler, basis.min, basis.max) { }
+        public BoundingBox(EventHandler handler, BoundingBox basis)
+            : this(handler, basis.min, basis.max) { }
         /// <summary>
         /// Create a bounding box with the specified minimum and maximum vertices.
         /// </summary>
-        /// <param name="APIversion">The requested API version.</param>
         /// <param name="handler">The <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.</param>
         /// <param name="min">Minimum vertex.</param>
         /// <param name="max">Maximum vertex.</param>
-        public BoundingBox(int APIversion, EventHandler handler, Vertex min, Vertex max)
-            : base(APIversion, handler)
+        public BoundingBox(EventHandler handler, Vertex min, Vertex max)
+            : base(handler)
         {
-            this.min = new Vertex(requestedApiVersion, handler, min);
-            this.max = new Vertex(requestedApiVersion, handler, max);
+            this.min = new Vertex(handler, min);
+            this.max = new Vertex(handler, max);
         }
         #endregion
 
         #region Data I/O
         void Parse(Stream s)
         {
-            min = new Vertex(requestedApiVersion, handler, s);
-            max = new Vertex(requestedApiVersion, handler, s);
+            min = new Vertex(handler, s);
+            max = new Vertex(handler, s);
         }
 
         /// <summary>
@@ -221,24 +204,20 @@ namespace Regul.S3PI.Interfaces
         /// <param name="s"><see cref="Stream"/> to contain vertices.</param>
         public void UnParse(Stream s)
         {
-            if (min == null) min = new Vertex(requestedApiVersion, handler);
+            if (min == null) min = new Vertex(handler);
             min.UnParse(s);
 
-            if (max == null) max = new Vertex(requestedApiVersion, handler);
+            if (max == null) max = new Vertex(handler);
             max.UnParse(s);
         }
         #endregion
 
         #region AHandlerElement Members
-        /// <summary>
-        /// The best supported version of the API available
-        /// </summary>
-        public override int RecommendedApiVersion { get { return recommendedApiVersion; } }
 
         /// <summary>
         /// The list of available field names on this API object.
         /// </summary>
-        public override List<string> ContentFields { get { return GetContentFields(requestedApiVersion, this.GetType()); } }
+        public override List<string> ContentFields { get { return GetContentFields(GetType()); } }
 
         // /// <summary>
         // /// Get a copy of the <see cref="BoundingBox"/> but with a new change <see cref="EventHandler"/>.
@@ -261,13 +240,13 @@ namespace Regul.S3PI.Interfaces
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="BoundingBox"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="BoundingBox"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="BoundingBox"/>.</param>
-        /// <returns>true if the specified <see cref="System.Object"/> is equal to the current <see cref="BoundingBox"/>; otherwise, false.</returns>
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="BoundingBox"/>.</param>
+        /// <returns>true if the specified <see cref="object"/> is equal to the current <see cref="BoundingBox"/>; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return obj as BoundingBox != null ? this.Equals(obj as BoundingBox) : false;
+            return obj as BoundingBox != null ? Equals(obj as BoundingBox) : false;
         }
 
         /// <summary>
@@ -286,12 +265,12 @@ namespace Regul.S3PI.Interfaces
         /// Minimum vertex
         /// </summary>
         [ElementPriority(1)]
-        public Vertex Min { get { return min; } set { if (min != value) { min = new Vertex(requestedApiVersion, handler, value); OnElementChanged(); } } }
+        public Vertex Min { get { return min; } set { if (min != value) { min = new Vertex(handler, value); OnElementChanged(); } } }
         /// <summary>
         /// Maximum vertex
         /// </summary>
         [ElementPriority(2)]
-        public Vertex Max { get { return max; } set { if (max != value) { max = new Vertex(requestedApiVersion, handler, value); OnElementChanged(); } } }
+        public Vertex Max { get { return max; } set { if (max != value) { max = new Vertex(handler, value); OnElementChanged(); } } }
 
         /// <summary>
         /// A displayable representation of the object

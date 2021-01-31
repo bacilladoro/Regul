@@ -154,7 +154,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s"><see cref="Stream"/> containing data.</param>
         /// <returns>New list element.</returns>
-        protected override TGIBlockListIndex<T> CreateElement(Stream s) { return new(0, elementHandler, createElement == null ? default(T) : createElement(s), _ParentTGIBlocks); }
+        protected override TGIBlockListIndex<T> CreateElement(Stream s) { return new(elementHandler, createElement == null ? default(T) : createElement(s), _ParentTGIBlocks); }
         /// <summary>
         /// Writes the value of a list element to <paramref name="s"/>.
         /// </summary>
@@ -201,7 +201,7 @@ namespace Regul.S3PI.Interfaces
         /// with a NotImplementedException.</exception>
         /// <exception cref="InvalidOperationException">Thrown when list size exceeded.</exception>
         /// <exception cref="NotSupportedException">The <see cref="IndexList{T}"/> is read-only.</exception>
-        public override void Add() { this.Add(new TGIBlockListIndex<T>(0, elementHandler, default(T), _ParentTGIBlocks)); }
+        public override void Add() { this.Add(new TGIBlockListIndex<T>(elementHandler, default(T), _ParentTGIBlocks)); }
         #endregion
 
         #region List<T>
@@ -212,7 +212,7 @@ namespace Regul.S3PI.Interfaces
         /// <returns>True on success</returns>
         /// <exception cref="InvalidOperationException">Thrown when list size exceeded.</exception>
         /// <exception cref="NotSupportedException">The <see cref="IndexList{T}"/> is read-only.</exception>
-        public virtual void Add(T item) { base.Add(new TGIBlockListIndex<T>(0, elementHandler, item, _ParentTGIBlocks)); }
+        public virtual void Add(T item) { base.Add(new TGIBlockListIndex<T>(elementHandler, item, _ParentTGIBlocks)); }
 
         /// <summary>
         /// Adds the elements of the specified collection to the end of the <see cref="IndexList{T}"/>.
@@ -320,7 +320,7 @@ namespace Regul.S3PI.Interfaces
         ///     cannot find an implementation of the <see cref="System.IComparable{T}"/> generic interface
         ///     or the <see cref="System.IComparable"/> interface for type T.
         /// </exception>
-        public int BinarySearch(int index, int count, T item, IComparer<T> comparer) { return base.BinarySearch(index, count, new TGIBlockListIndex<T>(0, null, item), new SimpleComparer(comparer)); }
+        public int BinarySearch(int index, int count, T item, IComparer<T> comparer) { return base.BinarySearch(index, count, new TGIBlockListIndex<T>(null, item), new SimpleComparer(comparer)); }
 
         /// <summary>
         ///     Converts the elements in the current <see cref="IndexList{T}"/> to
@@ -923,7 +923,7 @@ namespace Regul.S3PI.Interfaces
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="index"/> is not a valid index in the <see cref="IndexList{T}"/>.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown when list size exceeded.</exception>
         /// <exception cref="System.NotSupportedException">The <see cref="IndexList{T}"/> is read-only.</exception>
-        public virtual void Insert(int index, T item) { base.Insert(index, new TGIBlockListIndex<T>(0, elementHandler, item, _ParentTGIBlocks)); }
+        public virtual void Insert(int index, T item) { base.Insert(index, new TGIBlockListIndex<T>(elementHandler, item, _ParentTGIBlocks)); }
         #endregion
 
         #region IEnumerable<T>
