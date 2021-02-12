@@ -154,7 +154,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s"><see cref="Stream"/> containing data.</param>
         /// <returns>New list element.</returns>
-        protected override TGIBlockListIndex<T> CreateElement(Stream s) { return new(elementHandler, createElement == null ? default(T) : createElement(s), _ParentTGIBlocks); }
+        protected override TGIBlockListIndex<T> CreateElement(Stream s) { return new TGIBlockListIndex<T>(elementHandler, createElement == null ? default(T) : createElement(s), _ParentTGIBlocks); }
         /// <summary>
         /// Writes the value of a list element to <paramref name="s"/>.
         /// </summary>

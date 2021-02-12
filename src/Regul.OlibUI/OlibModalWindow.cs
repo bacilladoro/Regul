@@ -87,7 +87,7 @@ namespace Regul.OlibUI
 
                 if (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 {
-                    titleBar.DoubleTapped += (_, _) =>
+                    titleBar.DoubleTapped += (_, e1) =>
                     {
                         if (WindowButtons == WindowButtons.CloseAndExpand || WindowButtons == WindowButtons.All)
                         {

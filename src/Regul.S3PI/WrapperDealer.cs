@@ -86,7 +86,7 @@ namespace Regul.S3PI
         #region Implementation
         static List<KeyValuePair<string, Type>> typeMap = null;
 
-        static readonly List<KeyValuePair<string, Type>> disabled = new();
+        static readonly List<KeyValuePair<string, Type>> disabled = new List<KeyValuePair<string, Type>>();
 
         static IResource WrapperForType(string type, Stream s)
         {

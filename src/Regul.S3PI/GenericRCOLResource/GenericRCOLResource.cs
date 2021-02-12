@@ -521,13 +521,17 @@ namespace Regul.S3PI.GenericRCOLResource
                 if (reference.chunkReference == 0)
                     return null;
 
-                return reference.RefType switch
+                switch (reference.RefType)
                 {
-                    ReferenceType.Public => rcol.ChunkEntries[reference.TGIBlockIndex].TGIBlock,
-                    ReferenceType.Private => rcol.ChunkEntries[reference.TGIBlockIndex + rcol.PublicChunks].TGIBlock,
-                    ReferenceType.Delayed => rcol.resources[reference.TGIBlockIndex],
-                    _ => throw new NotImplementedException($"Reference Type {reference.RefType} is not supported.")
-                };
+                    case ReferenceType.Public:
+                        return rcol.ChunkEntries[reference.TGIBlockIndex].TGIBlock;
+                    case ReferenceType.Private:
+                        return rcol.ChunkEntries[reference.TGIBlockIndex + rcol.PublicChunks].TGIBlock;
+                    case ReferenceType.Delayed:
+                        return rcol.resources[reference.TGIBlockIndex];
+                    default:
+                        throw new NotImplementedException($"Reference Type {reference.RefType} is not supported.");
+                }
             }
 
             /// <summary>
@@ -545,12 +549,15 @@ namespace Regul.S3PI.GenericRCOLResource
                 if (reference.chunkReference == 0)
                     return null;
 
-                return reference.RefType switch
+                switch (reference.RefType)
                 {
-                    ReferenceType.Public => rcol.ChunkEntries[reference.TGIBlockIndex].RCOLBlock,
-                    ReferenceType.Private => rcol.ChunkEntries[reference.TGIBlockIndex + rcol.PublicChunks].RCOLBlock,
-                    _ => throw new NotImplementedException($"Reference Type {reference.RefType} is not supported.")
-                };
+                    case ReferenceType.Public:
+                        return rcol.ChunkEntries[reference.TGIBlockIndex].RCOLBlock;
+                    case ReferenceType.Private:
+                        return rcol.ChunkEntries[reference.TGIBlockIndex + rcol.PublicChunks].RCOLBlock;
+                    default:
+                        throw new NotImplementedException($"Reference Type {reference.RefType} is not supported.");
+                }
             }
 
             /// <summary>
@@ -562,7 +569,7 @@ namespace Regul.S3PI.GenericRCOLResource
             /// <remarks>Note that the value will be zero (i.e. indicating an invalid entry) if the <paramref name="rk"/>
             /// value supplied is not found either in the <see cref="GenericRCOLResource.ChunkEntries"/> or
             /// <see cref="GenericRCOLResource.Resources"/> lists.</remarks>
-            public static ChunkReference CreateReference(GenericRCOLResource rcol, IResourceKey rk) => new(null, CreateReferenceHelper(rcol, rk));
+            public static ChunkReference CreateReference(GenericRCOLResource rcol, IResourceKey rk) => new ChunkReference(null, CreateReferenceHelper(rcol, rk));
 
             static uint CreateReferenceHelper(GenericRCOLResource rcol, IResourceKey rk)
             {
@@ -719,7 +726,7 @@ namespace Regul.S3PI.GenericRCOLResource
             }
             catch { }
 
-            StringReader sr = new(Resources.RCOLResources);
+            StringReader sr = new StringReader(Resources.RCOLResources);
             resourceTypes = new List<string>();
             string s;
             while ((s = sr.ReadLine()) != null)

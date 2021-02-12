@@ -21,7 +21,7 @@ namespace Regul.Views.Controls.ListBoxItems
             set
             {
                 _saveDir = value;
-                DirectoryInfo directoryInfo = new(value);
+                DirectoryInfo directoryInfo = new DirectoryInfo(value);
                 string str = directoryInfo.ToString().Split('\\')[checked (directoryInfo.ToString().Split('\\').Length - 1)].Replace(".sims3", "");
                 SaveName.Text = str;
             }
@@ -54,7 +54,7 @@ namespace Regul.Views.Controls.ListBoxItems
             SaveFamily = this.FindControl<TextBox>("saveFamily");
 
             _saveDir = value;
-            DirectoryInfo directoryInfo = new(value);
+            DirectoryInfo directoryInfo = new DirectoryInfo(value);
             string str = directoryInfo.ToString().Split('\\')[checked (directoryInfo.ToString().Split('\\').Length - 1)].Replace(".sims3", "");
             SaveName.Text = str;
         }

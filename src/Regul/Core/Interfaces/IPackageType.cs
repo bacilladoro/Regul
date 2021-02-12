@@ -11,6 +11,6 @@ namespace Regul.Core.Interfaces
     {
         string PackageType { get; }
 
-        public void SavePackage(); 
+        void SavePackage(); 
     }
 }

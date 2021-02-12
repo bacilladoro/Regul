@@ -17,11 +17,11 @@ using System.Runtime.CompilerServices;
 
 namespace Regul.ViewModels.Windows
 {
-    internal sealed class SaveClearViewModel : ViewModelBase
+    internal sealed class SaveCleanerViewModel : ViewModelBase
     {
         private string _pathBackup;
         private bool _isLoading;
-        private ObservableCollection<SaveFilePortrait> _saveFilePortraits = new();
+        private ObservableCollection<SaveFilePortrait> _saveFilePortraits = new ObservableCollection<SaveFilePortrait>();
         private SaveFilePortrait _selectSave;
         private Loading _loading;
 
@@ -100,7 +100,7 @@ namespace Regul.ViewModels.Windows
 
         #endregion
 
-        public SaveClearViewModel()
+        public SaveCleanerViewModel()
         {
             DeletingCharacterPortraits = true;
             bgwClean = new BackgroundWorker();
@@ -114,15 +114,15 @@ namespace Regul.ViewModels.Windows
             {
                 if (!Directory.Exists(Path.Combine(TS3CC.Sims3MyDocFolder, "Saves")))
                 {
-                    await MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("SaveFilesNotFound"), (string)Application.Current.FindResource("Information"),
+                    await MessageBox.Show(App.SaveCleaner, null, (string)Application.Current.FindResource("SaveFilesNotFound"), (string)Application.Current.FindResource("Information"),
                         MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
-                    App.SaveClear.Close();
+                    App.SaveCleaner.Close();
                     return;
                 }
             }
             catch (Exception ex)
             {
-                await MessageBox.Show(App.SaveClear, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"),
+                await MessageBox.Show(App.SaveCleaner, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"),
                     (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Error);
             }
 
@@ -130,15 +130,15 @@ namespace Regul.ViewModels.Windows
             if (TS3CC.Sims3MyDocFolder != null) path1 = TS3CC.Sims3MyDocFolder;
             else
             {
-                await MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("NotFindFolderTheSims3"),
+                await MessageBox.Show(App.SaveCleaner, null, (string)Application.Current.FindResource("NotFindFolderTheSims3"),
                     (string)Application.Current.FindResource("Information"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
 
-                OpenFolderDialog dialog = new();
-                string path = await dialog.ShowAsync(App.SaveClear);
+                OpenFolderDialog dialog = new OpenFolderDialog();
+                string path = await dialog.ShowAsync(App.SaveCleaner);
                 if (!string.IsNullOrEmpty(path)) path1 = path;
                 else
                 {
-                    App.SaveClear.Close();
+                    App.SaveCleaner.Close();
                     return;
                 }
             }
@@ -157,9 +157,9 @@ namespace Regul.ViewModels.Windows
                     string str = files[index2];
                     try
                     {
-                        Save save = new(str);
+                        Save save = new Save(str);
 
-                        SaveFilePortrait saveFilePortrait = new(path, save);
+                        SaveFilePortrait saveFilePortrait = new SaveFilePortrait(path, save);
 
                         if (Strings.InStr(str, saveFilePortrait.Location) > 0)
                         {
@@ -171,7 +171,7 @@ namespace Regul.ViewModels.Windows
                     }
                     catch (Exception ex)
                     {
-                        await MessageBox.Show(App.SaveClear, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"),
+                        await MessageBox.Show(App.SaveCleaner, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"),
                             (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Error);
                     }
                     checked { ++index2; }
@@ -182,8 +182,8 @@ namespace Regul.ViewModels.Windows
 
         private async void SelectPath()
         {
-            OpenFolderDialog dialog = new();
-            PathBackup = await dialog.ShowAsync(App.SaveClear) + "\\";
+            OpenFolderDialog dialog = new OpenFolderDialog();
+            PathBackup = await dialog.ShowAsync(App.SaveCleaner) + "\\";
         }
 
         private async void Clear()
@@ -192,18 +192,18 @@ namespace Regul.ViewModels.Windows
             {
                 if (SelectSave == null)
                 {
-                    await MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("NoSelectedSaveFile"),
+                    await MessageBox.Show(App.SaveCleaner, null, (string)Application.Current.FindResource("NoSelectedSaveFile"),
                         (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Error);
                     return;
                 }
                 IsLoading = true;
                 _loading = new Loading();
                 bgwClean.RunWorkerAsync(SelectSave);
-                await _loading.ShowDialog(App.SaveClear);
+                await _loading.ShowDialog(App.SaveCleaner);
             }
             catch (Exception ex)
             {
-                await MessageBox.Show(App.SaveClear, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"),
+                await MessageBox.Show(App.SaveCleaner, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"),
                     (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
             }
             GC.Collect();
@@ -212,7 +212,7 @@ namespace Regul.ViewModels.Windows
         private void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
             // Get the subdirectories for the specified directory.
-            DirectoryInfo dir = new(sourceDirName);
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
 
             if (!dir.Exists)
             {
@@ -286,7 +286,7 @@ namespace Regul.ViewModels.Windows
         {
             _loading.Close();
             IsLoading = false;
-            MessageBox.Show(App.SaveClear, null, (string)Application.Current.FindResource("SaveFilesCleanedSuccessfully") + $"\nTotal: {e.Result}",
+            MessageBox.Show(App.SaveCleaner, null, (string)Application.Current.FindResource("SaveFilesCleanedSuccessfully") + $"\nTotal: {e.Result}",
                 (string)Application.Current.FindResource("Successfully"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
         }
 

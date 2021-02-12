@@ -16,7 +16,7 @@ namespace Regul.OlibUI.Converters
             if (value != null)
             {
                 WindowIcon wIcon = value as WindowIcon;
-                MemoryStream stream = new();
+                MemoryStream stream = new MemoryStream();
                 wIcon.Save(stream);
                 stream.Position = 0;
                 try
@@ -27,7 +27,7 @@ namespace Regul.OlibUI.Converters
                 {
                     try
                     {
-                        Icon icon = new(stream);
+                        Icon icon = new Icon(stream);
                         System.Drawing.Bitmap bmp = icon.ToBitmap();
                         bmp.Save(stream, ImageFormat.Png);
                         return new Bitmap(stream);

@@ -83,7 +83,7 @@ namespace Regul.S3PI.Interfaces
         /// <returns>List of field names for the given API version</returns>
         public static List<string> GetContentFields(Type t)
         {
-            List<string> fields = new();
+            List<string> fields = new List<string>();
 
             PropertyInfo[] ap = t.GetProperties();
             for (int i = 0; i < ap.Length; i++)
@@ -135,10 +135,10 @@ namespace Regul.S3PI.Interfaces
             }
         }
 
-        static readonly List<string> valueBuilderBanlist = new(new[] {
+        static readonly List<string> valueBuilderBanlist = new List<string>(new[] {
             "Value", "Stream", "AsBytes",
         });
-        static readonly List<string> iDictionaryBanlist = new(new[] {
+        static readonly List<string> iDictionaryBanlist = new List<string>(new[] {
             "Keys", "Values", "Count", "IsReadOnly", "IsFixedSize", "IsSynchronized", "SyncRoot",
         });
 
@@ -454,7 +454,7 @@ namespace Regul.S3PI.Interfaces
         /// <returns>Return a copy of the <see cref="AHandlerElement"/> but with a new change <see cref="EventHandler"/>.</returns>
         public virtual AHandlerElement Clone(EventHandler handler)
         {
-            List<object> args = new(new object[] { handler, this, });
+            List<object> args = new List<object>(new object[] { handler, this, });
 
             // Default values for parameters are resolved by the compiler.
             // Activator.CreateInstance does not simulate this, so we have to do it.

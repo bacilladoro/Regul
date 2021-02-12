@@ -71,9 +71,9 @@ namespace Regul.S3PI.Package
             BinaryWriter w = new BinaryWriter(s);
             w.Write(header);
 
-            List<uint> lT = new();
-            List<uint> lG = new();
-            List<uint> lIh = new();
+            List<uint> lT = new List<uint>();
+            List<uint> lG = new List<uint>();
+            List<uint> lIh = new List<uint>();
 
             for (int i = 0; i < Index.Count; i++)
             {
@@ -85,7 +85,7 @@ namespace Regul.S3PI.Package
 
             uint indexType = (uint)(lIh.Count <= 1 ? 0x04 : 0x00) | (uint)(lG.Count <= 1 ? 0x02 : 0x00) | (uint)(lT.Count <= 1 ? 0x01 : 0x00);
 
-            PackageIndex newIndex = new(indexType);
+            PackageIndex newIndex = new PackageIndex(indexType);
             for (int i = 0; i < Index.Count; i++)
             {
                 IResourceIndexEntry ie = Index[i];
@@ -125,7 +125,7 @@ namespace Regul.S3PI.Package
         /// <param name="path">File to save to - will be overwritten or created</param>
         public override void SaveAs(string path)
         {
-            FileStream fs = new(path, FileMode.Create);
+            FileStream fs = new FileStream(path, FileMode.Create);
             SaveAs(fs);
             fs.Close();
         }
@@ -197,10 +197,12 @@ namespace Regul.S3PI.Package
         /// <param name="pkg">IPackage reference to close</param>
         public static new void ClosePackage(IPackage pkg)
         {
-            if (pkg is not Package p) return;
-            if (p.packageStream != null) { try { p.packageStream.Close(); } catch { } p.packageStream = null; }
-            p.header = null;
-            p.index = null;
+            if (pkg is Package p)
+            {
+                if (p.packageStream != null) { try { p.packageStream.Close(); } catch { } p.packageStream = null; }
+                p.header = null;
+                p.index = null;
+            }
         }
         #endregion
 
@@ -398,7 +400,7 @@ namespace Regul.S3PI.Package
         {
             header = new byte[96];
 
-            BinaryWriter bw = new(new MemoryStream(header));
+            BinaryWriter bw = new BinaryWriter(new MemoryStream(header));
             bw.Write(stringToBytes(magic));
             setIndexsize(bw, new PackageIndex().Size);
             setIndexversion(bw);
@@ -509,28 +511,31 @@ namespace Regul.S3PI.Package
         /// <remarks>Used by WrapperDealer to get the data for a resource.</remarks>
         public override Stream GetResource(IResourceIndexEntry rc)
         {
-            if (rc is not ResourceIndexEntry rie) return null;
-            if (rie.ResourceStream != null) return rie.ResourceStream;
-
-            if (rc.Chunkoffset == 0xffffffff) return null;
-            packageStream.Position = rc.Chunkoffset;
-
-            byte[] data;
-            if (rc.Filesize == 1 && rc.Memsize == 0xFFFFFFFF) return null;//{ data = new byte[0]; }
-            else if (rc.Filesize == rc.Memsize)
+            if (rc is ResourceIndexEntry rie)
             {
-                data = new BinaryReader(packageStream).ReadBytes((int)rc.Filesize);
-            }
-            else
-            {
-                data = Compression.UncompressStream(packageStream, (int)rc.Filesize, (int)rc.Memsize);
+                if (rie.ResourceStream != null) return rie.ResourceStream;
+
+                if (rc.Chunkoffset == 0xffffffff) return null;
+                packageStream.Position = rc.Chunkoffset;
+
+                byte[] data;
+                if (rc.Filesize == 1 && rc.Memsize == 0xFFFFFFFF) return null;//{ data = new byte[0]; }
+                else if (rc.Filesize == rc.Memsize)
+                {
+                    data = new BinaryReader(packageStream).ReadBytes((int)rc.Filesize);
+                }
+                else
+                {
+                    data = Compression.UncompressStream(packageStream, (int)rc.Filesize, (int)rc.Memsize);
+                }
+
+                MemoryStream ms = new MemoryStream();
+                ms.Write(data, 0, data.Length);
+                ms.Position = 0;
+                return ms;
             }
 
-            MemoryStream ms = new();
-            ms.Write(data, 0, data.Length);
-            ms.Position = 0;
-            return ms;
+            return null;
         }
-
     }
 }

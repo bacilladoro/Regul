@@ -65,7 +65,7 @@ namespace Regul.Views
                     res = r;
             }
 
-            void ChangeIcon(string icon) => iconControl.Data = (Geometry)Application.Current.FindResource($"{icon}Icon");
+            void ChangeIcon(string icn) => iconControl.Data = (Geometry)Application.Current.FindResource($"{icn}Icon");
 
             switch (buttons)
             {

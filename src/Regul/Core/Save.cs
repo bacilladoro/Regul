@@ -30,9 +30,9 @@ namespace Regul.Core
 
         private void UnParse(Stream s)
         {
-            BinaryReader binaryReader = new(s);
+            BinaryReader binaryReader = new BinaryReader(s);
             binaryReader.ReadInt32();
-            StringBuilder stringBuilder = new();
+            StringBuilder stringBuilder = new StringBuilder();
 
             int num1 = checked(binaryReader.ReadInt32() - 1);
             int num2 = 0;
@@ -62,7 +62,9 @@ namespace Regul.Core
             ImgInstance = binaryReader.ReadUInt64();
             IResourceIndexEntry rie = pkg.Find(entry => (long)entry.Instance == (long)ImgInstance & entry.ResourceType == 1802339198U);
 
-            FamilyIcon = rie != null ? new Bitmap(S3PI.WrapperDealer.GetResource(pkg, rie).Stream) : (DrawingImage)Application.Current.FindResource("UnknownIcon");
+            if (rie != null)
+                FamilyIcon = new Bitmap(S3PI.WrapperDealer.GetResource(pkg, rie).Stream);
+            else FamilyIcon = (DrawingImage)Application.Current.FindResource("UnknownIcon");
 
             binaryReader.ReadUInt64();
         }

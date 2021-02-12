@@ -8,6 +8,6 @@ namespace Regul.Core.Interfaces
 {
     public interface IPackageContent
     {
-        public IPackageType PackageType { get; set; }
+        IPackageType PackageType { get; set; }
     }
 }

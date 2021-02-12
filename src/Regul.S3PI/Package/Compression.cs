@@ -53,50 +53,39 @@ namespace Regul.S3PI.Package
             byte packing = r.ReadByte();
 
             #region Compressed
-            switch (packing)
+            if (packing < 0x80) // 0.......; new data 3; copy data 10 (min 3); offset 1024
             {
-                // 0.......; new data 3; copy data 10 (min 3); offset 1024
-                case < 0x80:
-                {
-                    data = r.ReadBytes(1);
-                    if (checking) if (data.Length != 1)
+                data = r.ReadBytes(1);
+                if (checking) if (data.Length != 1)
                         throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
-                    datalen = packing & 0x03;
-                    copysize = ((packing >> 2) & 0x07) + 3;
-                    copyoffset = (((packing << 3) & 0x300) | data[0]) + 1;
-                    break;
-                }
-                // 10......; new data 3; copy data 67 (min 4); offset 16384
-                case < 0xC0:
-                {
-                    data = r.ReadBytes(2);
-                    if (checking) if (data.Length != 2)
-                        throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
-                    datalen = (data[0] >> 6) & 0x03;
-                    copysize = (packing & 0x3F) + 4;
-                    copyoffset = (((data[0] << 8) & 0x3F00) | data[1]) + 1;
-                    break;
-                }
-                // 110.....; new data 3; copy data 1028 (min 5); offset 131072
-                case < 0xE0:
-                {
-                    data = r.ReadBytes(3);
-                    if (checking) if (data.Length != 3)
-                        throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
-                    datalen = packing & 0x03;
-                    copysize = (((packing << 6) & 0x300) | data[2]) + 5;
-                    copyoffset = (((packing << 12) & 0x10000) | data[0] << 8 | data[1]) + 1;
-                    break;
-                }
-                // 1110000 - 11101111; new data 4-128
-                case < 0xFC:
-                    datalen = (((packing & 0x1F) + 1) << 2);
-                    break;
-                // 111111..; new data 3
-                default:
-                    datalen = packing & 0x03;
-                    break;
+                datalen = packing & 0x03;
+                copysize = ((packing >> 2) & 0x07) + 3;
+                copyoffset = (((packing << 3) & 0x300) | data[0]) + 1;
             }
+            else if (packing < 0xC0) // 10......; new data 3; copy data 67 (min 4); offset 16384
+            {
+                data = r.ReadBytes(2);
+                if (checking) if (data.Length != 2)
+                        throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
+                datalen = (data[0] >> 6) & 0x03;
+                copysize = (packing & 0x3F) + 4;
+                copyoffset = (((data[0] << 8) & 0x3F00) | data[1]) + 1;
+            }
+            else if (packing < 0xE0) // 110.....; new data 3; copy data 1028 (min 5); offset 131072
+            {
+                data = r.ReadBytes(3);
+                if (checking) if (data.Length != 3)
+                        throw new InvalidDataException("Hit unexpected end of file at " + stream.Position);
+                datalen = packing & 0x03;
+                copysize = (((packing << 6) & 0x300) | data[2]) + 5;
+                copyoffset = (((packing << 12) & 0x10000) | data[0] << 8 | data[1]) + 1;
+            }
+            #endregion
+            #region Uncompressed
+            else if (packing < 0xFC) // 1110000 - 11101111; new data 4-128
+                datalen = (((packing & 0x1F) + 1) << 2);
+            else // 111111..; new data 3
+                datalen = packing & 0x03;
             #endregion
 
             if (datalen > 0)
@@ -107,7 +96,7 @@ namespace Regul.S3PI.Package
             }
 
             if (checking) if (copyoffset > bw.BaseStream.Position)
-                throw new InvalidDataException($"Invalid copy offset 0x{copyoffset:X8} at {stream.Position}.");
+                    throw new InvalidDataException($"Invalid copy offset 0x{copyoffset:X8} at {stream.Position}.");
 
             if (copysize < copyoffset && copyoffset > 8) CopyA(bw.BaseStream, copyoffset, copysize); else CopyB(bw.BaseStream, copyoffset, copysize);
         }
@@ -288,12 +277,12 @@ namespace Regul.S3PI.Package
 
         static int WriteChunk(BinaryWriter bw, byte[] data, int posn, int datalen, int copypos, int copysize)
         {
-            #region Assertions
+        #region Assertions
             if (checking) if (posn + datalen > data.Length)
                     throw new InvalidOperationException(
                         String.Format("At position 0x{0:X8}, requested uncompressed length 0x{1:X4} exceeds input data length 0x{2:X8}.",
                         posn, datalen, data.Length));
-            #endregion
+        #endregion
 
             byte packing = 0;
             byte[] parm = null;
@@ -301,9 +290,9 @@ namespace Regul.S3PI.Package
 
             if (copypos == -1)
             {
-                #region No compression
+        #region No compression
 
-                #region Assertions
+        #region Assertions
                 if (checking)
                 {
                     if (datalen > 112)
@@ -316,11 +305,11 @@ namespace Regul.S3PI.Package
                             String.Format("At position 0x{0:X8}, must pass zero copysize (got 0x{1:X4}) when copypos is -1.",
                             posn, copysize));
                 }
-                #endregion
+        #endregion
 
                 if (datalen > 3)
                 {
-                    #region Assertions
+        #region Assertions
                     if (checking) if ((datalen & 0x03) != 0)
                             throw new InvalidOperationException(
                                 String.Format("At position 0x{0:X8}, requested uncompressed length 0x{1:X4} not a multiple of 4.",
@@ -329,30 +318,30 @@ namespace Regul.S3PI.Package
                             throw new InvalidOperationException(
                                 String.Format("At position 0x{0:X8}, requested uncompressed length 0x{1:X4} greater than 0x70.",
                                 posn, datalen));
-                    #endregion
+        #endregion
 
                     packing = (byte)((datalen >> 2) - 1); //00000000 - 01110000 >> 00000000 - 00001111
                     packing |= 0xE0; // 0000aaaa >> 1110aaaa
                 }
                 else // Should only happen at end of file
                 {
-                    #region Assertions
+        #region Assertions
                     if (checking) if (data.Length - posn > 3)
                             throw new InvalidOperationException(
                                 String.Format("At position 0x{0:X8}, requested end of file with 0x{1:X4} bytes remaining: must be 3 or less.",
                                 posn, data.Length - posn));
-                    #endregion
+        #endregion
                     packing = (byte)datalen;//(uncsize & 0x03)
                     packing |= 0xFC;
                 }
-                #endregion
+        #endregion
             }
             else
             {
-                #region Compression
+        #region Compression
                 int copyoffset = posn + datalen - copypos - 1;
 
-                #region Assertions
+        #region Assertions
                 if (checking)
                 {
                     if (copypos > posn + datalen)
@@ -380,7 +369,7 @@ namespace Regul.S3PI.Package
                             String.Format("At position 0x{0:X8}, requested uncompressed length 0x{1:X4} greater than 3.",
                             posn, datalen));
                 }
-                #endregion
+        #endregion
 
                 if (copyoffset < 0x400 && copysize <= 0x0A)
                 {
@@ -424,7 +413,7 @@ namespace Regul.S3PI.Package
 
                     packing |= 0xC0;
                 }
-                #endregion
+        #endregion
             }
 
             bw.Write(packing);
@@ -657,7 +646,7 @@ namespace Tiger
                         chunkpos += compressedchunks[loop].Length;
                     }
                     if (!endisvalid)
-                        compressed[^1] = 0xfc;
+                        compressed[compressed.Length - 1] = 0xfc;
                     return compressed;
                 }
 
@@ -844,7 +833,7 @@ namespace Tiger
             private int mInsertLocation;
 
             // Hash of seen values
-            private Dictionary<uint, int> mLookupTable = new();
+            private Dictionary<uint, int> mLookupTable = new Dictionary<uint, int>();
 
             #region IMatchtracker Members
 
@@ -991,10 +980,10 @@ namespace Tiger
             private int mInsertLocation;
 
             // Hash of seen values
-            private Dictionary<uint, List<int>> mLookupTable = new();
+            private Dictionary<uint, List<int>> mLookupTable = new Dictionary<uint, List<int>>();
 
             // Save allocating items unnecessarily
-            private Stack<List<int>> mUnusedLists = new();
+            private Stack<List<int>> mUnusedLists = new Stack<List<int>>();
 
             private List<int> mCurrentMatch;
             private int mCurrentMatchIndex;

@@ -347,7 +347,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s">Stream containing element data.</param>
         /// <returns>A new element.</returns>
-        protected override TGIBlock CreateElement(Stream s) { return new(elementHandler, order, s); }
+        protected override TGIBlock CreateElement(Stream s) { return new TGIBlock(elementHandler, order, s); }
         /// <summary>
         /// Write an element to the stream.
         /// </summary>
@@ -451,7 +451,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s">Stream containing element data.</param>
         /// <returns>A new element.</returns>
-        protected override TGIBlock CreateElement(Stream s) { return new(elementHandler, s); }
+        protected override TGIBlock CreateElement(Stream s) { return new TGIBlock(elementHandler, s); }
         /// <summary>
         /// Write an element to the stream.
         /// </summary>

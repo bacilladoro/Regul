@@ -20,8 +20,8 @@ namespace Regul.ViewModels
 {
     internal class MainWindowViewModel : ViewModelBase
     {
-        private ObservableCollection<TabItem> _tabs = new();
-        private ObservableCollection<Project> _projects = new();
+        private ObservableCollection<TabItem> _tabs = new ObservableCollection<TabItem>();
+        private ObservableCollection<Project> _projects = new ObservableCollection<Project>();
 
         private string _creatorName;
         private bool _isNotNull;
@@ -76,17 +76,21 @@ namespace Regul.ViewModels
                     TabItem item = Tabs[i];
                     if (item == SelectedTabItem)
                     {
-                        ((TheSims3TypeContentViewModel)((TheSims3TypeContent)item.Content).DataContext).Active = ((TabHeaderViewModel)((TabHeader)item.Header).DataContext).PackageType switch
+                        switch (((TabHeaderViewModel)((TabHeader)item.Header).DataContext).PackageType)
                         {
-                            _ => true,
-                        };
+                            default:
+                                ((TheSims3TypeContentViewModel)((TheSims3TypeContent)item.Content).DataContext).Active = true;
+                                break;
+                        }
                         continue;
                     }
 
-                    ((TheSims3TypeContentViewModel)((TheSims3TypeContent)item.Content).DataContext).Active = ((TabHeaderViewModel)((TabHeader)item.Header).DataContext).PackageType switch
+                    switch (((TabHeaderViewModel)((TabHeader)item.Header).DataContext).PackageType)
                     {
-                        _ => false,
-                    };
+                        default:
+                            ((TheSims3TypeContentViewModel)((TheSims3TypeContent)item.Content).DataContext).Active = false;
+                            break;
+                    }
                 }
             }
         }
@@ -114,10 +118,10 @@ namespace Regul.ViewModels
             Projects = new ObservableCollection<Project>(Program.Settings.Projects);
         }
 
-        private void SaveClearWindow()
+        private void SaveCleanerWindow()
         {
-            App.SaveClear = new SaveClear { DataContext = new SaveClearViewModel() };
-            App.SaveClear.ShowDialog(App.MainWindow);
+            App.SaveCleaner = new SaveCleaner { DataContext = new SaveCleanerViewModel() };
+            App.SaveCleaner.ShowDialog(App.MainWindow);
         }
         private void SettingsWindow()
         {
@@ -150,6 +154,15 @@ namespace Regul.ViewModels
             App.SelectType = new SelectType { DataContext = new SelectTypeViewModel() };
             if (await App.SelectType.ShowDialog<bool>(App.MainWindow))
             {
+                IPackageContent typeContent;
+
+                switch (((SelectTypeViewModel)App.SelectType.DataContext).Type)
+                {
+                    default:
+                        typeContent = new TheSims3TypeContent();
+                        break;
+                }
+
                 Tabs.Add(new TabItem
                 {
                     Header = new TabHeader
@@ -163,10 +176,7 @@ namespace Regul.ViewModels
                             PackageType = ((SelectTypeViewModel)App.SelectType.DataContext).Type
                         }
                     },
-                    Content = ((SelectTypeViewModel)App.SelectType.DataContext).Type switch
-                    {
-                        _ => new TheSims3TypeContent()
-                    }
+                    Content = typeContent
                 });
             }
         }
@@ -182,6 +192,15 @@ namespace Regul.ViewModels
             App.SelectType = new SelectType { DataContext = new SelectTypeViewModel() };
             if (await App.SelectType.ShowDialog<bool>(App.MainWindow))
             {
+                IPackageContent typeContent;
+
+                switch (((SelectTypeViewModel)App.SelectType.DataContext).Type)
+                {
+                    default:
+                        typeContent = new TheSims3TypeContent(files[0]);
+                        break;
+                }
+
                 Tabs.Add(new TabItem
                 {
                     Header = new TabHeader
@@ -196,10 +215,7 @@ namespace Regul.ViewModels
                             IsSave = true
                         }
                     },
-                    Content = ((SelectTypeViewModel)App.SelectType.DataContext).Type switch
-                    {
-                        _ => new TheSims3TypeContent(files[0])
-                    }
+                    Content = typeContent
                 });
             }
         }

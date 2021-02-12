@@ -4,7 +4,7 @@
 					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					  xmlns:olib="using:Regul.OlibUI"
 					  mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="390"
-					  x:Class="Regul.Views.Windows.SaveClear"
+					  x:Class="Regul.Views.Windows.SaveCleaner"
 					  Width="600" Height="430"
 					  WindowStartupLocation="CenterOwner"
 					  WindowState="Normal"
@@ -13,7 +13,7 @@
 					  ShowInTaskbar="False"
 					  InLoadMode="{Binding IsLoading}"
 					  Background="{StaticResource ThemeBackgroundBrush}"
-					  Title="{StaticResource SaveClear}"
+					  Title="{StaticResource SaveCleaner}"
 					  Icon="avares://Regul/icon.ico">
 	<Grid>
 		<StackPanel Margin="5" Spacing="5">

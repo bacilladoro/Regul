@@ -15,7 +15,7 @@
 		<v:String x:Key="AboutTheProgram">About the program</v:String>
 		<v:String x:Key="ExitFromRegul">Exit from Regul</v:String>
 		<v:String x:Key="TheSims3">The Sims 3</v:String>
-		<v:String x:Key="SaveClear">Save clear</v:String>
+		<v:String x:Key="SaveCleaner">Save cleaner</v:String>
 		<v:String x:Key="Close">Close</v:String>
 		<v:String x:Key="CheckForUpdates">Check for updates</v:String>
 
@@ -74,7 +74,7 @@
 		<v:String x:Key="Information">Information</v:String>
 		<!-- MessageBox -->
 
-		<!-- SaveClear -->
+		<!-- SaveCleaner -->
 		<v:String x:Key="Select">Select</v:String>
 		<v:String x:Key="PathBackup">The path for creating a backup</v:String>
 		<v:String x:Key="Clear">Clear</v:String>
@@ -103,7 +103,7 @@
 		<v:String x:Key="ProcessingCompressingSave">Compressing save...</v:String>
 		<v:String x:Key="ProcessingClearingSave">Clearing save...</v:String>
 		<v:String x:Key="ProcessingSavingSave">Saving save...</v:String>
-		<!-- SaveClear -->
+		<!-- SaveCleaner -->
 
 		<!-- SelectPackageType -->
 		<v:String x:Key="PackageType">Package type</v:String>

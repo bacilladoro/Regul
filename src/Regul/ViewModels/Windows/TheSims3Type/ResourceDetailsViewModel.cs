@@ -12,7 +12,7 @@ namespace Regul.ViewModels.Windows.TheSims3Type
 {
     internal class ResourceDetailsViewModel : ViewModelBase, IResourceKey
     {
-        private ObservableCollection<ResourceType> _resourceTypes = new();
+        private ObservableCollection<ResourceType> _resourceTypes = new ObservableCollection<ResourceType>();
         private ResourceType _selectedResourceType;
 
         private string _resourceName;

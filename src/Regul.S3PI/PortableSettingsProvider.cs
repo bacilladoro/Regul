@@ -277,12 +277,15 @@ namespace System.Configuration
             // If it exists, return the InnerText or InnerXML of its first child node, depending on the setting type.
             if (SettingNode != null)
             {
-                return setProp.SerializeAs switch
+                switch (setProp.SerializeAs)
                 {
-                    SettingsSerializeAs.String => SettingNode.InnerText,
-                    SettingsSerializeAs.Xml => @"" + SettingNode.InnerXml,
-                    _ => throw new NotSupportedException()
-                };
+                    case SettingsSerializeAs.String:
+                        return SettingNode.InnerText;
+                    case SettingsSerializeAs.Xml:
+                        return @"" + SettingNode.InnerXml;
+                    default:
+                        throw new NotSupportedException();
+                }
             }
             else
             {

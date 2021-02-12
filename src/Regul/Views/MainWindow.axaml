@@ -45,7 +45,7 @@
 						<Path Data="{StaticResource TheSims3Icon}" Fill="{DynamicResource ThemeForegroundBrush}" Stretch="Uniform" Margin="1"/>
 					</MenuItem.Icon>
 						
-					<MenuItem Header="{DynamicResource SaveClear}" Command="{Binding SaveClearWindow}"/>
+					<MenuItem Header="{DynamicResource SaveCleaner}" Command="{Binding SaveCleanerWindow}"/>
 				</MenuItem>
 				<MenuItem Header="{DynamicResource HEXNumberConverter}" Command="{Binding HEXNumberConverter}"/>
 			</MenuItem>

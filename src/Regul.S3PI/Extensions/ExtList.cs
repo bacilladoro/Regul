@@ -22,16 +22,18 @@ namespace Regul.S3PI.Extensions
 
         ExtList()
         {
-            using StringReader sr = new(Resources.Extensions);
-            string s;
-            while ((s = sr.ReadLine()) != null)
+            using (StringReader sr = new StringReader(Resources.Extensions))
             {
-                if (s.StartsWith(";")) continue;
-                List<string> t = new(s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
-                if (t.Count < 2) continue;
-                string t0 = t[0];
-                t.RemoveAt(0);
-                Add(t0, t);
+                string s;
+                while ((s = sr.ReadLine()) != null)
+                {
+                    if (s.StartsWith(";")) continue;
+                    List<string> t = new List<string>(s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+                    if (t.Count < 2) continue;
+                    string t0 = t[0];
+                    t.RemoveAt(0);
+                    Add(t0, t);
+                }
             }
         }
 

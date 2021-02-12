@@ -23,9 +23,9 @@ namespace Regul.ViewModels.Controls.ContentTab
 {
     internal class TheSims3TypeContentViewModel : ViewModelBase, IPackageType
     {
-        private ObservableCollection<Resource> _resources = new();
-        private ObservableCollection<Resource> _globalResources = new();
-        private List<Resource> _selectedResources = new();
+        private ObservableCollection<Resource> _resources = new ObservableCollection<Resource>();
+        private ObservableCollection<Resource> _globalResources = new ObservableCollection<Resource>();
+        private List<Resource> _selectedResources = new List<Resource>();
 
         private uint _resourceTypeView;
         private bool _openedMenu;
@@ -581,45 +581,50 @@ namespace Regul.ViewModels.Controls.ContentTab
             rie = CurrentPackage.AddResource(rk, ms, false);
             if (rie == null) return null;
 
-            rie.Compressed = compress ? 0xFFFF : 0;
+            if (compress)
+                rie.Compressed = 0xFFFF;
+            else rie.Compressed = 0;
 
             return rie;
         }
 
         private void SearchResources()
         {
-            List<Resource> resName = new(), resTag = new(), resType = new(), resGroup = new(), resInstance = new(), resCompressed = new();
-
             if (!CheckName && !CheckTag && !CheckResourceType && !CheckResourceGroup && !CheckInstance && !CheckCompressed)
             {
                 Resources = GlobalResources;
                 return;
             }
 
-            List<Resource> complete = new();
+            ObservableCollection<Resource> res = new ObservableCollection<Resource>();
 
-            if (CheckName)
-                resName = GlobalResources.ToList().FindAll(x => x.ResourceName.ToLower().Contains(Name.ToLower()));
-            if (CheckTag)
-                resTag = GlobalResources.ToList().FindAll(x => x.Tag == Tag);
-            if (CheckResourceType)
-                resType = GlobalResources.ToList().FindAll(x => x.ResourceIndexEntry.ResourceType == uint.Parse(ResourceType));
-            if (CheckResourceGroup)
-                resGroup = GlobalResources.ToList().FindAll(x => x.ResourceIndexEntry.ResourceGroup == uint.Parse(ResourceGroup));
-            if (CheckInstance)
-                resInstance = GlobalResources.ToList().FindAll(x => x.ResourceIndexEntry.Instance == ulong.Parse(Instance));
-            if (CheckCompressed)
-                resCompressed = GlobalResources.ToList().FindAll(x => x.ResourceIndexEntry.Compressed == ushort.Parse(Compressed));
+            //List<Resource> resName = new(), resTag = new(), resType = new(), resGroup = new(), resInstance = new(), resCompressed = new();
 
 
-            complete = complete.Concat(resName).ToList();
-            complete = complete.Concat(resTag).ToList();
-            complete = complete.Concat(resType).ToList();
-            complete = complete.Concat(resGroup).ToList();
-            complete = complete.Concat(resInstance).ToList();
-            complete = complete.Concat(resCompressed).ToList();
+            //List<Resource> complete = new();
 
-            Resources = new ObservableCollection<Resource>(complete);
+            //if (CheckName)
+            //    resName = GlobalResources.ToList().FindAll(x => x.ResourceName.ToLower().Contains(Name.ToLower()));
+            //if (CheckTag)
+            //    resTag = GlobalResources.ToList().FindAll(x => x.Tag == Tag);
+            //if (CheckResourceType)
+            //    resType = GlobalResources.ToList().FindAll(x => x.ResourceIndexEntry.ResourceType == uint.Parse(ResourceType));
+            //if (CheckResourceGroup)
+            //    resGroup = GlobalResources.ToList().FindAll(x => x.ResourceIndexEntry.ResourceGroup == uint.Parse(ResourceGroup));
+            //if (CheckInstance)
+            //    resInstance = GlobalResources.ToList().FindAll(x => x.ResourceIndexEntry.Instance == ulong.Parse(Instance));
+            //if (CheckCompressed)
+            //    resCompressed = GlobalResources.ToList().FindAll(x => x.ResourceIndexEntry.Compressed == ushort.Parse(Compressed));
+
+
+            //complete = complete.Concat(resName).ToList();
+            //complete = complete.Concat(resTag).ToList();
+            //complete = complete.Concat(resType).ToList();
+            //complete = complete.Concat(resGroup).ToList();
+            //complete = complete.Concat(resInstance).ToList();
+            //complete = complete.Concat(resCompressed).ToList();
+
+            //Resources = new ObservableCollection<Resource>(complete);
         }
 
         public void SavePackage()

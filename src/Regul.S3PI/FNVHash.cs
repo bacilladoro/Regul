@@ -207,25 +207,27 @@ namespace System.Security.Cryptography
         }
 
         static readonly string[] ao = { "a", "o", };
-        static byte Mask(string actor) =>
-            actor switch
+        static byte Mask(string actor)
+        {
+            switch (actor)
             {
-                "b" => 0x01,
-                "p" => 0x02,
-                "c" => 0x03,
-                "t" => 0x04,
-                "h" => 0x05,
-                "e" => 0x06,
-                "ad" => 0x08,
-                "cd" => 0x09,
-                "al" => 0x0A,
-                "ac" => 0x0D,
-                "cc" => 0x0E,
-                "ah" => 0x10,
-                "ch" => 0x11,
-                "ab" => 0x12,
-                "ar" => 0x13,
-                _ => 0x00
-            };
+                case "b": return 0x01;
+                case "p": return 0x02;
+                case "c": return 0x03;
+                case "t": return 0x04;
+                case "h": return 0x05;
+                case "e": return 0x06;
+                case "ad": return 0x08;
+                case "cd": return 0x09;
+                case "al": return 0x0A;
+                case "ac": return 0x0D;
+                case "cc": return 0x0E;
+                case "ah": return 0x10;
+                case "ch": return 0x11;
+                case "ab": return 0x12;
+                case "ar": return 0x13;
+                default: return 0x00;
+            }
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace Regul
     {
         public static MainWindow MainWindow { get; set; }
         public static Settings Settings { get; set; }
-        public static SaveClear SaveClear { get; set; }
+        public static SaveCleaner SaveCleaner { get; set; }
         public static About About { get; set; }
         public static SelectType SelectType { get; set; }
         public static HEXNumberConverter HEXNumberConverter { get; set; }

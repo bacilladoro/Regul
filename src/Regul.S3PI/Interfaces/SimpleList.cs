@@ -170,7 +170,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="s"><see cref="Stream"/> containing data.</param>
         /// <returns>New list element.</returns>
-        protected override HandlerElement<T> CreateElement(Stream s) { return new(elementHandler, createElement == null ? default(T) : createElement(s)); }
+        protected override HandlerElement<T> CreateElement(Stream s) { return new HandlerElement<T>(elementHandler, createElement == null ? default(T) : createElement(s)); }
         /// <summary>
         /// Writes the value of a list element to <paramref name="s"/>.
         /// </summary>

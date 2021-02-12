@@ -43,7 +43,7 @@ namespace Regul.S3PI.Extensions
         /// <returns>The equivalent <see cref="TGIN"/> (with no <see cref="ResName"/>).</returns>
         public static implicit operator TGIN(AResourceKey value)
         {
-            return new()
+            return new TGIN()
             {
                 ResType = value.ResourceType,
                 ResGroup = value.ResourceGroup,
@@ -67,7 +67,7 @@ namespace Regul.S3PI.Extensions
         /// <returns>The equivalent <see cref="TGIN"/> value.</returns>
         public static implicit operator TGIN(string value)
         {
-            TGIN res = new();
+            TGIN res = new TGIN();
 
             value = System.IO.Path.GetFileNameWithoutExtension(value);
 
@@ -126,7 +126,7 @@ namespace Regul.S3PI.Extensions
                 try
                 {
                     string bad = value.Substring(i + 1, 2);
-                    string rep = new(new char[] { (char)Convert.ToByte(bad, 16) });
+                    string rep = new string(new char[] { (char)Convert.ToByte(bad, 16) });
                     value = value.Replace("%" + bad, rep);
                 }
                 catch { break; }
@@ -143,7 +143,7 @@ namespace Regul.S3PI.Extensions
                 for (int i = 0; i < ary.Length; i++)
                 {
                     char c = ary[i];
-                    string bad = new(new char[] { c });
+                    string bad = new string(new char[] { c });
                     string rep = string.Format("%{0:x2}", (uint)c);
                     value = value.Replace(bad, rep);
                 }

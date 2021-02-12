@@ -45,7 +45,7 @@ namespace Regul.S3PI.Interfaces
         protected abstract void Parse(Stream s);
 
         #region AApiVersionedFields
-        static List<string> ARCOLBlockBanlist = new(new string[] {
+        static List<string> ARCOLBlockBanlist = new List<string>(new string[] {
             "Tag", "ResourceType", "Data",
         });
         /// <summary>
@@ -183,13 +183,13 @@ namespace Regul.S3PI.Interfaces
         [ElementPriority(1)]
         public virtual BinaryReader Data
         {
-            get => new(UnParse());
+            get => new BinaryReader(UnParse());
             set
             {
                 if (value.BaseStream.CanSeek) { value.BaseStream.Position = 0; Parse(value.BaseStream); }
                 else
                 {
-                    MemoryStream ms = new();
+                    MemoryStream ms = new MemoryStream();
                     byte[] buffer = new byte[1024 * 1024];
                     for (int read = value.BaseStream.Read(buffer, 0, buffer.Length); read > 0; read = value.BaseStream.Read(buffer, 0, buffer.Length))
                         ms.Write(buffer, 0, read);

@@ -12,6 +12,6 @@ namespace Regul.Structures
 
         public bool HardwareAcceleration { get; set; }
 
-        public List<Project> Projects { get; set; } = new();
+        public List<Project> Projects { get; set; } = new List<Project>();
     }
 }

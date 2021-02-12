@@ -20,7 +20,7 @@ namespace Regul
 {
     public class Program
     {
-        private static readonly object Sync = new();
+        private static readonly object Sync = new object();
 
         public static Settings Settings;
 
@@ -38,7 +38,7 @@ namespace Regul
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            string pathToLog = Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, "Log");
+            string pathToLog = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log");
             if (!Directory.Exists(pathToLog)) Directory.CreateDirectory(pathToLog);
 
             if (e.ExceptionObject is Exception ex)
@@ -103,7 +103,7 @@ namespace Regul
         {
             _renderTick = new Thread(() =>
             {
-                Stopwatch sw = new();
+                Stopwatch sw = new Stopwatch();
                 sw.Start();
                 while (true)
                 {

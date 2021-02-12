@@ -61,7 +61,7 @@ namespace Regul.OlibUI
 
                 if (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 {
-                    titleBar.DoubleTapped += (_, _) =>
+                    titleBar.DoubleTapped += (_, e1) =>
                     {
                         if (((Window)this.GetVisualRoot()).WindowState == WindowState.Maximized)
                         {

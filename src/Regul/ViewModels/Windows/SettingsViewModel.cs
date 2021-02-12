@@ -19,14 +19,24 @@ namespace Regul.ViewModels.Windows
             {
                 RaiseAndSetIfChanged(ref _theme, value);
 
-                Program.Settings.Theme = value switch
+                switch (value)
                 {
-                    1 => "Gloomy",
-                    2 => "Mysterious",
-                    3 => "Turquoise",
-                    4 => "Emerald",
-                    _ => "Dazzling"
-                };
+                    case 1:
+                        Program.Settings.Theme = "Gloomy";
+                        break;
+                    case 2:
+                        Program.Settings.Theme = "Mysterious";
+                        break;
+                    case 3:
+                        Program.Settings.Theme = "Turquoise";
+                        break;
+                    case 4:
+                        Program.Settings.Theme = "Emerald";
+                        break;
+                    default:
+                        Program.Settings.Theme = "Dazzling";
+                        break;
+                }
 
                 Application.Current.Styles[2] = new StyleInclude(new Uri("resm:Style?assembly=Regul"))
                 {
@@ -55,14 +65,24 @@ namespace Regul.ViewModels.Windows
         {
             HardwareAcceleration = Program.Settings.HardwareAcceleration;
 
-            Theme = Program.Settings.Theme switch
+            switch (Program.Settings.Theme)
             {
-                "Gloomy" => 1,
-                "Mysterious" => 2,
-                "Turquoise" => 3,
-                "Emerald" => 4,
-                _ => 0
-            };
+                case "Gloomy":
+                    Theme = 1;
+                    break;
+                case "Mysterious":
+                    Theme = 2;
+                    break;
+                case "Turquoise":
+                    Theme = 3;
+                    break;
+                case "Emerald":
+                    Theme = 4;
+                    break;
+                default:
+                    Theme = 0;
+                    break;
+            }
         }
 
         private void CloseWindow()
