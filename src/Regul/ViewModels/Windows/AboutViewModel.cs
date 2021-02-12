@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics;
-using ReactiveUI;
 
 namespace Regul.ViewModels.Windows
 {
-    public class AboutViewModel : ReactiveObject
+    internal class AboutViewModel : ViewModelBase
     {
         private void CloseWindow()
         {

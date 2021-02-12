@@ -76,7 +76,7 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// The list of available field names on this API object.
         /// </summary>
-        public override List<string> ContentFields { get { return GetContentFields(GetType()); } }
+        public override List<string> ContentFields => GetContentFields(GetType());
 
         // /// <summary>
         // /// Get a copy of the <see cref="Vertex"/> but with a new change <see cref="EventHandler"/>.
@@ -217,7 +217,7 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// The list of available field names on this API object.
         /// </summary>
-        public override List<string> ContentFields { get { return GetContentFields(GetType()); } }
+        public override List<string> ContentFields => GetContentFields(GetType());
 
         // /// <summary>
         // /// Get a copy of the <see cref="BoundingBox"/> but with a new change <see cref="EventHandler"/>.
@@ -246,7 +246,7 @@ namespace Regul.S3PI.Interfaces
         /// <returns>true if the specified <see cref="object"/> is equal to the current <see cref="BoundingBox"/>; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return obj as BoundingBox != null ? Equals(obj as BoundingBox) : false;
+            return obj is BoundingBox box && Equals(box);
         }
 
         /// <summary>

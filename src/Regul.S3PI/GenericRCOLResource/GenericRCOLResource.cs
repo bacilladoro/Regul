@@ -44,7 +44,6 @@ namespace Regul.S3PI.GenericRCOLResource
         /// <summary>
         /// Instantiate a new GenericRCOLResource from the supplied <see cref="Stream"/>.
         /// </summary>
-        /// <param name="APIversion">Unused; requested API version.</param>
         /// <param name="s">The <see cref="Stream"/> to read the resource in from.</param>
         public GenericRCOLResource(Stream s) : base(s) { if (stream == null) { stream = UnParse(); OnResourceChanged(this, EventArgs.Empty); } stream.Position = 0; Parse(stream); }
         #endregion
@@ -695,7 +694,7 @@ namespace Regul.S3PI.GenericRCOLResource
             try
             {
                 Type[] types = Assembly.LoadFrom(Path.GetDirectoryName(typeof(WrapperDealer).Assembly.Location) + "/Regul.S3PI.dll").GetTypes();
-                for (var index = 0; index < types.Length; index++)
+                for (int index = 0; index < types.Length; index++)
                 {
                     Type t = types[index];
                     if (t.IsAbstract) continue;
@@ -705,10 +704,10 @@ namespace Regul.S3PI.GenericRCOLResource
                     try
                     {
                         ConstructorInfo ctor = t.GetConstructor(new[]
-                            {typeof(int), typeof(EventHandler), typeof(Stream),});
+                            {typeof(EventHandler), typeof(Stream),});
                         if (ctor == null) continue;
 
-                        ARCOLBlock arb = (ARCOLBlock) ctor.Invoke(new object[] {0, null, null});
+                        ARCOLBlock arb = (ARCOLBlock) ctor.Invoke(new object[] {null, null});
                         if (!typeRegistry.ContainsKey(arb.ResourceType))
                             typeRegistry.Add(arb.ResourceType, arb.GetType());
                         if (!tagRegistry.ContainsKey(arb.Tag)) tagRegistry.Add(arb.Tag, arb.GetType());
@@ -734,14 +733,13 @@ namespace Regul.S3PI.GenericRCOLResource
         /// <summary>
         /// Invoke the &quot;default&quot; constructor for an RCOL block.
         /// </summary>
-        /// <param name="APIversion">Requested API version.</param>
         /// <param name="handler">Change <see cref="EventHandler"/> delegate.</param>
         /// <param name="type">Resource type of RCOL block.</param>
         /// <returns>A new, initialised instance of the requested RCOL block <paramref name="type"/>,
         /// or <c>null</c> if the <paramref name="type"/> is not supported.</returns>
         public static ARCOLBlock CreateRCOLBlock(EventHandler handler, uint type)
         {
-            Type[] types = { typeof(int), typeof(EventHandler) };
+            Type[] types = { typeof(EventHandler) };
             object[] args = { handler };
             if (typeRegistry.ContainsKey(type))
                 return (ARCOLBlock) typeRegistry[type].GetConstructor(types)?.Invoke(args);
@@ -754,7 +752,6 @@ namespace Regul.S3PI.GenericRCOLResource
         /// Return a new instance of the requested RCOL block <paramref name="type"/>,
         /// initialised from the content of the supplied <see cref="Stream"/>.
         /// </summary>
-        /// <param name="APIversion">Requested API version.</param>
         /// <param name="handler">Change <see cref="EventHandler"/> delegate.</param>
         /// <param name="type">Resource type of RCOL block.</param>
         /// <param name="s"><see cref="Stream"/> containing data content for the RCOL block.</param>
@@ -763,7 +760,7 @@ namespace Regul.S3PI.GenericRCOLResource
         /// or <c>null</c> if the <paramref name="type"/> is not supported.</returns>
         public static ARCOLBlock RCOLDealer(EventHandler handler, uint type, Stream s)
         {
-            Type[] types = { typeof(int), typeof(EventHandler), typeof(Stream) };
+            Type[] types = { typeof(EventHandler), typeof(Stream) };
             object[] args = { handler, s };
             if (typeRegistry.ContainsKey(type))
                 return (ARCOLBlock) typeRegistry[type].GetConstructor(types)?.Invoke(args);
@@ -776,7 +773,6 @@ namespace Regul.S3PI.GenericRCOLResource
         /// Return a new instance of the requested RCOL block <paramref name="type"/>,
         /// initialised from the supplied <paramref name="fields"/>.
         /// </summary>
-        /// <param name="APIversion">Requested API version.</param>
         /// <param name="handler">Change <see cref="EventHandler"/> delegate.</param>
         /// <param name="type">Resource type of RCOL block.</param>
         /// <param name="fields">The fields to pass to the RCOL block constructor.</param>

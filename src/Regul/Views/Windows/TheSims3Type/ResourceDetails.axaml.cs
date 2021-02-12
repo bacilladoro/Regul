@@ -10,12 +10,10 @@ namespace Regul.Views.Windows.TheSims3Type
 {
     public class ResourceDetails : OlibModalWindow
     {
-        public ResourceDetailsViewModel ViewModel { get; set; } = new();
-
         public ResourceDetails()
         {
             InitializeComponent();
-            DataContext = ViewModel;
+            DataContext = new ResourceDetailsViewModel();
 
             SetupDnD();
         }
@@ -32,7 +30,7 @@ namespace Regul.Views.Windows.TheSims3Type
             {
                 if (e.Data.Contains(DataFormats.FileNames))
                 {
-                    ViewModel.Filename = e.Data.GetFileNames().First();
+                    ((ResourceDetailsViewModel)DataContext).Filename = e.Data.GetFileNames().First();
                 }
             }
 

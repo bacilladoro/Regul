@@ -10,15 +10,13 @@ namespace Regul.Views.Windows
 {
     public class HEXNumberConverter : OlibModalWindow
     {
-        public HEXNumberConverterViewModel ViewModel { get; set; }
-
         private TextBox HEXTextBox;
         private TextBox DecimalTextBox;
 
         public HEXNumberConverter()
         {
             InitializeComponent();
-            DataContext = ViewModel = new();
+            DataContext = new HEXNumberConverterViewModel();
 
             HEXTextBox = this.FindControl<TextBox>("HEXTextBox");
             DecimalTextBox = this.FindControl<TextBox>("DecimalTextBox");

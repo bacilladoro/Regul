@@ -10,7 +10,6 @@ namespace Regul.S3PI.DefaultResource
     /// </summary>
     public sealed class DefaultResource : AResource
     {
-
         /// <summary>
         /// Create a new instance of the resource.
         /// </summary>

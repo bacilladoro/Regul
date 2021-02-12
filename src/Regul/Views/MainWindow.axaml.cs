@@ -1,6 +1,7 @@
 ﻿using System;
 using Avalonia.Markup.Xaml;
 using Regul.OlibUI;
+using Regul.ViewModels;
 
 namespace Regul.Views
 {
@@ -13,7 +14,7 @@ namespace Regul.Views
             Closed += OnClosed;
         }
 
-        private void OnClosed(object sender, EventArgs e) => App.MainWindowViewModel.Exit();
+        private void OnClosed(object sender, EventArgs e) => ((MainWindowViewModel)DataContext).Exit();
 
         private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
     }

@@ -1,24 +1,24 @@
-﻿using ReactiveUI;
-using Regul.ViewModels.Windows;
-using Regul.Views.Windows;
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reactive;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Media;
 using Regul.Core;
+using Regul.Core.Interfaces;
 using Regul.Structures;
+using Regul.ViewModels.Controls.ContentTab;
 using Regul.ViewModels.Controls.Tab;
+using Regul.ViewModels.Windows;
 using Regul.Views.Controls.ContentTab;
 using Regul.Views.Controls.Tab;
+using Regul.Views.Windows;
+using System;
 using System.Collections.Generic;
-using Avalonia.Media;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Regul.ViewModels
 {
-    public class MainWindowViewModel : ReactiveObject
+    internal class MainWindowViewModel : ViewModelBase
     {
         private ObservableCollection<TabItem> _tabs = new();
         private ObservableCollection<Project> _projects = new();
@@ -34,31 +34,31 @@ namespace Regul.ViewModels
         public ObservableCollection<TabItem> Tabs
         {
             get => _tabs;
-            set => this.RaiseAndSetIfChanged(ref _tabs, value);
+            set => RaiseAndSetIfChanged(ref _tabs, value);
         }
 
         public ObservableCollection<Project> Projects
         {
             get => _projects;
-            set => this.RaiseAndSetIfChanged(ref _projects, value);
+            set => RaiseAndSetIfChanged(ref _projects, value);
         }
 
         public string CreatorName
         {
             get => _creatorName;
-            set => this.RaiseAndSetIfChanged(ref _creatorName, value);
+            set => RaiseAndSetIfChanged(ref _creatorName, value);
         }
-        
+
         public Project SelectedProject
         {
             get => _selectedProject;
-            set => this.RaiseAndSetIfChanged(ref _selectedProject, value);
+            set => RaiseAndSetIfChanged(ref _selectedProject, value);
         }
 
         public bool IsNotNull
         {
             get => _isNotNull;
-            set => this.RaiseAndSetIfChanged(ref _isNotNull, value);
+            set => RaiseAndSetIfChanged(ref _isNotNull, value);
         }
 
         public TabItem SelectedTabItem
@@ -66,39 +66,35 @@ namespace Regul.ViewModels
             get => _selecetedTabItem;
             set
             {
-                this.RaiseAndSetIfChanged(ref _selecetedTabItem, value);
+                RaiseAndSetIfChanged(ref _selecetedTabItem, value);
                 IsNotNull = SelectedTabItem != null;
+
+                if (SelectedTabItem == null) return;
+
+                for (int i = 0; i < Tabs.Count; i++)
+                {
+                    TabItem item = Tabs[i];
+                    if (item == SelectedTabItem)
+                    {
+                        ((TheSims3TypeContentViewModel)((TheSims3TypeContent)item.Content).DataContext).Active = ((TabHeaderViewModel)((TabHeader)item.Header).DataContext).PackageType switch
+                        {
+                            _ => true,
+                        };
+                        continue;
+                    }
+
+                    ((TheSims3TypeContentViewModel)((TheSims3TypeContent)item.Content).DataContext).Active = ((TabHeaderViewModel)((TabHeader)item.Header).DataContext).PackageType switch
+                    {
+                        _ => false,
+                    };
+                }
             }
         }
-
-        #endregion
-        
-        #region ReactiveCommands
-
-        private ReactiveCommand<Unit, Unit> ExitCommand { get; }
-        private ReactiveCommand<Unit, Unit> SaveClearWindowCommand { get; }
-        private ReactiveCommand<Unit, Unit> NewPackageCommand { get; }
-        private ReactiveCommand<Unit, Unit> ClearGCCommand { get; }
-        private ReactiveCommand<Unit, Unit> DeleteProjectCommand { get; }
-        private ReactiveCommand<Unit, Unit> SettingsWindowCommand { get; }
-        private ReactiveCommand<Unit, Unit> AboutWindowCommand { get; }
-        private ReactiveCommand<Unit, Unit> OpenPackageCommand { get; }
-        private ReactiveCommand<Unit, Unit> HEXNumberConverterCommand { get; }
 
         #endregion
 
         public MainWindowViewModel()
         {
-            ExitCommand = ReactiveCommand.Create(() => App.MainWindow.Close());
-            SaveClearWindowCommand = ReactiveCommand.Create(SaveClearWindow);
-            NewPackageCommand = ReactiveCommand.Create(NewPackage);
-            ClearGCCommand = ReactiveCommand.Create(ClearGC);
-            DeleteProjectCommand = ReactiveCommand.Create(DeleteProject);
-            SettingsWindowCommand = ReactiveCommand.Create(SettingsWindow);
-            AboutWindowCommand = ReactiveCommand.Create(AboutWindow);
-            OpenPackageCommand = ReactiveCommand.Create(OpenPackage);
-            HEXNumberConverterCommand = ReactiveCommand.Create(HEXNumberConverter);
-
             Initialize();
         }
 
@@ -113,7 +109,7 @@ namespace Regul.ViewModels
                 {
                     Source = new Uri("avares://Regul.OlibUI/Themes/Dazzling.axaml")
                 };
-            
+
             CreatorName = Program.Settings.CreatorName;
             Projects = new ObservableCollection<Project>(Program.Settings.Projects);
         }
@@ -143,8 +139,10 @@ namespace Regul.ViewModels
         {
             Program.Settings.Projects = Projects.ToList();
             Program.Settings.CreatorName = CreatorName;
-            
+
             FileSettings.SaveSettings();
+
+            SaveAll();
         }
 
         private async void NewPackage()
@@ -156,11 +154,11 @@ namespace Regul.ViewModels
                 {
                     Header = new TabHeader
                     {
-                        ViewModel =
+                        DataContext = new TabHeaderViewModel
                         {
-                            Icon = (DrawingImage)Application.Current.FindResource("TheSims3Icon"),
-                            NameTab = (string)Application.Current.FindResource("NoName"), 
-                            CloseTabAction = CloseTab, 
+                            Icon = (Geometry)Application.Current.FindResource("TheSims3Icon"),
+                            NameTab = (string)Application.Current.FindResource("NoName"),
+                            CloseTabAction = CloseTab,
                             ID = Guid.NewGuid().ToString("N"),
                             PackageType = ((SelectTypeViewModel)App.SelectType.DataContext).Type
                         }
@@ -188,9 +186,9 @@ namespace Regul.ViewModels
                 {
                     Header = new TabHeader
                     {
-                        ViewModel =
+                        DataContext = new TabHeaderViewModel
                         {
-                            Icon = (DrawingImage)Application.Current.FindResource("TheSims3Icon"),
+                            Icon = (Geometry)Application.Current.FindResource("TheSims3Icon"),
                             NameTab = System.IO.Path.GetFileNameWithoutExtension(files[0]),
                             CloseTabAction = CloseTab,
                             ID = Guid.NewGuid().ToString("N"),
@@ -206,19 +204,31 @@ namespace Regul.ViewModels
             }
         }
 
+        private void SaveAll()
+        {
+            for (int i = 0; i < Tabs.Count; i++)
+                ((IPackageContent)Tabs[i].Content)?.PackageType.SavePackage();
+        }
+
         private void CloseTab(string id)
         {
             for (int i = 0; i < Tabs.Count; i++)
             {
-                TabHeaderViewModel item = ((TabHeader)Tabs[i].Header)?.ViewModel;
+                TabHeaderViewModel item = (TabHeaderViewModel)((TabHeader)Tabs[i].Header)?.DataContext;
                 if (item?.ID == id)
                 {
+                    ((IPackageContent)Tabs[i].Content)?.PackageType.SavePackage();
                     Tabs.RemoveAt(i);
                     break;
                 }
             }
         }
-        
+
+        private void CloseProgram()
+        {
+            App.MainWindow.Close();
+        }
+
         private void ClearGC() => GC.Collect();
         private void DeleteProject() => Projects.Remove(SelectedProject);
     }

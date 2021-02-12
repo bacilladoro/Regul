@@ -11,15 +11,12 @@
 		<AvaloniaResource Include="Assets\Fonts\NotoSans-Regular.ttf" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="0.10.999-cibuild0012713-beta" />
-		<PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0012713-beta" />
-		<PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.999-cibuild0012713-beta" />
-		<PackageReference Include="Avalonia.X11" Version="0.10.999-cibuild0012713-beta" />
-		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.999-cibuild0012713-beta" />
-		<PackageReference Include="Avalonia.Diagnostics" Version="0.10.999-cibuild0012713-beta" />
-		<PackageReference Include="Avalonia.Win32" Version="0.10.999-cibuild0012713-beta" />
+		<PackageReference Include="Avalonia" Version="0.10.999-cibuild0012745-beta" />
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0012745-beta" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.999-cibuild0012745-beta" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\AvaloniaEdit\AvaloniaEdit.csproj" />
 		<ProjectReference Include="..\Regul.Instruments\Regul.Instruments.csproj" />
 		<ProjectReference Include="..\Regul.OlibUI\Regul.OlibUI.csproj" />
 		<ProjectReference Include="..\Regul.S3PI\Regul.S3PI.csproj" />

@@ -168,7 +168,8 @@ namespace Regul.S3PI.Interfaces
             {
                 string[] tgi = value.Trim().ToLower().Split('-');
                 if (tgi.Length != 3) return false;
-                foreach (string x in tgi) if (!x.StartsWith("0x")) return false;
+                for (var index = 0; index < tgi.Length; index++)
+                    if (!tgi[index].StartsWith("0x")) return false;
 
                 if (!uint.TryParse(tgi[0].Substring(2), System.Globalization.NumberStyles.HexNumber, null, out t)) return false;
                 if (!uint.TryParse(tgi[1].Substring(2), System.Globalization.NumberStyles.HexNumber, null, out g)) return false;

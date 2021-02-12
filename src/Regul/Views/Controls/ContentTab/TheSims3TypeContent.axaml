@@ -2,10 +2,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:AvalonEdit="using:AvaloniaEdit"
 			 xmlns:local="using:Regul.Core.Converters"
 			 xmlns:instruments="using:Regul.Instruments"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Regul.Views.Controls.ContentTab.TheSims3TypeContent">
+	<UserControl.KeyBindings>
+		<!-- Hack, look at TheSims3ContentViewModel -->
+		<KeyBinding Command="{Binding AddResource}" Gesture="Ctrl+Shift+A"/>
+		<KeyBinding Command="{Binding CopyResource}" Gesture="Ctrl+Shift+C"/>
+		<KeyBinding Command="{Binding PasteResource}" Gesture="Ctrl+Shift+V"/>
+		<KeyBinding Command="{Binding ResourceDetails}" Gesture="Ctrl+Shift+D"/>
+		<KeyBinding Command="{Binding ImportFromFile}" Gesture="Ctrl+Shift+M"/>
+	</UserControl.KeyBindings>
 	<UserControl.Resources>
 		<local:UIntToStringConverter x:Key="UIntToStringConverter"/>
 		<local:ULongToStringConverter x:Key="ULongToStringConverter"/>
@@ -21,55 +30,54 @@
 					</StackPanel>
 					<Menu Grid.Column="1" VerticalAlignment="Center" Margin="5 0 0 0">
 						<MenuItem Header="{DynamicResource Edit}">
-							<MenuItem Header="{DynamicResource Copy}" InputGesture="Ctrl+C"/>
-							<MenuItem Header="{DynamicResource SavePreviewE}"/>
-							<MenuItem Header="Float"/>
+							<MenuItem Header="{DynamicResource Copy}" IsEnabled="{Binding SelectedResource, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+							<MenuItem Header="{DynamicResource SavePreviewE}" IsEnabled="{Binding SelectedResource, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+							<MenuItem Header="Float" IsEnabled="{Binding SelectedResource, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 						</MenuItem>
 						<MenuItem Header="{DynamicResource Resource}">
-							<MenuItem Header="{DynamicResource AddE}" Command="{Binding AddResource}" InputGesture="Ctrl+Shift+A" HotKey="Ctrl+Shift+A"/>
-							<MenuItem Header="{DynamicResource Copy}" InputGesture="Ctrl+Shift+C" HotKey="Ctrl+Shift+C"/>
-							<MenuItem Header="{DynamicResource PasteE}" InputGesture="Ctrl+Shift+V" HotKey="Ctrl+Shift+V"/>
-							<MenuItem Header="{DynamicResource Dublicate}"/>
-							<MenuItem Header="{DynamicResource Replace}"/>
-							<MenuItem Header="{DynamicResource Remove}" Command="{Binding DeleteResource}"/>
+							<MenuItem Header="{DynamicResource AddE}" Command="{Binding AddResource}" IsEnabled="{Binding Inactive}" InputGesture="Ctrl+Shift+A"/>
+							<MenuItem Header="{DynamicResource Copy}" InputGesture="Ctrl+Shift+C" IsEnabled="{Binding SelectedResource, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+							<MenuItem Header="{DynamicResource PasteE}" InputGesture="Ctrl+Shift+V" IsEnabled="{Binding SelectedResource, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+							<MenuItem Header="{DynamicResource Dublicate}" IsEnabled="{Binding SelectedResource, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+							<MenuItem Header="{DynamicResource Replace}" IsEnabled="{Binding SelectedResource, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+							<MenuItem Header="{DynamicResource Remove}" Command="{Binding DeleteResource}" IsEnabled="{Binding SelectedResource, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 							<Separator/>
-							<MenuItem Header="{DynamicResource Compressed}"/>
-							<MenuItem Header="{DynamicResource Details}" InputGesture="Ctrl+Shift+D" HotKey="Ctrl+Shift+D"/>
+							<MenuItem Header="{DynamicResource Compressed}" IsEnabled="{Binding SelectedResource, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+							<MenuItem Header="{DynamicResource Details}" InputGesture="Ctrl+Shift+D" IsEnabled="{Binding SelectedResource, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 							<Separator/>
-							<MenuItem Header="{DynamicResource SelectAll}"/>
 							<MenuItem Header="{DynamicResource CopyResourceKey}"/>
 							<MenuItem Header="{DynamicResource Import}">
-								<MenuItem Header="{DynamicResource FromFileE}" InputGesture="Ctrl+Shift+M" HotKey="Ctrl+Shift+M"/>
+								<MenuItem Header="{DynamicResource FromFileE}" InputGesture="Ctrl+Shift+M"/>
 								<MenuItem Header="{DynamicResource FromPackageE}"/>
 								<MenuItem Header="{DynamicResource ReplaceSelectedE}"/>
 								<MenuItem Header="{DynamicResource AsDbcE}"/>
 							</MenuItem>
 							<MenuItem Header="{DynamicResource Export}">
-								<MenuItem Header="{DynamicResource ToFileE}"/>
-								<MenuItem Header="{DynamicResource ToPackageE}"/>
+								<MenuItem Header="{DynamicResource ToFileE}" IsEnabled="{Binding SelectedResource, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+								<MenuItem Header="{DynamicResource ToPackageE}" IsEnabled="{Binding SelectedResource, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 							</MenuItem>
 						</MenuItem>
 					</Menu>
 					<ToggleButton Grid.Column="3" IsChecked="{Binding OpenedMenu}">
-						<Path Stretch="UniformToFill" Margin="4" Data="F1 M20,12z M0,0z M1,2L19,2A1,1,0,0,0,20,1A1,1,0,0,0,19,0L1,0A1,1,0,0,0,1,2z M19,10L1,10A1,1,0,0,0,0,11A1,1,0,0,0,1,12L19,12A1,1,0,0,0,19,10z M19,5L1,5A1,1,0,0,0,0,6A1,1,0,0,0,1,7L19,7A1,1,0,0,0,19,5z"/>
+						<Path Stretch="UniformToFill" Margin="4" Data="{StaticResource Menu}"/>
 					</ToggleButton>
 				</Grid>
 			</Border>
 
 			<Grid ColumnDefinitions="*,Auto,*" Grid.Row="1">
 				<Border Grid.Column="0" Margin="5 5 0 5" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5">
-					<DataGrid Name="ResourceList" IsVisible="{Binding Resources.Count}" Items="{Binding Resources}" SelectedItem="{Binding SelectedResource}" CanUserResizeColumns="True" CanUserReorderColumns="True" CanUserSortColumns="True" HeadersVisibility="All">
+					<DataGrid Name="ResourceList" IsVisible="{Binding Resources.Count}" Items="{Binding Resources}" CanUserResizeColumns="True" CanUserReorderColumns="True" CanUserSortColumns="True" IsReadOnly="True" HeadersVisibility="All">
 						<DataGrid.Columns>
 							<DataGridTextColumn Header="Name" Width="100" Binding="{Binding ResourceName}" IsReadOnly="True"/>
 							<DataGridTextColumn Header="Tag" Width="50" Binding="{Binding Tag}" IsReadOnly="True" />
-							<DataGridTextColumn Header="Type" Width="90" Binding="{Binding ResourceIndexEntry.ResourceType, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Group" Width="85" Binding="{Binding ResourceIndexEntry.ResourceGroup, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Instance" Width="145" Binding="{Binding ResourceIndexEntry.Instance, Converter={StaticResource ULongToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Chunkoffset" Width="85" Binding="{Binding ResourceIndexEntry.Chunkoffset, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Filesize" Width="80" Binding="{Binding ResourceIndexEntry.Filesize, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Memsize" Width="80" Binding="{Binding ResourceIndexEntry.Memsize, Converter={StaticResource UIntToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Compressed" Width="80" Binding="{Binding ResourceIndexEntry.Compressed, Converter={StaticResource UShortToStringConverter}}" IsReadOnly="True"/>
-							<DataGridTextColumn Header="Unknown2" Width="80" Binding="{Binding ResourceIndexEntry.Unknown2, Converter={StaticResource UShortToStringConverter}}" IsReadOnly="True"/>
+							<DataGridTextColumn Header="Type" Width="90" Binding="{Binding ResourceIndexEntry.ResourceType, Converter={StaticResource UIntToStringConverter}}"/>
+							<DataGridTextColumn Header="Group" Width="85" Binding="{Binding ResourceIndexEntry.ResourceGroup, Converter={StaticResource UIntToStringConverter}}"/>
+							<DataGridTextColumn Header="Instance" Width="145" Binding="{Binding ResourceIndexEntry.Instance, Converter={StaticResource ULongToStringConverter}}"/>
+							<DataGridTextColumn Header="Chunkoffset" Width="85" Binding="{Binding ResourceIndexEntry.Chunkoffset, Converter={StaticResource UIntToStringConverter}}"/>
+							<DataGridTextColumn Header="Filesize" Width="80" Binding="{Binding ResourceIndexEntry.Filesize, Converter={StaticResource UIntToStringConverter}}"/>
+							<DataGridTextColumn Header="Memsize" Width="80" Binding="{Binding ResourceIndexEntry.Memsize, Converter={StaticResource UIntToStringConverter}}"/>
+							<DataGridTextColumn Header="Compressed" Width="80" Binding="{Binding ResourceIndexEntry.Compressed, Converter={StaticResource UShortToStringConverter}}"/>
+							<DataGridTextColumn Header="Unknown2" Width="80" Binding="{Binding ResourceIndexEntry.Unknown2, Converter={StaticResource UShortToStringConverter}}"/>
 						</DataGrid.Columns>
 					</DataGrid>
 				</Border>
@@ -78,7 +86,7 @@
 				<Border Grid.Column="2" Margin="0 5 5 5" BorderBrush="{DynamicResource ThemeGlobalBorderBrush}" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="1" CornerRadius="5">
 					<Grid>
 						<instruments:ImageViewer ImageSource="{Binding ImageResource}" IsVisible="{Binding VisibleImageViewer}"/>
-						<TextBox Text="{Binding TextPreview}" IsReadOnly="True" IsVisible="{Binding VisibleTextViewer}" BorderThickness="0" TextWrapping="Wrap"/>
+						<AvalonEdit:TextEditor IsReadOnly="True" WordWrap="True" SyntaxHighlighting="XML" Text="Yes" Background="Gray"/>
 					</Grid>
 				</Border>
 			</Grid>
@@ -108,8 +116,12 @@
 							</CheckBox>
 
 							<Separator/>
-
 							
+							<Grid ColumnDefinitions="*,*,*">
+								<Button Content="Revise" Grid.Column="0" Padding="0"/>
+								<Button Content="Paste RK" Grid.Column="1" Margin="5 0" Padding="0"/>
+								<Button Content="QBE" Grid.Column="2" Padding="0"/>
+							</Grid>
 						</StackPanel>
 					</ScrollViewer>
 				</Border>

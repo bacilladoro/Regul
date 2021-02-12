@@ -1,30 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media.Imaging;
-using ReactiveUI;
+using Regul.Core.Interfaces;
 using Regul.Core.TheSims3Type;
 using Regul.S3PI;
 using Regul.S3PI.Extensions;
 using Regul.S3PI.Interfaces;
 using Regul.S3PI.Package;
+using Regul.ViewModels.Windows.TheSims3Type;
+using Regul.Views;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Regul.ViewModels.Controls.ContentTab
 {
-    public class TheSims3TypeContentViewModel : ReactiveObject
+    internal class TheSims3TypeContentViewModel : ViewModelBase, IPackageType
     {
         private ObservableCollection<Resource> _resources = new();
         private ObservableCollection<Resource> _globalResources = new();
+        private List<Resource> _selectedResources = new();
 
         private uint _resourceTypeView;
         private bool _openedMenu;
         private Bitmap _imageResource;
         private Resource _selectedResource;
-        private int _selectedIndex;
+        private bool _active;
 
         private bool _visibleImageViewer;
         private bool _visibleTextViewer;
@@ -59,7 +66,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _checkName;
             set
             {
-                this.RaiseAndSetIfChanged(ref _checkName, value);
+                RaiseAndSetIfChanged(ref _checkName, value);
                 SearchResources();
             }
         }
@@ -68,7 +75,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _checkTag;
             set
             {
-                this.RaiseAndSetIfChanged(ref _checkTag, value);
+                RaiseAndSetIfChanged(ref _checkTag, value);
                 SearchResources();
             }
         }
@@ -77,7 +84,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _checkResourceType;
             set
             {
-                this.RaiseAndSetIfChanged(ref _checkResourceType, value);
+                RaiseAndSetIfChanged(ref _checkResourceType, value);
                 SearchResources();
             }
         }
@@ -86,7 +93,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _checkResourceGroup;
             set
             {
-                this.RaiseAndSetIfChanged(ref _checkResourceGroup, value);
+                RaiseAndSetIfChanged(ref _checkResourceGroup, value);
                 SearchResources();
             }
         }
@@ -95,7 +102,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _checkInstance;
             set
             {
-                this.RaiseAndSetIfChanged(ref _checkInstance, value);
+                RaiseAndSetIfChanged(ref _checkInstance, value);
                 SearchResources();
             }
         }
@@ -104,7 +111,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _checkCompressed;
             set
             {
-                this.RaiseAndSetIfChanged(ref _checkCompressed, value);
+                RaiseAndSetIfChanged(ref _checkCompressed, value);
                 SearchResources();
             }
         }
@@ -118,7 +125,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _name;
             set
             {
-                this.RaiseAndSetIfChanged(ref _name, value);
+                RaiseAndSetIfChanged(ref _name, value);
                 SearchResources();
             }
         }
@@ -127,7 +134,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _tag;
             set
             {
-                this.RaiseAndSetIfChanged(ref _tag, value);
+                RaiseAndSetIfChanged(ref _tag, value);
                 SearchResources();
             }
         }
@@ -136,7 +143,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _resourceType;
             set
             {
-                this.RaiseAndSetIfChanged(ref _resourceType, value);
+                RaiseAndSetIfChanged(ref _resourceType, value);
                 SearchResources();
             }
         }
@@ -145,7 +152,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _resourceGroup;
             set
             {
-                this.RaiseAndSetIfChanged(ref _resourceGroup, value);
+                RaiseAndSetIfChanged(ref _resourceGroup, value);
                 SearchResources();
             }
         }
@@ -154,7 +161,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _instance;
             set
             {
-                this.RaiseAndSetIfChanged(ref _instance, value);
+                RaiseAndSetIfChanged(ref _instance, value);
                 SearchResources();
             }
         }
@@ -163,7 +170,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _compressed;
             set
             {
-                this.RaiseAndSetIfChanged(ref _compressed, value);
+                RaiseAndSetIfChanged(ref _compressed, value);
                 SearchResources();
             }
         }
@@ -174,43 +181,49 @@ namespace Regul.ViewModels.Controls.ContentTab
         public bool VisibleImageViewer
         {
             get => _visibleImageViewer;
-            set => this.RaiseAndSetIfChanged(ref _visibleImageViewer, value);
+            set => RaiseAndSetIfChanged(ref _visibleImageViewer, value);
         }
         public bool VisibleTextViewer
         {
             get => _visibleTextViewer;
-            set => this.RaiseAndSetIfChanged(ref _visibleTextViewer, value);
+            set => RaiseAndSetIfChanged(ref _visibleTextViewer, value);
         }
 
         public string TextPreview
         {
             get => _textPreview;
-            set => this.RaiseAndSetIfChanged(ref _textPreview, value);
+            set => RaiseAndSetIfChanged(ref _textPreview, value);
         }
         #endregion
 
         public bool OpenedMenu
         {
             get => _openedMenu;
-            set => this.RaiseAndSetIfChanged(ref _openedMenu, value);
+            set => RaiseAndSetIfChanged(ref _openedMenu, value);
         }
 
         public uint ResourceTypeView
         {
             get => _resourceTypeView;
-            set => this.RaiseAndSetIfChanged(ref _resourceTypeView, value);
+            set => RaiseAndSetIfChanged(ref _resourceTypeView, value);
         }
 
         public Bitmap ImageResource
         {
             get => _imageResource;
-            set => this.RaiseAndSetIfChanged(ref _imageResource, value);
+            set => RaiseAndSetIfChanged(ref _imageResource, value);
         }
 
-        public int SelectedIndex
+        public List<Resource> SelectedResources
         {
-            get => _selectedIndex;
-            set => this.RaiseAndSetIfChanged(ref _selectedIndex, value);
+            get => _selectedResources;
+            set => RaiseAndSetIfChanged(ref _selectedResources, value);
+        }
+        // Hack, without it hotkeys will only be processed for the first tab
+        public bool Active
+        {
+            get => _active;
+            set => RaiseAndSetIfChanged(ref _active, value);
         }
 
         public Resource SelectedResource
@@ -218,9 +231,9 @@ namespace Regul.ViewModels.Controls.ContentTab
             get => _selectedResource;
             set
             {
-                this.RaiseAndSetIfChanged(ref _selectedResource, value);
+                RaiseAndSetIfChanged(ref _selectedResource, value);
 
-                if (value == null)
+                if (value == null || SelectedResources.Count > 1)
                 {
                     VisibleImageViewer = false;
                     VisibleTextViewer = false;
@@ -231,25 +244,44 @@ namespace Regul.ViewModels.Controls.ContentTab
                 switch (value.Tag)
                 {
                     case "SNAP":
-                    case "_IMG":
+                    case "THUM":
+                    case "TWNI":
+                    case "ICON":
+                    case "IMAG":
                         VisibleImageViewer = true;
                         VisibleTextViewer = false;
 
                         ImageResource = new Bitmap(WrapperDealer.GetResource(CurrentPackage, value.ResourceIndexEntry).Stream);
                         break;
-                    default:
+
+                    case "_XML":
+                    case "CNFG":
+                    case "_CSS":
+                    case "LAYO":
+                    case "VOCE":
+                    case "MIXR":
+                    case "ITUN":
+                    case "DMTR":
+                    case "_INI":
+                    case "SKIL":
+                    case "PTRN":
+                    case "BUFF":
+                    case "RMLS":
+                    case "TRIG":
                         VisibleImageViewer = false;
                         VisibleTextViewer = true;
 
                         IResource res = WrapperDealer.GetResource(CurrentPackage, value.ResourceIndexEntry);
-                        string s = "";
+                        
+                        if (res.Stream != null) TextPreview = new StreamReader(res.Stream).ReadToEnd();
 
-                        foreach (string prop in res.ContentFields)
-                        {
-                            s += prop;
-                        }
+                        break;
+                    default:
+                        VisibleImageViewer = false;
+                        VisibleTextViewer = true;
 
-                        TextPreview = s;
+                        TextPreview = "none";
+                        
                         break;
                 }
             }
@@ -258,19 +290,21 @@ namespace Regul.ViewModels.Controls.ContentTab
         public ObservableCollection<Resource> Resources
         {
             get => _resources;
-            set => this.RaiseAndSetIfChanged(ref _resources, value);
+            set => RaiseAndSetIfChanged(ref _resources, value);
         }
         public ObservableCollection<Resource> GlobalResources
         {
             get => _globalResources;
             set
             {
-                this.RaiseAndSetIfChanged(ref _globalResources, value);
+                RaiseAndSetIfChanged(ref _globalResources, value);
                 SearchResources();
             }
         }
 
-        private IPackage CurrentPackage { get; set; }
+        public IPackage CurrentPackage { get; set; }
+
+        public string PackageType { get; } = nameof(TheSims3TypeContentViewModel);
 
         public TheSims3TypeContentViewModel()
         {
@@ -283,7 +317,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             for (int i = 0; i < CurrentPackage.GetResourceList.Count; i++)
             {
                 IResourceIndexEntry item = CurrentPackage.GetResourceList[i];
-                GlobalResources.Add(new Resource()
+                GlobalResources.Add(new Resource
                 {
                     ResourceIndexEntry = item,
                     Tag = ResourceTag(item),
@@ -295,15 +329,17 @@ namespace Regul.ViewModels.Controls.ContentTab
 
         private async void AddResource()
         {
+            if (!Active) return;
+
             App.ResourceDetails = new Views.Windows.TheSims3Type.ResourceDetails();
 
             bool result = await App.ResourceDetails.ShowDialog<bool>(App.MainWindow);
 
             if (result)
             {
-                IResourceIndexEntry rie = NewResource(App.ResourceDetails.ViewModel, null,
-                    App.ResourceDetails.ViewModel.Replace ? DuplicateHandling.Replace : DuplicateHandling.Reject,
-                    App.ResourceDetails.ViewModel.Compress);
+                IResourceIndexEntry rie = NewResource((ResourceDetailsViewModel)App.ResourceDetails.DataContext, null,
+                    ((ResourceDetailsViewModel)App.ResourceDetails.DataContext).Replace ? DuplicateHandling.Replace : DuplicateHandling.Reject,
+                    ((ResourceDetailsViewModel)App.ResourceDetails.DataContext).Compress);
 
                 if (rie == null) return;
 
@@ -320,14 +356,31 @@ namespace Regul.ViewModels.Controls.ContentTab
 
         private void CopyResource()
         {
-            //if (SelectedResource == null) return;
+            if (!Active || SelectedResources.Count == 0) return;
+
+            try
+            {
+                if (SelectedResources.Count == 1)
+                {
+                    DataFormat d = new DataFormat();
+                    d.TGIN = SelectedResource.ResourceIndexEntry as AResourceIndexEntry;
+                    d.TGIN.ResName = SelectedResource.ResourceName;
+                    d.Data = WrapperDealer.GetResource(CurrentPackage, SelectedResource.ResourceIndexEntry, true).AsBytes;
+                    IFormatter formatter = new BinaryFormatter();
+                    MemoryStream ms = new MemoryStream();
+                    formatter.Serialize(ms, d);
+                    IDataObject obj = new DataObject();
+                }
+            }
+            catch { }
+
 
             //try
             //{
             //    DataFormat d = new DataFormat();
             //    d.TGIN = SelectedResource.ResourceIndexEntry as AResourceIndexEntry;
             //    d.TGIN.ResName = SelectedResource.ResourceName;
-            //    d.Data = WrapperDealer.GetResource(0, CurrentPackage,
+            //    d.Data = WrapperDealer.GetResource(CurrentPackage,
             //        SelectedResource.ResourceIndexEntry, true).AsBytes;
 
             //    IFormatter formatter = new BinaryFormatter();
@@ -338,10 +391,36 @@ namespace Regul.ViewModels.Controls.ContentTab
             //    Application.Current.Clipboard.SetDataObjectAsync()
             //}
         }
+        private void PasteResource()
+        {
+            if (!Active) return;
+
+        }
+
+        public async void ResourceDetails()
+        {
+            if (!Active || SelectedResource == null) return;
+
+            App.ResourceDetails = new Views.Windows.TheSims3Type.ResourceDetails();
+
+            bool result = await App.ResourceDetails.ShowDialog<bool>(App.MainWindow);
+
+            if (result)
+            {
+
+            }
+        }
+
+        private void ImportFromFile()
+        {
+            if (!Active) return;
+
+        }
 
         private void DublicateResource()
         {
-            //if (SelectedResource == null) return;
+            if (SelectedResource == null) return;
+
             //byte[] buffer = SelectedResource.ResourceIndexEntry.
 
             //IResourceIndexEntry rie = CurrentPackage.AddResource(SelectedResource.ResourceIndexEntry, )
@@ -361,6 +440,12 @@ namespace Regul.ViewModels.Controls.ContentTab
 
             if (CompressedCheck()) target = 0;
             SelectedResource.ResourceIndexEntry.Compressed = target;
+        }
+
+        private void CopyRK()
+        {
+            if (SelectedResources.Count != 1) return;
+            Application.Current.Clipboard.SetTextAsync(string.Join("\r\n", SelectedResources.Select(r => r.ResourceIndexEntry.ToString())));
         }
 
         private byte[] ReadFully(Stream input)
@@ -399,21 +484,30 @@ namespace Regul.ViewModels.Controls.ContentTab
             if (string.IsNullOrEmpty(path)) return;
 
             bool overwriteAll = false;
-
+            bool skipAll = false;
             try
             {
-                if (SelectedResource == null || SelectedResource.ResourceIndexEntry as AResourceIndexEntry == null) return;
-                TGIN tgin = SelectedResource.ResourceIndexEntry as AResourceIndexEntry;
-                tgin.ResName = SelectedResource.ResourceName;
-                string file = Path.Combine(path, tgin);
-                if (File.Exists(file))
+                foreach (IResourceIndexEntry rie in SelectedResources)
                 {
-                    if (!overwriteAll)
+                    TGIN tgin = rie as AResourceIndexEntry;
+                    tgin.ResName = ResourceName(rie);
+                    string file = Path.Combine(path, tgin);
+                    if (File.Exists(file))
                     {
-                        overwriteAll = true;
+                        if (skipAll) continue;
+                        if (!overwriteAll)
+                        {
+                            MessageBox.MessageBoxResult res = await MessageBox.Show(App.MainWindow, null, "Overwrite file?\n" + file, "Question", MessageBox.MessageBoxButtons.NoNoToAllYesYesToAllAbandon,
+                                MessageBox.MessageBoxIcon.Question);
+
+                            if (res == MessageBox.MessageBoxResult.No) continue;
+                            if (res == MessageBox.MessageBoxResult.NoToAll) { skipAll = true; continue; }
+                            if (res == MessageBox.MessageBoxResult.YesToAll) overwriteAll = true;
+                            if (res == MessageBox.MessageBoxResult.Abandon) return;
+                        }
                     }
+                    ExportFile(rie, file);
                 }
-                ExportFile(SelectedResource.ResourceIndexEntry, file);
             }
             finally { }
         }
@@ -425,7 +519,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             s.Position = 0;
 
             BinaryWriter w = new BinaryWriter(new FileStream(fileName, FileMode.Create));
-            w.Write((new BinaryReader(s)).ReadBytes((int)s.Length));
+            w.Write(new BinaryReader(s).ReadBytes((int)s.Length));
             w.Close();
         }
 
@@ -471,7 +565,7 @@ namespace Regul.ViewModels.Controls.ContentTab
         {
             if (SelectedResource == null) return false;
             else
-                return SelectedResource.ResourceIndexEntry.Compressed != 0 ? true : false;
+                return SelectedResource.ResourceIndexEntry.Compressed != 0;
         }
 
         private IResourceIndexEntry NewResource(IResourceKey rk, MemoryStream ms, DuplicateHandling dups, bool compress)
@@ -487,7 +581,7 @@ namespace Regul.ViewModels.Controls.ContentTab
             rie = CurrentPackage.AddResource(rk, ms, false);
             if (rie == null) return null;
 
-            rie.Compressed = (ushort)(compress ? 0xFFFF : 0);
+            rie.Compressed = compress ? 0xFFFF : 0;
 
             return rie;
         }
@@ -526,6 +620,10 @@ namespace Regul.ViewModels.Controls.ContentTab
             complete = complete.Concat(resCompressed).ToList();
 
             Resources = new ObservableCollection<Resource>(complete);
+        }
+
+        public void SavePackage()
+        {
         }
     }
 }

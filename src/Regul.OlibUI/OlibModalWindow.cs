@@ -53,7 +53,7 @@ namespace Regul.OlibUI
         {
             Control control = e.NameScope.Get<Control>(name);
             control.Cursor = new Cursor(cursor);
-            control.PointerPressed += (object sender, PointerPressedEventArgs ep) =>
+            control.PointerPressed += (_, ep) =>
             {
                 if (ep.GetCurrentPoint(control).Properties.IsLeftButtonPressed)
                     ((Window)this.GetVisualRoot()).PlatformImpl?.BeginResizeDrag(edge, ep);
@@ -87,7 +87,7 @@ namespace Regul.OlibUI
 
                 if (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 {
-                    titleBar.DoubleTapped += (s, ep) =>
+                    titleBar.DoubleTapped += (_, _) =>
                     {
                         if (WindowButtons == WindowButtons.CloseAndExpand || WindowButtons == WindowButtons.All)
                         {

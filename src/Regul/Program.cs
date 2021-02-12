@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.ReactiveUI;
 using Regul.ViewModels;
 using Regul.Views;
 using System;
@@ -14,6 +13,8 @@ using Avalonia.Rendering;
 using System.Threading;
 using System.Diagnostics;
 using System.Text;
+using Avalonia.OpenGL;
+using System.Collections.Generic;
 
 namespace Regul
 {
@@ -56,7 +57,8 @@ namespace Regul
             {
                 result
                     .UseWin32()
-                    .UseSkia();
+                    .UseSkia()
+                    .With(new AngleOptions { AllowedPlatformApis = new List<AngleOptions.PlatformApi> { AngleOptions.PlatformApi.DirectX11 } });
 
                 if (DwmIsCompositionEnabled(out bool dwmEnabled) == 0 && dwmEnabled)
                 {
@@ -75,7 +77,6 @@ namespace Regul
             }
             return result
                 .LogToTrace()
-                .UseReactiveUI()
                 .With(new Win32PlatformOptions { AllowEglInitialization = Settings.HardwareAcceleration, UseDeferredRendering = true, OverlayPopups = false, UseWgl = false })
                 .With(new MacOSPlatformOptions { ShowInDock = true })
                 .With(new AvaloniaNativePlatformOptions { UseGpu = Settings.HardwareAcceleration, UseDeferredRendering = true, OverlayPopups = false })
@@ -84,9 +85,7 @@ namespace Regul
 
         private static void AppMain(Application app, string[] args)
         {
-            App.MainWindowViewModel = new MainWindowViewModel();
-
-            App.MainWindow = new MainWindow { DataContext = App.MainWindowViewModel };
+            App.MainWindow = new MainWindow { DataContext = new MainWindowViewModel() };
 
             app.Run(App.MainWindow);
         }
@@ -108,7 +107,7 @@ namespace Regul
                 sw.Start();
                 while (true)
                 {
-                    _ = DwmFlush();
+                    DwmFlush();
                     Tick?.Invoke(sw.Elapsed);
                 }
             })

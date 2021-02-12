@@ -1,11 +1,10 @@
-﻿using System;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Markup.Xaml.Styling;
-using ReactiveUI;
+using System;
 
 namespace Regul.ViewModels.Windows
 {
-    public class SettingsViewModel : ReactiveObject
+    internal class SettingsViewModel : ViewModelBase
     {
         private int _theme;
 
@@ -18,7 +17,7 @@ namespace Regul.ViewModels.Windows
             get => _theme;
             set
             {
-                this.RaiseAndSetIfChanged(ref _theme, value);
+                RaiseAndSetIfChanged(ref _theme, value);
 
                 Program.Settings.Theme = value switch
                 {
@@ -40,7 +39,7 @@ namespace Regul.ViewModels.Windows
             get => _hardwareAcceleration;
             set
             {
-                this.RaiseAndSetIfChanged(ref _hardwareAcceleration, value);
+                RaiseAndSetIfChanged(ref _hardwareAcceleration, value);
                 Program.Settings.HardwareAcceleration = value;
             }
         }
@@ -51,7 +50,7 @@ namespace Regul.ViewModels.Windows
         {
             Initialize();
         }
-        
+
         private void Initialize()
         {
             HardwareAcceleration = Program.Settings.HardwareAcceleration;

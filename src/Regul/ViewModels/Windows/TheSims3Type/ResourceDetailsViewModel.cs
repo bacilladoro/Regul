@@ -1,17 +1,16 @@
-﻿using ReactiveUI;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Regul.S3PI.Extensions;
 using Regul.S3PI.Interfaces;
-using System.Security.Cryptography;
-using Avalonia;
-using Avalonia.Controls;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Security.Cryptography;
 using ResourceType = Regul.Core.TheSims3Type.ResourceType;
 
 namespace Regul.ViewModels.Windows.TheSims3Type
 {
-    public class ResourceDetailsViewModel : ReactiveObject, IResourceKey
+    internal class ResourceDetailsViewModel : ViewModelBase, IResourceKey
     {
         private ObservableCollection<ResourceType> _resourceTypes = new();
         private ResourceType _selectedResourceType;
@@ -32,7 +31,7 @@ namespace Regul.ViewModels.Windows.TheSims3Type
             get => _resourceName;
             set
             {
-                this.RaiseAndSetIfChanged(ref _resourceName, value);
+                RaiseAndSetIfChanged(ref _resourceName, value);
                 UpdateTGIN();
             }
         }
@@ -41,7 +40,7 @@ namespace Regul.ViewModels.Windows.TheSims3Type
             get => _instance;
             set
             {
-                this.RaiseAndSetIfChanged(ref _instance, value);
+                RaiseAndSetIfChanged(ref _instance, value);
                 UpdateTGIN();
             }
         }
@@ -50,7 +49,7 @@ namespace Regul.ViewModels.Windows.TheSims3Type
             get => _group;
             set
             {
-                this.RaiseAndSetIfChanged(ref _group, value);
+                RaiseAndSetIfChanged(ref _group, value);
                 UpdateTGIN();
             }
         }
@@ -59,7 +58,7 @@ namespace Regul.ViewModels.Windows.TheSims3Type
             get => _filename;
             set
             {
-                this.RaiseAndSetIfChanged(ref _filename, value);
+                RaiseAndSetIfChanged(ref _filename, value);
                 ImportedFile = !string.IsNullOrEmpty(value);
                 FillPanel();
             }
@@ -68,12 +67,12 @@ namespace Regul.ViewModels.Windows.TheSims3Type
         public bool Compress
         {
             get => _compress;
-            set => this.RaiseAndSetIfChanged(ref _compress, value);
+            set => RaiseAndSetIfChanged(ref _compress, value);
         }
         public bool UseResourceName
         {
             get => _useResourceName;
-            set => this.RaiseAndSetIfChanged(ref _useResourceName, value);
+            set => RaiseAndSetIfChanged(ref _useResourceName, value);
         }
 
         public bool Replace { get; set; }
@@ -81,18 +80,18 @@ namespace Regul.ViewModels.Windows.TheSims3Type
         private bool ImportedFile
         {
             get => _importedFile;
-            set => this.RaiseAndSetIfChanged(ref _importedFile, value);
+            set => RaiseAndSetIfChanged(ref _importedFile, value);
         }
 
         public ResourceType SelectedResourceType
         {
             get => _selectedResourceType;
-            set => this.RaiseAndSetIfChanged(ref _selectedResourceType, value);
+            set => RaiseAndSetIfChanged(ref _selectedResourceType, value);
         }
         public ObservableCollection<ResourceType> ResourceTypes
         {
             get => _resourceTypes;
-            set => this.RaiseAndSetIfChanged(ref _resourceTypes, value);
+            set => RaiseAndSetIfChanged(ref _resourceTypes, value);
         }
         public uint ResourceType
         {
@@ -161,11 +160,13 @@ namespace Regul.ViewModels.Windows.TheSims3Type
         private void UpdateTGIN()
         {
             if (_internalCHG) return;
-            details = new TGIN();
-            details.ResType = SelectedResourceType.Type;
-            details.ResGroup = Group;
-            details.ResInstance = Instance;
-            details.ResName = ResourceName;
+            details = new TGIN
+            {
+                ResType = SelectedResourceType.Type,
+                ResGroup = Group,
+                ResInstance = Instance,
+                ResName = ResourceName
+            };
         }
 
         private void FNV64Convert()

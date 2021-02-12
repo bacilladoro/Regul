@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
@@ -15,7 +16,8 @@ namespace Regul.Views
             Ok,
             OkCancel,
             YesNo,
-            YesNoCancel
+            YesNoCancel,
+            NoNoToAllYesYesToAllAbandon
         }
         public enum MessageBoxIcon
         {
@@ -29,7 +31,10 @@ namespace Regul.Views
             Ok,
             Cancel,
             Yes,
-            No
+            No,
+            YesToAll,
+            NoToAll,
+            Abandon
         }
 
         public MessageBox() => AvaloniaXamlLoader.Load(this);
@@ -42,7 +47,7 @@ namespace Regul.Views
             };
             msgbox.FindControl<TextBlock>("Text").Text = text;
             StackPanel buttonPanel = msgbox.FindControl<StackPanel>("Buttons");
-            Image iconControl = msgbox.FindControl<Image>("Icon");
+            Path iconControl = msgbox.FindControl<Path>("Icon");
             TextBox errorText = msgbox.FindControl<TextBox>("ErrorText");
 
             MessageBoxResult res = MessageBoxResult.Ok;
@@ -60,7 +65,7 @@ namespace Regul.Views
                     res = r;
             }
 
-            void ChangeIcon(string icon) => iconControl.Source = (DrawingImage)Application.Current.FindResource($"{icon}Icon");
+            void ChangeIcon(string icon) => iconControl.Data = (Geometry)Application.Current.FindResource($"{icon}Icon");
 
             switch (buttons)
             {
@@ -80,6 +85,13 @@ namespace Regul.Views
                 case MessageBoxButtons.YesNoCancel:
                     AddButton((string)Application.Current.FindResource("Yes"), MessageBoxResult.Yes);
                     AddButton((string)Application.Current.FindResource("No"), MessageBoxResult.No, true);
+                    break;
+                case MessageBoxButtons.NoNoToAllYesYesToAllAbandon:
+                    AddButton("No", MessageBoxResult.No);
+                    AddButton("No to all", MessageBoxResult.NoToAll);
+                    AddButton("Yes", MessageBoxResult.Yes);
+                    AddButton("Yes to all", MessageBoxResult.YesToAll);
+                    AddButton("Abandon", MessageBoxResult.Abandon);
                     break;
             }
 

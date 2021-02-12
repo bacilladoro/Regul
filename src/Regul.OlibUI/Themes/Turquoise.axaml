@@ -1,13 +1,13 @@
 ﻿<Style xmlns="https://github.com/avaloniaui"
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style.Resources>
-        <Color x:Key="ThemeBackgroundColor">#FFD2FEFF</Color>
+        <Color x:Key="ThemeBackgroundColor">#FF9AE2DE</Color>
 		<Color x:Key="ThemeForegroundColor">#FF000000</Color>
 		<Color x:Key="ThemeForegroundOpacityColor">#FF5E3B82</Color>
 		<Color x:Key="ThemeGlobalBorderColor">#FF679593</Color>
 		<Color x:Key="ThemeHoverBackgroundColor">#FFC1E9EA</Color>
 		<Color x:Key="ThemeWindowForegroundColor">#FFFFFFFF</Color>
-		<Color x:Key="ThemePanelBackgroundColor">#FF9AE2DE</Color>
+		<Color x:Key="ThemePanelBackgroundColor">#FFD2FEFF</Color>
 		<Color x:Key="ThemeSelectedControlColor">#FFB30101</Color>
 		<Color x:Key="ThemeGitHubColor">#FF231E1B</Color>
 		<Color x:Key="ThemeScrollBoxHoverColor">#FF333333</Color>

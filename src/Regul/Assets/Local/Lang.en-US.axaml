@@ -10,6 +10,8 @@
 		<v:String x:Key="New">New</v:String>
 		<v:String x:Key="Open">Open</v:String>
 		<v:String x:Key="Save">Save</v:String>
+		<v:String x:Key="SaveAs">Save as</v:String>
+		<v:String x:Key="SaveAll">Save all</v:String>
 		<v:String x:Key="AboutTheProgram">About the program</v:String>
 		<v:String x:Key="ExitFromRegul">Exit from Regul</v:String>
 		<v:String x:Key="TheSims3">The Sims 3</v:String>
@@ -76,13 +78,20 @@
 		<v:String x:Key="Select">Select</v:String>
 		<v:String x:Key="PathBackup">The path for creating a backup</v:String>
 		<v:String x:Key="Clear">Clear</v:String>
+		<v:String x:Key="RemovingFamilyPortraits">Removing family portraits</v:String>
 		<v:String x:Key="DeletingCharacterPortraits">Deleting character portraits</v:String>
 		<v:String x:Key="RemovingLotThumbnails">Removing lot thumbnails</v:String>
 		<v:String x:Key="RemovingPhotosAndTextures">Removing photos and textures</v:String>
+		<v:String x:Key="RemovingPhotos">Removing photos</v:String>
+		<v:String x:Key="RemovingTextures">Removing textures</v:String>
+		<v:String x:Key="RemovingGeneratedImages">Removing generated images</v:String>
 		<v:String x:Key="CreateBackup">Create backup</v:String>
-		<v:String x:Key="ToolTipDeletingCharacterPortraits">Portraits are displayed in the relationship panel, in the CAS, when choosing clothes and in the panel of the selected active character. It is recommended to enable</v:String>
-		<v:String x:Key="ToolTipRemovingLotThumbnails">Displayed when moving and in the main menu. If you are afraid that after deleting your save will not load, do not enable (deleting is safe)</v:String>
-		<v:String x:Key="ToolTipRemovingPhotosAndTextures">The textures of the unloaded lot and photos are stored. If you don't want to delete photos, please do not include</v:String>
+		<v:String x:Key="ToolTipRemovingFamilyPortraits">Removes all family portraits except the current one (It is recommended to enable)</v:String>
+		<v:String x:Key="ToolTipDeletingCharacterPortraits">Portraits are displayed in the relationship panel, in the CAS, when choosing clothes and in the panel of the selected active character (It is recommended to enable)</v:String>
+		<v:String x:Key="ToolTipRemovingLotThumbnails">Removes portraits of the lot on the main menu and when moving</v:String>
+		<v:String x:Key="ToolTipRemovingPhotos">Deletes all photos taken by the sim</v:String>
+		<v:String x:Key="ToolTipRemovingTextures">Removes textures of an unloaded lot</v:String>
+		<v:String x:Key="ToolTipRemovingGeneratedImages">Removes generated images created, for example, during a prom</v:String>
 
 		<v:String x:Key="AnErrorHasOccurred">An error has occurred. Details below.</v:String>
 		<v:String x:Key="SaveFilesCleanedSuccessfully">Save files cleaned successfully!</v:String>
@@ -124,7 +133,6 @@
 		<v:String x:Key="Compressed">Compressed</v:String>
 		<v:String x:Key="Remove">Remove</v:String>
 		<v:String x:Key="Details">Details</v:String>
-		<v:String x:Key="SelectAll">Select all</v:String>
 		<v:String x:Key="CopyResourceKey">Copy ResourceKey</v:String>
 		<v:String x:Key="Import">Import</v:String>
 		<v:String x:Key="FromFileE">From file...</v:String>

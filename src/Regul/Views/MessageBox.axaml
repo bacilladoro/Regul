@@ -16,7 +16,7 @@
 					  SizeToContent="WidthAndHeight" CanResize="False">
 	<Grid Name="ContentC" RowDefinitions="*,Auto,40">
 		<Grid Name="Content" ColumnDefinitions="70,*">
-			<Image Name="Icon" Width="40" Margin="10"/>
+			<Path Name="Icon" Fill="{StaticResource ThemeForegroundBrush}" VerticalAlignment="Center" Stretch="Uniform" Width="40" Margin="10"/>
 			<ScrollViewer Grid.Column="1">
 				<TextBlock VerticalAlignment="Center" Name="Text" TextWrapping="Wrap" Margin="0 0 10 0" Width="250"/>
 			</ScrollViewer>

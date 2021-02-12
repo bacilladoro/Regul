@@ -13,12 +13,12 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Resource data <see cref="System.IO.Stream"/>
         /// </summary>
-        protected Stream stream = null;
+        protected Stream stream;
 
         /// <summary>
         /// Indicates the resource stream may no longer reflect the resource content
         /// </summary>
-        protected bool dirty = false;
+        protected bool dirty;
         #endregion
 
         #region Constructors

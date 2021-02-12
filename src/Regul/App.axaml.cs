@@ -11,7 +11,6 @@ namespace Regul
     public class App : Application
     {
         public static MainWindow MainWindow { get; set; }
-        public static MainWindowViewModel MainWindowViewModel { get; set; }
         public static Settings Settings { get; set; }
         public static SaveClear SaveClear { get; set; }
         public static About About { get; set; }

@@ -1,24 +1,23 @@
-﻿using System;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Microsoft.VisualBasic;
+using Regul.Core;
+using Regul.S3PI;
+using Regul.S3PI.Interfaces;
+using Regul.S3PI.Package;
+using Regul.Views;
+using Regul.Views.Controls.ListBoxItems;
+using Regul.Views.Windows;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using Avalonia;
-using Avalonia.Controls;
-using Microsoft.VisualBasic;
-using ReactiveUI;
-using Regul.S3PI;
-using Regul.S3PI.Interfaces;
-using Regul.S3PI.Package;
-using Regul.Core;
-using Regul.Views;
-using Regul.Views.Controls.ListBoxItems;
-using Regul.Views.Windows;
 
 namespace Regul.ViewModels.Windows
 {
-    public sealed class SaveClearViewModel : ReactiveObject
+    internal sealed class SaveClearViewModel : ViewModelBase
     {
         private string _pathBackup;
         private bool _isLoading;
@@ -28,7 +27,10 @@ namespace Regul.ViewModels.Windows
 
         private bool _deletingCharacterPortraits;
         private bool _removingLotThumbnails;
-        private bool _removingPhotosAndTextures;
+        private bool _removingTextures;
+        private bool _removingPhotos;
+        private bool _removingGeneratedImages;
+        private bool _removingFamilyPortraits;
         private bool _createABackup;
 
         [AccessedThroughProperty("bgwClean")]
@@ -39,46 +41,61 @@ namespace Regul.ViewModels.Windows
         private string PathBackup
         {
             get => _pathBackup;
-            set => this.RaiseAndSetIfChanged(ref _pathBackup, value);
+            set => RaiseAndSetIfChanged(ref _pathBackup, value);
         }
 
         private bool IsLoading
         {
             get => _isLoading;
-            set => this.RaiseAndSetIfChanged(ref _isLoading, value);
+            set => RaiseAndSetIfChanged(ref _isLoading, value);
         }
 
         private ObservableCollection<SaveFilePortrait> SaveFilePortraits
         {
             get => _saveFilePortraits;
-            set => this.RaiseAndSetIfChanged(ref _saveFilePortraits, value);
+            set => RaiseAndSetIfChanged(ref _saveFilePortraits, value);
         }
 
         private SaveFilePortrait SelectSave
         {
             get => _selectSave;
-            set => this.RaiseAndSetIfChanged(ref _selectSave, value);
+            set => RaiseAndSetIfChanged(ref _selectSave, value);
         }
 
         private bool DeletingCharacterPortraits
         {
             get => _deletingCharacterPortraits;
-            set => this.RaiseAndSetIfChanged(ref _deletingCharacterPortraits, value);
+            set => RaiseAndSetIfChanged(ref _deletingCharacterPortraits, value);
         }
         private bool RemovingLotThumbnails
         {
             get => _removingLotThumbnails;
-            set => this.RaiseAndSetIfChanged(ref _removingLotThumbnails, value);
+            set => RaiseAndSetIfChanged(ref _removingLotThumbnails, value);
         }
-        private bool RemovingPhotosAndTextures
+        private bool RemovingPhotos
         {
-            get => _removingPhotosAndTextures;
-            set => this.RaiseAndSetIfChanged(ref _removingPhotosAndTextures, value);
+            get => _removingPhotos;
+            set => RaiseAndSetIfChanged(ref _removingPhotos, value);
+        }
+        private bool RemovingTextures
+        {
+            get => _removingTextures;
+            set => RaiseAndSetIfChanged(ref _removingTextures, value);
+        }
+        private bool RemovingGeneratedImages
+        {
+            get => _removingGeneratedImages;
+            set => RaiseAndSetIfChanged(ref _removingGeneratedImages, value);
+        }
+        private bool RemovingFamilyPortraits
+        {
+            get => _removingFamilyPortraits;
+            set => RaiseAndSetIfChanged(ref _removingFamilyPortraits, value);
         }
         private bool CreateABackup
         {
             get => _createABackup;
-            set => this.RaiseAndSetIfChanged(ref _createABackup, value);
+            set => RaiseAndSetIfChanged(ref _createABackup, value);
         }
 
         #endregion
@@ -148,6 +165,7 @@ namespace Regul.ViewModels.Windows
                         {
                             saveFilePortrait.IconFamily.Source = save.FamilyIcon;
                             saveFilePortrait.SaveFamily.Text = save.WorldName;
+                            saveFilePortrait.ImgInstance = save.ImgInstance;
                             SaveFilePortraits.Add(saveFilePortrait);
                         }
                     }
@@ -210,7 +228,7 @@ namespace Regul.ViewModels.Windows
 
             // Get the files in the directory and copy them to the new location.
             FileInfo[] files = dir.GetFiles();
-            for (var index = 0; index < files.Length; index++)
+            for (int index = 0; index < files.Length; index++)
             {
                 FileInfo file = files[index];
                 string tempPath = Path.Combine(destDirName, file.Name);
@@ -220,7 +238,7 @@ namespace Regul.ViewModels.Windows
             // If copying subdirectories, copy them and their contents to new location.
             if (copySubDirs)
             {
-                for (var i = 0; i < dirs.Length; i++)
+                for (int i = 0; i < dirs.Length; i++)
                 {
                     DirectoryInfo subdir = dirs[i];
                     string tempPath = Path.Combine(destDirName, subdir.Name);
@@ -293,7 +311,7 @@ namespace Regul.ViewModels.Windows
             while (index2 < files2.Length)
             {
                 IPackage pkg = Package.OpenPackage(files2[index2], true);
-                for (var index = 0; index < pkg.GetResourceList.Count; index++)
+                for (int index = 0; index < pkg.GetResourceList.Count; index++)
                 {
                     IResourceIndexEntry getResource = pkg.GetResourceList[index];
                     if (getResource.Compressed == 0)
@@ -309,13 +327,14 @@ namespace Regul.ViewModels.Windows
             {
                 bgwClean.ReportProgress(70, (string)Application.Current.FindResource("ProcessingClearingSave"));
 
-                if (RemovingPhotosAndTextures)
+                if (RemovingGeneratedImages || RemovingPhotos)
                 {
                     IPackage pkg1 = Package.OpenPackage(Path.Combine(saveFilePortrait.SaveDir, "TravelDB.package"), true);
-                    for (var i = 0; i < pkg1.GetResourceList.Count; i++)
+                    for (int i = 0; i < pkg1.GetResourceList.Count; i++)
                     {
                         IResourceIndexEntry getResource = pkg1.GetResourceList[i];
-                        if (getResource.ResourceType == 11720834U)
+                        if (RemovingGeneratedImages && getResource.ResourceType == 11720834U && getResource.ResourceGroup == 38510538U ||
+                            RemovingPhotos && getResource.ResourceType == 11720834U && getResource.ResourceGroup == 40488965U)
                             pkg1.DeleteResource(getResource);
                     }
 
@@ -332,16 +351,19 @@ namespace Regul.ViewModels.Windows
                     if (Path.GetFileNameWithoutExtension(str).Contains(saveFilePortrait.Location))
                     {
                         IPackage pkg2 = Package.OpenPackage(str, true);
-                        for (var i = 0; i < pkg2.GetResourceList.Count; i++)
+                        for (int i = 0; i < pkg2.GetResourceList.Count; i++)
                         {
                             IResourceIndexEntry getResource = pkg2.GetResourceList[i];
-                            if ((long) getResource.Instance != (long) saveFilePortrait.ImgInstance &&
-                                getResource.ResourceType.Equals((object) 1802339198))
+                            if (RemovingFamilyPortraits && getResource.Instance != saveFilePortrait.ImgInstance &&
+                                getResource.ResourceType == 1802339198U)
                             {
                                 pkg2.DeleteResource(getResource);
                                 continue;
                             }
-                            if (RemovingPhotosAndTextures && getResource.ResourceType == 11720834U)
+                            if (RemovingGeneratedImages && getResource.ResourceType == 11720834U && getResource.ResourceGroup == 38510538U ||
+                                RemovingPhotos && getResource.ResourceType == 11720834U && getResource.ResourceGroup == 40488965U ||
+                                RemovingTextures && getResource.ResourceType == 11720834U &&
+                                (getResource.ResourceGroup == 11584775U | getResource.ResourceGroup == 1U | getResource.ResourceGroup == 12328524U | getResource.ResourceGroup == 1943529U | getResource.ResourceGroup == 16441714U | getResource.ResourceGroup == 38510538U | getResource.ResourceGroup == 12328532U | getResource.ResourceGroup == 8287573U))
                             {
                                 pkg2.DeleteResource(getResource);
                                 continue;
@@ -360,17 +382,19 @@ namespace Regul.ViewModels.Windows
                             if (getResource.Compressed == 0) getResource.Compressed = ushort.MaxValue;
                         }
 
-                        
                         pkg2.SavePackage();
                         Package.ClosePackage(pkg2);
                     }
                     else
                     {
                         IPackage pkg2 = Package.OpenPackage(str, true);
-                        for (var i = 0; i < pkg2.GetResourceList.Count; i++)
+                        for (int i = 0; i < pkg2.GetResourceList.Count; i++)
                         {
                             IResourceIndexEntry getResource = pkg2.GetResourceList[i];
-                            if (RemovingPhotosAndTextures && getResource.ResourceType == 11720834U)
+                            if (RemovingGeneratedImages && getResource.ResourceType == 11720834U && getResource.ResourceGroup == 38510538U ||
+                                RemovingPhotos && getResource.ResourceType == 11720834U && getResource.ResourceGroup == 40488965U ||
+                                RemovingTextures && getResource.ResourceType == 11720834U &&
+                                (getResource.ResourceGroup == 11584775U | getResource.ResourceGroup == 1U | getResource.ResourceGroup == 12328524U | getResource.ResourceGroup == 1943529U | getResource.ResourceGroup == 16441714U | getResource.ResourceGroup == 38510538U | getResource.ResourceGroup == 12328532U | getResource.ResourceGroup == 8287573U))
                             {
                                 pkg2.DeleteResource(getResource);
                                 continue;
@@ -400,15 +424,18 @@ namespace Regul.ViewModels.Windows
             {
                 string[] files3 = Directory.GetFiles(saveFilePortrait.SaveDir, "*.nhd", SearchOption.AllDirectories);
                 int index3 = 0;
-                
+
                 bgwClean.ReportProgress(40, (string)Application.Current.FindResource("ProcessingCompressingSave"));
                 while (index3 < files3.Length)
                 {
                     IPackage pkg = Package.OpenPackage(files3[index3], true);
-                    for (var i = 0; i < pkg.GetResourceList.Count; i++)
+                    for (int i = 0; i < pkg.GetResourceList.Count; i++)
                     {
                         IResourceIndexEntry getResource = pkg.GetResourceList[i];
-                        if (RemovingPhotosAndTextures && getResource.ResourceType == 11720834U)
+                        if (RemovingGeneratedImages && getResource.ResourceType == 11720834U && getResource.ResourceGroup == 38510538U ||
+                                RemovingPhotos && getResource.ResourceType == 11720834U && getResource.ResourceGroup == 40488965U ||
+                                RemovingTextures && getResource.ResourceType == 11720834U &&
+                                (getResource.ResourceGroup == 11584775U | getResource.ResourceGroup == 1U | getResource.ResourceGroup == 12328524U | getResource.ResourceGroup == 1943529U | getResource.ResourceGroup == 16441714U | getResource.ResourceGroup == 38510538U | getResource.ResourceGroup == 12328532U | getResource.ResourceGroup == 8287573U))
                         {
                             pkg.DeleteResource(getResource);
                             continue;
@@ -424,8 +451,7 @@ namespace Regul.ViewModels.Windows
                             pkg.DeleteResource(getResource);
                             continue;
                         }
-                        if (getResource.Compressed == 0)
-                            getResource.Compressed = ushort.MaxValue;
+                        if (getResource.Compressed == 0) getResource.Compressed = ushort.MaxValue;
                     }
 
                     pkg.SavePackage();

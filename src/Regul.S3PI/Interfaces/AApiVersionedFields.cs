@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
@@ -12,7 +13,6 @@ namespace Regul.S3PI.Interfaces
     /// </summary>
     public abstract class AApiVersionedFields : IContentFields
     {
-
         #region IContentFields Members
         /// <summary>
         /// The list of available field names on this API object
@@ -31,14 +31,16 @@ namespace Regul.S3PI.Interfaces
                 string[] fields = index.Split('.');
                 object result = this;
                 Type t = GetType();
-                foreach (string f in fields)
+                for (var i = 0; i < fields.Length; i++)
                 {
-                    PropertyInfo p = t.GetProperty(f);
+                    PropertyInfo p = t.GetProperty(fields[i]);
                     if (p == null)
-                        throw new ArgumentOutOfRangeException(nameof(index), "Unexpected value received in index: " + index);
+                        throw new ArgumentOutOfRangeException(nameof(index),
+                            "Unexpected value received in index: " + index);
                     t = p.PropertyType;
                     result = p.GetValue(result, null);
                 }
+
                 return new TypedValue(t, result, "X");
             }
             set
@@ -67,14 +69,10 @@ namespace Regul.S3PI.Interfaces
         static readonly List<string> banlist;
         static AApiVersionedFields()
         {
-            Type t = typeof(AApiVersionedFields);
             banlist = new List<string>();
-            PropertyInfo[] array = t.GetProperties();
+            PropertyInfo[] array = typeof(AApiVersionedFields).GetProperties();
             for (int i = 0; i < array.Length; i++)
-            {
-                PropertyInfo m = array[i];
-                banlist.Add(m.Name);
-            }
+                banlist.Add(array[i].Name);
         }
 
         /// <summary>
@@ -114,9 +112,7 @@ namespace Regul.S3PI.Interfaces
                 {
                     return o[tgiBlockListCF].Value as DependentList<TGIBlock>;
                 }
-                catch
-                {
-                }
+                catch { }
             return null;
         }
 
@@ -134,15 +130,15 @@ namespace Regul.S3PI.Interfaces
             public int Compare(string x, string y)
             {
                 int res = ElementPriorityAttribute.GetPriority(t, x).CompareTo(ElementPriorityAttribute.GetPriority(t, y));
-                if (res == 0) res = x.CompareTo(y);
+                if (res == 0) res = string.Compare(x, y, StringComparison.Ordinal);
                 return res;
             }
         }
 
-        static readonly List<string> valueBuilderBanlist = new(new string[] {
+        static readonly List<string> valueBuilderBanlist = new(new[] {
             "Value", "Stream", "AsBytes",
         });
-        static readonly List<string> iDictionaryBanlist = new(new string[] {
+        static readonly List<string> iDictionaryBanlist = new(new[] {
             "Keys", "Values", "Count", "IsReadOnly", "IsFixedSize", "IsSynchronized", "SyncRoot",
         });
 
@@ -183,7 +179,7 @@ namespace Regul.S3PI.Interfaces
                     {
                         AApiVersionedFields apiObj = (AApiVersionedFields)tv.Value;
                         if (apiObj.ContentFields.Contains("Value") &&
-                            typeof(string).IsAssignableFrom(AApiVersionedFields.GetContentFieldTypes(tv.Type)["Value"]))
+                            typeof(string).IsAssignableFrom(GetContentFieldTypes(tv.Type)["Value"]))
                         {
                             string elem = (string)apiObj["Value"].Value;
                             if (elem.Contains("\n"))
@@ -277,7 +273,7 @@ namespace Regul.S3PI.Interfaces
 
                 if (typeof(System.Collections.IDictionary).IsAssignableFrom(GetType()))
                 {
-                    System.Collections.IDictionary l = (System.Collections.IDictionary)this;
+                    System.Collections.IDictionary l = (System.Collections.IDictionary) this;
                     string fmt = "\n   [{0:X" + l.Count.ToString("X").Length + "}] {1}: {2}";
                     int i = 0;
                     sb.Append("\n--- (0x" + l.Count.ToString("X") + ") ---");
@@ -296,7 +292,7 @@ namespace Regul.S3PI.Interfaces
         /// Returns a <see cref="string"/> that represents the current <see cref="AApiVersionedFields"/> object.
         /// </summary>
         /// <returns>A <see cref="string"/> that represents the current <see cref="AApiVersionedFields"/> object.</returns>
-        public override string ToString() { return ValueBuilder; }
+        public override string ToString() => ValueBuilder;
 
         /// <summary>
         /// Sorts Content Field names by their <see cref="ElementPriorityAttribute"/> (if set)
@@ -304,7 +300,7 @@ namespace Regul.S3PI.Interfaces
         /// <param name="x">First content field name</param>
         /// <param name="y">Second content field name</param>
         /// <returns>A signed number indicating the relative values of this instance and value.</returns>
-        public int CompareByPriority(string x, string y) { return new PriorityComparer(GetType()).Compare(x, y); }
+        public int CompareByPriority(string x, string y) => new PriorityComparer(GetType()).Compare(x, y);
 
         /// <summary>
         /// Gets a lookup table from fieldname to type.
@@ -388,7 +384,7 @@ namespace Regul.S3PI.Interfaces
             /// <returns>Value Condition Less than zero -- x is less than y.
             /// Zero -- x equals y.
             /// Greater than zero -- x is greater than y.</returns>
-            public int Compare(T x, T y) { return x[field].CompareTo(y[field]); }
+            public int Compare(T x, T y) => x[field].CompareTo(y[field]);
 
             #endregion
 
@@ -426,7 +422,10 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="t">Enum type</param>
         /// <returns>Valid enum names</returns>
-        public static string FlagNames(Type t) { string p = ""; foreach (string q in Enum.GetNames(t)) p += " " + q; return p.Trim(); }
+        public static string FlagNames(Type t) { string p = "";
+            for (var index = 0; index < Enum.GetNames(t).Length; index++) p += " " + Enum.GetNames(t)[index];
+
+            return p.Trim(); }
     }
 
     /// <summary>
@@ -438,10 +437,11 @@ namespace Regul.S3PI.Interfaces
         /// Holds the <see cref="EventHandler"/> delegate to invoke if the <see cref="AHandlerElement"/> changes.
         /// </summary>
         protected EventHandler handler;
+
         /// <summary>
         /// Indicates if the <see cref="AHandlerElement"/> has been changed by OnElementChanged()
         /// </summary>
-        protected bool dirty = false;
+        protected bool dirty;
         /// <summary>
         /// Initialize a new instance
         /// </summary>
@@ -479,7 +479,7 @@ namespace Regul.S3PI.Interfaces
                         }
                         else
                             // Otherwise check the target parameter is assignable from the provided argument
-                            if (!pi[i].ParameterType.IsAssignableFrom(args[i].GetType())) return false;
+                            if (!pi[i].ParameterType.IsInstanceOfType(args[i])) return false;
                     }
 
                     // OK, we have a match
@@ -555,12 +555,12 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="handler">The replacement HandlerElement delegate.</param>
         /// <returns>Return a copy of the HandlerElement but with a new change <see cref="EventHandler"/>.</returns>
-        public override AHandlerElement Clone(EventHandler handler) { return new HandlerElement<T>(handler, val); }
+        public override AHandlerElement Clone(EventHandler handler) => new HandlerElement<T>(handler, val);
 
         /// <summary>
         /// The list of available field names on this API object.
         /// </summary>
-        public override List<string> ContentFields { get { return GetContentFields(GetType()); } }
+        public override List<string> ContentFields => GetContentFields(GetType());
         #endregion
 
         #region IEquatable<HandlerElement<T>>
@@ -569,7 +569,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
-        public bool Equals(HandlerElement<T> other) { return val.Equals(other.val); }
+        public bool Equals(HandlerElement<T> other) => val.Equals(other.val);
 
         /// <summary>
         /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="HandlerElement{T}"/>.
@@ -580,7 +580,7 @@ namespace Regul.S3PI.Interfaces
         public override bool Equals(object obj)
         {
             if (obj is T t) return val.Equals(t);
-            else if (obj is HandlerElement<T>) return Equals(obj as HandlerElement<T>);
+            else if (obj is HandlerElement<T> element) return Equals(element);
             return false;
         }
 
@@ -588,21 +588,21 @@ namespace Regul.S3PI.Interfaces
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode() { return val.GetHashCode(); }
+        public override int GetHashCode() => val.GetHashCode();
 
         #endregion
 
         /// <summary>
         /// The value of the object.
         /// </summary>
-        public T Val { get { return val; } set { if (!val.Equals(value)) { val = value; OnElementChanged(); } } }
+        public T Val { get => val; set { if (!val.Equals(value)) { val = value; OnElementChanged(); } } }
 
         /// <summary>
         /// Implicit cast from <see cref="HandlerElement{T}"/> to <typeparamref name="T"/>.
         /// </summary>
         /// <param name="value">Value to cast.</param>
         /// <returns>Cast value.</returns>
-        public static implicit operator T(HandlerElement<T> value) { return value.val; }
+        public static implicit operator T(HandlerElement<T> value) => value.val;
         //// <summary>
         //// Implicit cast from <typeparamref name="T"/> to <see cref="HandlerElement{T}"/>.
         //// </summary>
@@ -614,7 +614,7 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Get displayable value.
         /// </summary>
-        public string Value { get { return new TypedValue(typeof(T), val, "X").ToString(); } }
+        public string Value => new TypedValue(typeof(T), val, "X").ToString();
     }
 
     /// <summary>
@@ -667,7 +667,6 @@ namespace Regul.S3PI.Interfaces
         // /// <returns>Return a copy of the HandlerElement but with a new change <see cref="EventHandler"/>.</returns>
         // public override AHandlerElement Clone(EventHandler handler) { return new TGIBlockListIndex<T>(requestedApiVersion, handler, data) { ParentTGIBlocks = ParentTGIBlocks }; }
 
-
         /// <summary>
         /// The list of available field names on this API object.
         /// </summary>
@@ -714,7 +713,7 @@ namespace Regul.S3PI.Interfaces
         /// </summary>
         /// <param name="value">Value to cast.</param>
         /// <returns>Cast value.</returns>
-        public static implicit operator T(TGIBlockListIndex<T> value) { return value.data; }
+        public static implicit operator T(TGIBlockListIndex<T> value) => value.data;
         //// <summary>
         //// Implicit cast from <typeparamref name="T"/> to <see cref="HandlerElement{T}"/>.
         //// </summary>
@@ -725,6 +724,6 @@ namespace Regul.S3PI.Interfaces
         /// <summary>
         /// Displayable value
         /// </summary>
-        public string Value { get { return ValueBuilder.Replace("Data: ", ""); } }
+        public string Value => ValueBuilder.Replace("Data: ", "");
     }
 }

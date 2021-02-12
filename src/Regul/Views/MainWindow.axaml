@@ -13,43 +13,49 @@
 					 WindowStartupLocation="CenterScreen"
 					 Icon="avares://Regul/icon.ico"
 					 HasSystemDecorations="False"
-					 Background="{DynamicResource ThemePanelBackgroundBrush}"
+					 Background="{DynamicResource ThemeBackgroundBrush}"
 					 Title="Regul">
 	<olib:OlibMainWindow.TitleBarMenu>
 		<Menu VerticalAlignment="Center">
 			<MenuItem Header="{DynamicResource File}">
-				<MenuItem Header="{DynamicResource New}" Command="{Binding NewPackageCommand}" InputGesture="Ctrl+N" HotKey="Ctrl+N">
+				<MenuItem Header="{DynamicResource New}" Command="{Binding NewPackage}" InputGesture="Ctrl+N" HotKey="Ctrl+N">
 					<MenuItem.Icon>
-						<Image Source="{DynamicResource NewFileIcon}" Margin="1" />
+						<Path Data="{StaticResource NewFileIcon}" Fill="{DynamicResource ThemeForegroundBrush}" Stretch="Uniform" Margin="1"/>
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem Header="{DynamicResource Open}" Command="{Binding OpenPackageCommand}" InputGesture="Ctrl+O" HotKey="Ctrl+O"/>
+				<MenuItem Header="{DynamicResource Open}" Command="{Binding OpenPackage}" InputGesture="Ctrl+O" HotKey="Ctrl+O"/>
 				<MenuItem Header="{DynamicResource Save}" InputGesture="Ctrl+S" HotKey="Ctrl+S" IsEnabled="{Binding IsNotNull}"/>
+				<MenuItem Header="{DynamicResource SaveAs}" IsEnabled="{Binding IsNotNull}"/>
+				<MenuItem Header="{DynamicResource SaveAll}" Command="{Binding SaveAll}" IsEnabled="{Binding IsNotNull}"/>
                 <Separator/>
-                <MenuItem Header="{DynamicResource Settings}" Command="{Binding SettingsWindowCommand}">
+                <MenuItem Header="{DynamicResource Settings}" Command="{Binding SettingsWindow}">
 					<MenuItem.Icon>
-						<Image Source="{DynamicResource SettingsIcon}" Margin="1"/>
+						<Path Data="{StaticResource SettingsIcon}" Fill="{DynamicResource ThemeForegroundBrush}" Stretch="Uniform" Margin="1"/>
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem Header="{DynamicResource ExitFromRegul}" Command="{Binding ExitCommand}" InputGesture="Ctrl+Q" HotKey="Ctrl+Q">
+				<MenuItem Header="{DynamicResource ExitFromRegul}" Command="{Binding CloseProgram}" InputGesture="Ctrl+Q" HotKey="Ctrl+Q">
 					<MenuItem.Icon>
-						<Image Source="{DynamicResource ExitIcon}" Margin="1"/>
+						<Path Data="{StaticResource ExitIcon}" Fill="{DynamicResource ThemeForegroundBrush}" Stretch="Uniform" Margin="1"/>
 					</MenuItem.Icon>
 				</MenuItem>
 			</MenuItem>
 			<MenuItem Header="{DynamicResource Tools}">
 				<MenuItem Header="{DynamicResource TheSims3}">
 					<MenuItem.Icon>
-						<Image Source="{DynamicResource TheSims3Icon}" Margin="1"/>
+						<Path Data="{StaticResource TheSims3Icon}" Fill="{DynamicResource ThemeForegroundBrush}" Stretch="Uniform" Margin="1"/>
 					</MenuItem.Icon>
 						
-					<MenuItem Header="{DynamicResource SaveClear}" Command="{Binding SaveClearWindowCommand}"/>
+					<MenuItem Header="{DynamicResource SaveClear}" Command="{Binding SaveClearWindow}"/>
 				</MenuItem>
-				<MenuItem Header="{DynamicResource HEXNumberConverter}" Command="{Binding HEXNumberConverterCommand}"/>
+				<MenuItem Header="{DynamicResource HEXNumberConverter}" Command="{Binding HEXNumberConverter}"/>
 			</MenuItem>
 			<MenuItem Header="{DynamicResource Reference}">
 				<MenuItem Header="{DynamicResource CheckForUpdates}"/>
-				<MenuItem Header="{DynamicResource AboutTheProgram}" Command="{Binding AboutWindowCommand}"/>
+				<MenuItem Header="{DynamicResource AboutTheProgram}" Command="{Binding AboutWindow}">
+					<MenuItem.Icon>
+						<Path Data="{StaticResource RegulHoveredImage}" Fill="{DynamicResource ThemeForegroundBrush}" Stretch="Uniform" Margin="1"/>
+					</MenuItem.Icon>
+				</MenuItem>
 			</MenuItem>
 		</Menu>
 	</olib:OlibMainWindow.TitleBarMenu>
@@ -60,7 +66,7 @@
 		<Grid ColumnDefinitions="*,*">
 			<TabControl Items="{CompiledBinding Tabs}" Grid.ColumnSpan="2" ZIndex="1" SelectedItem="{CompiledBinding SelectedTabItem}"/>
 
-			<Image Source="{DynamicResource RegulHoveredImage}" Margin="50"/>
+			<Path Fill="{DynamicResource ThemePanelBackgroundBrush}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" Data="{StaticResource RegulHoveredImage}" Margin="50"/>
 			<Grid RowDefinitions="Auto,*,Auto,Auto" Grid.Column="1" Margin="20">
 				<TextBlock Text="{DynamicResource RecentProjects}" Classes="Heading" Margin="0 0 0 5" HorizontalAlignment="Center" FontSize="16"/>
                 <ListBox Grid.Row="1" Classes="BottomNotCornerRadius" Background="{DynamicResource ThemeBackgroundBrush}" Items="{Binding Projects}" SelectedItem="{Binding SelectedProject}">
@@ -71,7 +77,7 @@
                     </ListBox.DataTemplates>
                     <ListBox.ContextMenu>
                         <ContextMenu IsVisible="{CompiledBinding SelectedProject, Converter={x:Static ObjectConverters.IsNotNull}}">
-                            <MenuItem Header="{DynamicResource Delete}" Command="{Binding DeleteProjectCommand}"/>
+                            <MenuItem Header="{DynamicResource Delete}" Command="{Binding DeleteProject}"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>
@@ -80,8 +86,8 @@
 				<StackPanel Grid.Row="3" Spacing="5" Margin="0 5 0 0">
 					<TextBlock Text="{DynamicResource Welcome}" HorizontalAlignment="Center"/>
                     <TextBox Margin="0 0 0 5" Text="{CompiledBinding CreatorName}" Watermark="{DynamicResource CreatorName}" FontWeight="Bold" TextAlignment="Center"/>
-                    <Button Content="{DynamicResource New}" Command="{Binding NewPackageCommand}"/>
-					<Button Content="{DynamicResource Open}" Command="{Binding OpenPackageCommand}"/>
+                    <Button Content="{DynamicResource New}" Command="{Binding NewPackage}"/>
+					<Button Content="{DynamicResource Open}" Command="{Binding OpenPackage}"/>
                 </StackPanel>
             </Grid>
         </Grid>

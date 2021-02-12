@@ -1,16 +1,19 @@
-﻿using System.IO;
-using System.Text;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Microsoft.VisualBasic;
 using Regul.S3PI.Interfaces;
 using Regul.S3PI.Package;
+using System.IO;
+using System.Text;
 
 namespace Regul.Core
 {
     public class Save
     {
-        public Bitmap FamilyIcon;
-        private string nhdPath;
+        public IImage FamilyIcon;
+        private readonly string nhdPath;
 
         public string WorldName;
         public ulong ImgInstance;
@@ -22,7 +25,7 @@ namespace Regul.Core
             nhdPath = strPath;
             Package package = (Package)Package.OpenPackage(Path.Combine(Path.GetDirectoryName(strPath), "Meta.data"));
             IResourceIndexEntry rie = package.Find((R => R.ResourceType == 1653241999U));
-            UnParse(S3PI.WrapperDealer.GetResource((IPackage)package, rie).Stream);
+            UnParse(S3PI.WrapperDealer.GetResource(package, rie).Stream);
         }
 
         private void UnParse(Stream s)
@@ -31,7 +34,7 @@ namespace Regul.Core
             binaryReader.ReadInt32();
             StringBuilder stringBuilder = new();
 
-            int num1 = checked (binaryReader.ReadInt32() - 1);
+            int num1 = checked(binaryReader.ReadInt32() - 1);
             int num2 = 0;
 
             while (num2 <= num1)
@@ -41,8 +44,8 @@ namespace Regul.Core
                 checked { ++num2; }
             }
 
-            stringBuilder.Append(" ");
-            int num4 = checked (binaryReader.ReadInt32() - 1);
+            stringBuilder.Append(' ');
+            int num4 = checked(binaryReader.ReadInt32() - 1);
             int num5 = 0;
 
             while (num5 <= num4)
@@ -57,9 +60,9 @@ namespace Regul.Core
 
             IPackage pkg = Package.OpenPackage(nhdPath);
             ImgInstance = binaryReader.ReadUInt64();
-            IResourceIndexEntry rie = pkg.Find((entry => (long) entry.Instance == (long)ImgInstance & entry.ResourceType == 1802339198U));
+            IResourceIndexEntry rie = pkg.Find(entry => (long)entry.Instance == (long)ImgInstance & entry.ResourceType == 1802339198U);
 
-            FamilyIcon = rie != null ? new Bitmap(S3PI.WrapperDealer.GetResource(pkg, rie).Stream) : null;
+            FamilyIcon = rie != null ? new Bitmap(S3PI.WrapperDealer.GetResource(pkg, rie).Stream) : (DrawingImage)Application.Current.FindResource("UnknownIcon");
 
             binaryReader.ReadUInt64();
         }
