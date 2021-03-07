@@ -1,14 +1,14 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Regul.OlibUI;
+using OlibUI.Windows;
 using Regul.ViewModels.Windows;
 using System;
 using System.Reactive.Linq;
 
 namespace Regul.Views.Windows
 {
-    public class HEXNumberConverter : OlibModalWindow
+    public class HEXNumberConverter : OlibWindow
     {
         private TextBox HEXTextBox;
         private TextBox DecimalTextBox;
@@ -16,7 +16,6 @@ namespace Regul.Views.Windows
         public HEXNumberConverter()
         {
             InitializeComponent();
-            DataContext = new HEXNumberConverterViewModel();
 
             HEXTextBox = this.FindControl<TextBox>("HEXTextBox");
             DecimalTextBox = this.FindControl<TextBox>("DecimalTextBox");

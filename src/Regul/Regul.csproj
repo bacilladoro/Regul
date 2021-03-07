@@ -1,8 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net461</TargetFramework>
+		<TargetFramework>net5.0</TargetFramework>
 		<ApplicationIcon>icon.ico</ApplicationIcon>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<StartupObject>Regul.Program</StartupObject>
+		<RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
 	</PropertyGroup>
 	<ItemGroup>
 		<AvaloniaResource Include="Assets\**" />
@@ -11,31 +14,17 @@
 		<AvaloniaResource Include="Assets\Fonts\NotoSans-Regular.ttf" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="0.10.999-cibuild0012745-beta" />
-		<PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0012745-beta" />
-		<PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.999-cibuild0012745-beta" />
+		<PackageReference Include="Avalonia" Version="0.10.999-cibuild0013089-beta" />
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0013089-beta" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.999-cibuild0013089-beta" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\AvaloniaEdit\AvaloniaEdit.csproj" />
 		<ProjectReference Include="..\Regul.Instruments\Regul.Instruments.csproj" />
-		<ProjectReference Include="..\Regul.OlibUI\Regul.OlibUI.csproj" />
+		<ProjectReference Include="..\OlibUI\OlibUI.csproj" />
 		<ProjectReference Include="..\Regul.S3PI\Regul.S3PI.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-	  <Reference Include="Microsoft.VisualBasic" />
-	</ItemGroup>
-	<ItemGroup>
-		<AvaloniaXaml Update="Assets\Local\Lang.en-US.axaml">
-			<SubType>Designer</SubType>
-		</AvaloniaXaml>
-	</ItemGroup>
-	<ItemGroup>
-	  <Compile Update="Views\Windows\SaveCleaner.axaml.cs">
-	    <DependentUpon>SaveCleaner.axaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\Windows\TheSims3Type\ResourceDetails.axaml.cs">
-	    <DependentUpon>ResourceDetails.axaml</DependentUpon>
-	  </Compile>
-	</ItemGroup>
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	  <Exec Command="taskkill /IM &quot;regul.exe&quot;&#xD;&#xA;exit 0" />
+	</Target>
 </Project>

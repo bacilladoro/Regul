@@ -1,9 +1,9 @@
 ﻿using Avalonia.Markup.Xaml;
-using Regul.OlibUI;
+using OlibUI.Windows;
 
 namespace Regul.Views.Windows
 {
-    public class SaveCleaner : OlibModalWindow
+    public class SaveCleaner : OlibWindow
     {
         public SaveCleaner()
         {

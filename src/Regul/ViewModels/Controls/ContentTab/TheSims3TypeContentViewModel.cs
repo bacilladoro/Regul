@@ -2,6 +2,8 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media.Imaging;
+using OlibUI.Structures;
+using OlibUI.Windows;
 using Regul.Core.Interfaces;
 using Regul.Core.TheSims3Type;
 using Regul.S3PI;
@@ -497,13 +499,24 @@ namespace Regul.ViewModels.Controls.ContentTab
                         if (skipAll) continue;
                         if (!overwriteAll)
                         {
-                            MessageBox.MessageBoxResult res = await MessageBox.Show(App.MainWindow, null, "Overwrite file?\n" + file, "Question", MessageBox.MessageBoxButtons.NoNoToAllYesYesToAllAbandon,
-                                MessageBox.MessageBoxIcon.Question);
+                            //string res = await MessageBox.Show(App.MainWindow, null, "Overwrite file?\n" + file, "Question", MessageBox.MessageBoxButtons.NoNoToAllYesYesToAllAbandon,
+                            //    MessageBox.MessageBoxIcon.Question);
 
-                            if (res == MessageBox.MessageBoxResult.No) continue;
-                            if (res == MessageBox.MessageBoxResult.NoToAll) { skipAll = true; continue; }
-                            if (res == MessageBox.MessageBoxResult.YesToAll) overwriteAll = true;
-                            if (res == MessageBox.MessageBoxResult.Abandon) return;
+                            string res = await MessageBox.Show(App.MainWindow, "Overwrite file?\n" + file, "Question", null, MessageBox.MessageBoxIcon.Question, 
+                                new List<MessageBoxButton> 
+                                { 
+                                    new MessageBoxButton { Result = "Yes", Text = "Yes" },
+                                    new MessageBoxButton { Result = "YesToAll", Text = "Yes to all" },
+                                    new MessageBoxButton { Result = "No", Text = "No" },
+                                    new MessageBoxButton { Result = "NoToAll", Text = "NoToAll" },
+                                    new MessageBoxButton { Result = "Abandon", Text = "Abandon" },
+                                    
+                                });
+
+                            if (res == "No") continue;
+                            if (res == "NoToAll") { skipAll = true; continue; }
+                            if (res == "YesToAll") overwriteAll = true;
+                            if (res == "Abandon") return;
                         }
                     }
                     ExportFile(rie, file);

@@ -1,0 +1,87 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:OlibUI.Instruments">
+
+	<Style Selector="local|StyleSettings">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid Margin="5" RowDefinitions="Auto,*">
+					<DockPanel>
+						<TextBlock Text="{DynamicResource ThemeC}"/>
+						<ComboBox Margin="5 0 0 0" SelectedIndex="{Binding Theme}">
+							<ComboBoxItem Content="{DynamicResource Dazzling}"/>
+							<ComboBoxItem Content="{DynamicResource Gloomy}"/>
+							<ComboBoxItem Content="{DynamicResource Mysterious}"/>
+							<ComboBoxItem Content="{DynamicResource Turquoise}"/>
+							<ComboBoxItem Content="{DynamicResource Emerald}"/>
+
+							<ComboBoxItem Content="Custom"/>
+						</ComboBox>
+					</DockPanel>
+
+					<Grid Margin="0 5 0 0" Grid.Row="1" ColumnDefinitions="*,5,*" RowDefinitions="Auto,*,Auto">
+						<ListBox Grid.RowSpan="2" Margin="0 0 0 5"/>
+						<TextBox Grid.Column="2" Watermark="Theme name" TextAlignment="Center"/>
+						<Border Grid.Row="1" Grid.Column="2" BorderThickness="1" CornerRadius="5" Classes="Panel" Margin="0 5">
+							<ScrollViewer>
+								<StackPanel Spacing="5" Margin="5 5 20 5" Name="Buttons">
+									<DockPanel>
+										<TextBlock Text="Accent"/>
+										<Button Name="AccentBrush" Background="{Binding Theme.ForegroundBrush}" Width="30" HorizontalAlignment="Right"/>
+									</DockPanel>
+									<DockPanel>
+										<TextBlock Text="Background"/>
+										<Button Name="BackgroundBrush" Background="Red" Width="30" HorizontalAlignment="Right"/>
+									</DockPanel>
+									<DockPanel>
+										<TextBlock Text="Hover background"/>
+										<Button Name="HoverBackgroundBrush" Background="Red" Width="30" HorizontalAlignment="Right"/>
+									</DockPanel>
+									<DockPanel>
+										<TextBlock Text="Foreground"/>
+										<Button Name="ForegroundBrush" Background="Red" Width="30" HorizontalAlignment="Right"/>
+									</DockPanel>
+									<DockPanel>
+										<TextBlock Text="Foreground opacity"/>
+										<Button Name="ForegroundOpacityBrush" Background="Red" Width="30" HorizontalAlignment="Right"/>
+									</DockPanel>
+									<DockPanel>
+										<TextBlock Text="Pressed foreground"/>
+										<Button Name="PressedForegroundBrush" Background="Red" Width="30" HorizontalAlignment="Right"/>
+									</DockPanel>
+									<DockPanel>
+										<TextBlock Text="Border"/>
+										<Button Name="BorderBrush" Background="Red" Width="30" HorizontalAlignment="Right"/>
+									</DockPanel>
+									<DockPanel>
+										<TextBlock Text="Border background"/>
+										<Button Name="BorderBackgroundBrush" Background="Red" Width="30" HorizontalAlignment="Right"/>
+									</DockPanel>
+									<DockPanel>
+										<TextBlock Text="Window border"/>
+										<Button Name="WindowBorderBrush" Background="Red" Width="30" HorizontalAlignment="Right"/>
+									</DockPanel>
+									<DockPanel>
+										<TextBlock Text="ScrollBox"/>
+										<Button Name="ScrollBoxBrush" Background="Red" Width="30" HorizontalAlignment="Right"/>
+									</DockPanel>
+									<DockPanel>
+										<TextBlock Text="Hover ScrollBox"/>
+										<Button Name="HoverScrollBoxBrush" Background="Red" Width="30" HorizontalAlignment="Right"/>
+									</DockPanel>
+									<DockPanel>
+										<TextBlock Text="Error"/>
+										<Button Name="ErrorBrush" Background="Red" Width="30" HorizontalAlignment="Right"/>
+									</DockPanel>
+								</StackPanel>
+							</ScrollViewer>
+						</Border>
+						
+						 <Button Name="Create" Content="Create" Grid.Row="2"/>
+						 <Button Name="Apply" Content="Apply" Grid.Column="2" Grid.Row="2"/>
+					</Grid>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+</Styles>

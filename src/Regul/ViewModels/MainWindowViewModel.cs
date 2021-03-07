@@ -14,7 +14,13 @@ using Regul.Views.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using Avalonia.Markup.Xaml;
+using Avalonia.Styling;
+using Newtonsoft.Json;
+using OlibUI;
+using OlibUI.Structures;
 
 namespace Regul.ViewModels
 {
@@ -76,19 +82,22 @@ namespace Regul.ViewModels
                     TabItem item = Tabs[i];
                     if (item == SelectedTabItem)
                     {
-                        switch (((TabHeaderViewModel)((TabHeader)item.Header).DataContext).PackageType)
+                        switch (((TabHeaderViewModel) ((TabHeader) item.Header).DataContext).PackageType)
                         {
                             default:
-                                ((TheSims3TypeContentViewModel)((TheSims3TypeContent)item.Content).DataContext).Active = true;
+                                ((TheSims3TypeContentViewModel) ((TheSims3TypeContent) item.Content).DataContext)
+                                    .Active = true;
                                 break;
                         }
+
                         continue;
                     }
 
-                    switch (((TabHeaderViewModel)((TabHeader)item.Header).DataContext).PackageType)
+                    switch (((TabHeaderViewModel) ((TabHeader) item.Header).DataContext).PackageType)
                     {
                         default:
-                            ((TheSims3TypeContentViewModel)((TheSims3TypeContent)item.Content).DataContext).Active = false;
+                            ((TheSims3TypeContentViewModel) ((TheSims3TypeContent) item.Content).DataContext).Active =
+                                false;
                             break;
                     }
                 }
@@ -104,15 +113,41 @@ namespace Regul.ViewModels
 
         private void Initialize()
         {
-            Application.Current.Styles[2] = !string.IsNullOrEmpty(Program.Settings.Theme)
-                ? new StyleInclude(new Uri("resm:Styles?assembly=Regul"))
-                {
-                    Source = new Uri($"avares://Regul.OlibUI/Themes/{Program.Settings.Theme}.axaml")
-                }
-                : new StyleInclude(new Uri("resm:Styles?assembly=Regul"))
-                {
-                    Source = new Uri("avares://Regul.OlibUI/Themes/Dazzling.axaml")
-                };
+            switch (Program.Settings.Theme)
+            {
+                case "Gloomy":
+                case "Mysterious":
+                case "Turquoise":
+                case "Emerald":
+                case "Dazzling":
+                    Application.Current.Styles[1] = new StyleInclude(new Uri("resm:Styles?assembly=Regul"))
+                    {
+                        Source = new Uri($"avares://OlibUI/Themes/{Program.Settings.Theme}.axaml")
+                    };
+                    break;
+                default:
+                    List<Theme> Themes = new List<Theme>();
+
+                    if (Directory.Exists("Themes"))
+                    {
+                        foreach (string path in Directory.EnumerateFiles("Themes"))
+                        {
+                            string json = File.ReadAllText(path);
+                            Themes.Add(JsonConvert.DeserializeObject<Theme>(json));
+                        }
+                    }
+
+                    Theme? theme = Themes.FirstOrDefault(t => t.Name == Program.Settings.Theme);
+                    if (theme != null)
+                        Application.Current.Styles[1] = AvaloniaRuntimeXamlLoader.Parse<IStyle>(theme.ToAxaml());
+                    else
+                        Application.Current.Styles[1] = new StyleInclude(new Uri("resm:Styles?assembly=Regul"))
+                        {
+                            Source = new Uri("avares://OlibUI/Themes/Dazzling.axaml")
+                        };
+                    
+                    break;
+            }
 
             CreatorName = Program.Settings.CreatorName;
             Projects = new ObservableCollection<Project>(Program.Settings.Projects);
@@ -120,19 +155,22 @@ namespace Regul.ViewModels
 
         private void SaveCleanerWindow()
         {
-            App.SaveCleaner = new SaveCleaner { DataContext = new SaveCleanerViewModel() };
+            App.SaveCleaner = new SaveCleaner();
             App.SaveCleaner.ShowDialog(App.MainWindow);
         }
+
         private void SettingsWindow()
         {
-            App.Settings = new Views.Windows.Settings { DataContext = new SettingsViewModel() };
+            App.Settings = new Views.Windows.Settings();
             App.Settings.ShowDialog(App.MainWindow);
         }
+
         private void AboutWindow()
         {
-            App.About = new About { DataContext = new AboutViewModel() };
+            App.About = new About();
             App.About.ShowDialog(App.MainWindow);
         }
+
         private void HEXNumberConverter()
         {
             App.HEXNumberConverter = new HEXNumberConverter();
@@ -151,12 +189,12 @@ namespace Regul.ViewModels
 
         private async void NewPackage()
         {
-            App.SelectType = new SelectType { DataContext = new SelectTypeViewModel() };
+            App.SelectType = new SelectType {DataContext = new SelectTypeViewModel()};
             if (await App.SelectType.ShowDialog<bool>(App.MainWindow))
             {
                 IPackageContent typeContent;
 
-                switch (((SelectTypeViewModel)App.SelectType.DataContext).Type)
+                switch (((SelectTypeViewModel) App.SelectType.DataContext).Type)
                 {
                     default:
                         typeContent = new TheSims3TypeContent();
@@ -169,32 +207,33 @@ namespace Regul.ViewModels
                     {
                         DataContext = new TabHeaderViewModel
                         {
-                            Icon = (Geometry)Application.Current.FindResource("TheSims3Icon"),
-                            NameTab = (string)Application.Current.FindResource("NoName"),
+                            Icon = (Geometry) Application.Current.FindResource("TheSims3Icon"),
+                            NameTab = (string) Application.Current.FindResource("NoName"),
                             CloseTabAction = CloseTab,
                             ID = Guid.NewGuid().ToString("N"),
-                            PackageType = ((SelectTypeViewModel)App.SelectType.DataContext).Type
+                            PackageType = ((SelectTypeViewModel) App.SelectType.DataContext).Type
                         }
                     },
                     Content = typeContent
                 });
             }
         }
+
         private async void OpenPackage()
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filters.Add(new FileDialogFilter { Extensions = { "package" }, Name = "Package files" });
-            dialog.Filters.Add(new FileDialogFilter { Extensions = { "nhd" }, Name = "Save files" });
+            dialog.Filters.Add(new FileDialogFilter {Extensions = {"package"}, Name = "Package files"});
+            dialog.Filters.Add(new FileDialogFilter {Extensions = {"nhd"}, Name = "Save files"});
             List<string> files = (await dialog.ShowAsync(App.MainWindow)).ToList();
 
             if (files.Count == 0) return;
 
-            App.SelectType = new SelectType { DataContext = new SelectTypeViewModel() };
+            App.SelectType = new SelectType {DataContext = new SelectTypeViewModel()};
             if (await App.SelectType.ShowDialog<bool>(App.MainWindow))
             {
                 IPackageContent typeContent;
 
-                switch (((SelectTypeViewModel)App.SelectType.DataContext).Type)
+                switch (((SelectTypeViewModel) App.SelectType.DataContext).Type)
                 {
                     default:
                         typeContent = new TheSims3TypeContent(files[0]);
@@ -207,11 +246,11 @@ namespace Regul.ViewModels
                     {
                         DataContext = new TabHeaderViewModel
                         {
-                            Icon = (Geometry)Application.Current.FindResource("TheSims3Icon"),
+                            Icon = (Geometry) Application.Current.FindResource("TheSims3Icon"),
                             NameTab = System.IO.Path.GetFileNameWithoutExtension(files[0]),
                             CloseTabAction = CloseTab,
                             ID = Guid.NewGuid().ToString("N"),
-                            PackageType = ((SelectTypeViewModel)App.SelectType.DataContext).Type,
+                            PackageType = ((SelectTypeViewModel) App.SelectType.DataContext).Type,
                             IsSave = true
                         }
                     },
@@ -223,17 +262,17 @@ namespace Regul.ViewModels
         private void SaveAll()
         {
             for (int i = 0; i < Tabs.Count; i++)
-                ((IPackageContent)Tabs[i].Content)?.PackageType.SavePackage();
+                ((IPackageContent) Tabs[i].Content)?.PackageType.SavePackage();
         }
 
         private void CloseTab(string id)
         {
             for (int i = 0; i < Tabs.Count; i++)
             {
-                TabHeaderViewModel item = (TabHeaderViewModel)((TabHeader)Tabs[i].Header)?.DataContext;
+                TabHeaderViewModel item = (TabHeaderViewModel) ((TabHeader) Tabs[i].Header)?.DataContext;
                 if (item?.ID == id)
                 {
-                    ((IPackageContent)Tabs[i].Content)?.PackageType.SavePackage();
+                    ((IPackageContent) Tabs[i].Content)?.PackageType.SavePackage();
                     Tabs.RemoveAt(i);
                     break;
                 }

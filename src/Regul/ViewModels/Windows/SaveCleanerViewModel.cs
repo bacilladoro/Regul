@@ -5,15 +5,16 @@ using Regul.Core;
 using Regul.S3PI;
 using Regul.S3PI.Interfaces;
 using Regul.S3PI.Package;
-using Regul.Views;
 using Regul.Views.Controls.ListBoxItems;
-using Regul.Views.Windows;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using OlibUI.Windows;
+using System.Collections.Generic;
+using OlibUI.Structures;
 
 namespace Regul.ViewModels.Windows
 {
@@ -23,7 +24,6 @@ namespace Regul.ViewModels.Windows
         private bool _isLoading;
         private ObservableCollection<SaveFilePortrait> _saveFilePortraits = new ObservableCollection<SaveFilePortrait>();
         private SaveFilePortrait _selectSave;
-        private Loading _loading;
 
         private bool _deletingCharacterPortraits;
         private bool _removingLotThumbnails;
@@ -114,24 +114,24 @@ namespace Regul.ViewModels.Windows
             {
                 if (!Directory.Exists(Path.Combine(TS3CC.Sims3MyDocFolder, "Saves")))
                 {
-                    await MessageBox.Show(App.SaveCleaner, null, (string)Application.Current.FindResource("SaveFilesNotFound"), (string)Application.Current.FindResource("Information"),
-                        MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
+                    await MessageBox.Show(App.SaveCleaner, (string)Application.Current.FindResource("SaveFilesNotFound"), (string)Application.Current.FindResource("Information"), null,
+                        MessageBox.MessageBoxIcon.Information, new List<MessageBoxButton> { new MessageBoxButton { IsKeyDown = true, Result = "OK", Text = (string)Application.Current.FindResource("OK") } });
                     App.SaveCleaner.Close();
                     return;
                 }
             }
             catch (Exception ex)
             {
-                await MessageBox.Show(App.SaveCleaner, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"),
-                    (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Error);
+                await MessageBox.Show(App.SaveCleaner, (string)Application.Current.FindResource("AnErrorHasOccurred"), (string)Application.Current.FindResource("Error"), ex.ToString(),
+                        MessageBox.MessageBoxIcon.Error, new List<MessageBoxButton> { new MessageBoxButton { IsKeyDown = true, Result = "OK", Text = (string)Application.Current.FindResource("OK") } });
             }
 
             string path1;
             if (TS3CC.Sims3MyDocFolder != null) path1 = TS3CC.Sims3MyDocFolder;
             else
             {
-                await MessageBox.Show(App.SaveCleaner, null, (string)Application.Current.FindResource("NotFindFolderTheSims3"),
-                    (string)Application.Current.FindResource("Information"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
+                await MessageBox.Show(App.SaveCleaner, (string)Application.Current.FindResource("NotFindFolderTheSims3"), (string)Application.Current.FindResource("Information"), null,
+                        MessageBox.MessageBoxIcon.Information, new List<MessageBoxButton> { new MessageBoxButton { IsKeyDown = true, Result = "OK", Text = (string)Application.Current.FindResource("OK") } });
 
                 OpenFolderDialog dialog = new OpenFolderDialog();
                 string path = await dialog.ShowAsync(App.SaveCleaner);
@@ -171,8 +171,8 @@ namespace Regul.ViewModels.Windows
                     }
                     catch (Exception ex)
                     {
-                        await MessageBox.Show(App.SaveCleaner, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"),
-                            (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Error);
+                        await MessageBox.Show(App.SaveCleaner, (string)Application.Current.FindResource("AnErrorHasOccurred"), (string)Application.Current.FindResource("Error"), ex.ToString(),
+                            MessageBox.MessageBoxIcon.Error, new List<MessageBoxButton> { new MessageBoxButton { IsKeyDown = true, Result = "OK", Text = (string)Application.Current.FindResource("OK") } });
                     }
                     checked { ++index2; }
                 }
@@ -192,19 +192,17 @@ namespace Regul.ViewModels.Windows
             {
                 if (SelectSave == null)
                 {
-                    await MessageBox.Show(App.SaveCleaner, null, (string)Application.Current.FindResource("NoSelectedSaveFile"),
-                        (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Error);
+                    await MessageBox.Show(App.SaveCleaner, (string)Application.Current.FindResource("NoSelectedSaveFile"), (string)Application.Current.FindResource("Error"), null,
+                        MessageBox.MessageBoxIcon.Error, new List<MessageBoxButton> { new MessageBoxButton { IsKeyDown = true, Result = "OK", Text = (string)Application.Current.FindResource("OK") } });
                     return;
                 }
                 IsLoading = true;
-                _loading = new Loading();
                 bgwClean.RunWorkerAsync(SelectSave);
-                await _loading.ShowDialog(App.SaveCleaner);
             }
             catch (Exception ex)
             {
-                await MessageBox.Show(App.SaveCleaner, ex.ToString(), (string)Application.Current.FindResource("AnErrorHasOccurred"),
-                    (string)Application.Current.FindResource("Error"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
+                await MessageBox.Show(App.SaveCleaner, (string)Application.Current.FindResource("AnErrorHasOccurred"), (string)Application.Current.FindResource("Error"), ex.ToString(),
+                            MessageBox.MessageBoxIcon.Error, new List<MessageBoxButton> { new MessageBoxButton { IsKeyDown = true, Result = "OK", Text = (string)Application.Current.FindResource("OK") } });
             }
             GC.Collect();
         }
@@ -278,16 +276,15 @@ namespace Regul.ViewModels.Windows
 
         private void bgwClean_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            _loading.ProcessText.Text = (string)e.UserState;
-            _loading.Progress.Value = e.ProgressPercentage;
+            App.SaveCleaner.ProgressText = (string)e.UserState;
+            App.SaveCleaner.ProgressLoad = e.ProgressPercentage;
         }
 
         private void bgwClean_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            _loading.Close();
             IsLoading = false;
-            MessageBox.Show(App.SaveCleaner, null, (string)Application.Current.FindResource("SaveFilesCleanedSuccessfully") + $"\nTotal: {e.Result}",
-                (string)Application.Current.FindResource("Successfully"), MessageBox.MessageBoxButtons.Ok, MessageBox.MessageBoxIcon.Information);
+            MessageBox.Show(App.SaveCleaner, (string)Application.Current.FindResource("SaveFilesCleanedSuccessfully") + $"\nTotal: {e.Result}", (string)Application.Current.FindResource("Successfully"), null,
+                        MessageBox.MessageBoxIcon.Error, new List<MessageBoxButton> { new MessageBoxButton { IsKeyDown = true, Result = "OK", Text = (string)Application.Current.FindResource("OK") } });
         }
 
         private void bgwClean_DoWork(object sender, DoWorkEventArgs e)

@@ -1,21 +1,25 @@
-﻿<olib:OlibModalWindow xmlns="https://github.com/avaloniaui"
-                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		              xmlns:olib="using:Regul.OlibUI"
-                      mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="100"
-                      Width="350" Height="130"
-                      x:Class="Regul.Views.Windows.SelectType"
-                      WindowStartupLocation="CenterOwner"
-					  HasSystemDecorations="False"
-                      Icon="avares://Regul/icon.ico"
-                      ShowInTaskbar="False"
-                      CanResize="False"
-					  Background="{StaticResource ThemeBackgroundBrush}"
-                      Title="{StaticResource PackageType}">
-	<olib:OlibModalWindow.KeyBindings>
+﻿<olib:OlibWindow xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		         xmlns:olib="using:OlibUI.Windows"
+                 mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="100"
+                 Width="350" Height="130"
+                 x:Class="Regul.Views.Windows.SelectType"
+                 xmlns:viewmodels="using:Regul.ViewModels.Windows"
+                 WindowStartupLocation="CenterOwner"
+                 Icon="avares://Regul/icon.ico"
+                 ShowInTaskbar="False"
+				 TransparencyLevelHint="AcrylicBlur"
+                 CanResize="False"
+                 Title="{StaticResource PackageType}">
+	<olib:OlibWindow.DataContext>
+		<viewmodels:SelectTypeViewModel/>
+	</olib:OlibWindow.DataContext>
+	
+	<olib:OlibWindow.KeyBindings>
 		<KeyBinding Command="{Binding Exit}" Gesture="Enter"/>
-	</olib:OlibModalWindow.KeyBindings>
+	</olib:OlibWindow.KeyBindings>
 	
 	<DockPanel VerticalAlignment="Center" Margin="10">
 		<TextBlock Text="{StaticResource PackageTypeC}" Margin="0 0 5 0"/>
@@ -24,9 +28,9 @@
 		</ComboBox>
 	</DockPanel>
 
-	<olib:OlibModalWindow.BottomPanel>
+	<olib:OlibWindow.BottomPanel>
 		<Grid>
 			<Button Content="{DynamicResource OK}" Command="{Binding Exit}" HorizontalAlignment="Right"/>
 		</Grid>
-	</olib:OlibModalWindow.BottomPanel>
-</olib:OlibModalWindow>
+	</olib:OlibWindow.BottomPanel>
+</olib:OlibWindow>

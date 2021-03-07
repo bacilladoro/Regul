@@ -1,22 +1,18 @@
 ﻿using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Regul.OlibUI;
+using OlibUI.Windows;
 using Regul.ViewModels.Windows;
 
 namespace Regul.Views.Windows
 {
-    public class Settings : OlibModalWindow
+    public class Settings : OlibWindow
     {
-
         public Settings()
         {
-            InitializeComponent();
-        }
-
-        private void InitializeComponent()
-        {
             AvaloniaXamlLoader.Load(this);
+
+            Closing += (sender, args) => ((SettingsViewModel) DataContext)?.Closing();
         }
     }
 }

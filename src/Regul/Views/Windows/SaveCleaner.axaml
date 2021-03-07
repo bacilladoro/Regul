@@ -1,20 +1,24 @@
-﻿<olib:OlibModalWindow xmlns="https://github.com/avaloniaui"
-					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					  xmlns:olib="using:Regul.OlibUI"
-					  mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="390"
-					  x:Class="Regul.Views.Windows.SaveCleaner"
-					  Width="600" Height="430"
-					  WindowStartupLocation="CenterOwner"
-					  WindowState="Normal"
-					  CanResize="False"
-					  HasSystemDecorations="False"
-					  ShowInTaskbar="False"
-					  InLoadMode="{Binding IsLoading}"
-					  Background="{StaticResource ThemeBackgroundBrush}"
-					  Title="{StaticResource SaveCleaner}"
-					  Icon="avares://Regul/icon.ico">
+﻿<olib:OlibWindow xmlns="https://github.com/avaloniaui"
+				 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				 xmlns:olib="using:OlibUI.Windows"
+				 mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="390"
+				 x:Class="Regul.Views.Windows.SaveCleaner"
+				 xmlns:viewmodels="using:Regul.ViewModels.Windows"
+				 Width="600" Height="430"
+				 WindowStartupLocation="CenterOwner"
+				 WindowState="Normal"
+				 CanResize="False"
+				 TransparencyLevelHint="AcrylicBlur"
+				 ShowInTaskbar="False"
+				 InLoadMode="{Binding IsLoading}"
+				 Title="{StaticResource SaveCleaner}"
+				 Icon="avares://Regul/icon.ico">
+	<olib:OlibWindow.DataContext>
+		<viewmodels:SaveCleanerViewModel/>
+	</olib:OlibWindow.DataContext>
+	
 	<Grid>
 		<StackPanel Margin="5" Spacing="5">
 			<ListBox Classes="Horizontal" Items="{Binding SaveFilePortraits}" SelectedItem="{Binding SelectSave}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="210">
@@ -44,9 +48,9 @@
 		</StackPanel>
 	</Grid>
 
-	<olib:OlibModalWindow.BottomPanel>
+	<olib:OlibWindow.BottomPanel>
 		<Grid>
 			<Button Content="{StaticResource Clear}" Command="{Binding Clear}"/>
 		</Grid>
-	</olib:OlibModalWindow.BottomPanel>
-</olib:OlibModalWindow>
+	</olib:OlibWindow.BottomPanel>
+</olib:OlibWindow>

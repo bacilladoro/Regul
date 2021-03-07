@@ -1,11 +1,11 @@
 ﻿using System;
 using Avalonia.Markup.Xaml;
-using Regul.OlibUI;
+using OlibUI.Windows;
 using Regul.ViewModels;
 
 namespace Regul.Views
 {
-    public class MainWindow : OlibMainWindow
+    public class MainWindow : OlibWindow
     {
         public MainWindow()
         {

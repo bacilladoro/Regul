@@ -2,13 +2,13 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
-using Regul.OlibUI;
+using OlibUI.Windows;
 using Regul.ViewModels.Windows.TheSims3Type;
 using System.Linq;
 
 namespace Regul.Views.Windows.TheSims3Type
 {
-    public class ResourceDetails : OlibModalWindow
+    public class ResourceDetails : OlibWindow
     {
         public ResourceDetails()
         {

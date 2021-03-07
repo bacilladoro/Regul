@@ -1,23 +1,23 @@
-﻿<olib:OlibModalWindow xmlns="https://github.com/avaloniaui"
+﻿<olib:OlibWindow xmlns="https://github.com/avaloniaui"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		              xmlns:olib="using:Regul.OlibStyle"
+		              xmlns:olib="using:OlibUI.Windows"
 					  xmlns:converters="using:Regul.Core.Converters"
                       mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="290"
                       Width="500" Height="290"
                       x:Class="Regul.Views.Windows.TheSims3Type.ResourceDetails"
                       WindowStartupLocation="CenterOwner"
-					  HasSystemDecorations="False"
-					  CanResize="False"
+                      TransparencyLevelHint="AcrylicBlur"
+                      CanResize="False"
                       ShowInTaskbar="False"
 					  Background="{StaticResource ThemeBackgroundBrush}"
 					  Icon="avares://Regul/icon.ico"
                       Title="{StaticResource ResourceDetails}">
-	<olib:OlibModalWindow.Resources>
+	<olib:OlibWindow.Resources>
 		<converters:UIntToStringConverter x:Key="UIntToStringConverter"/>
 		<converters:ULongToStringConverter x:Key="ULongToStringConverter"/>
-	</olib:OlibModalWindow.Resources>
+	</olib:OlibWindow.Resources>
 	
 	<StackPanel Spacing="5" Margin="5">
 		<DockPanel>
@@ -67,7 +67,7 @@
 		</DockPanel>
 	</StackPanel>
 	
-	<olib:OlibModalWindow.BottomPanel>
+	<olib:OlibWindow.BottomPanel>
 		<Grid ColumnDefinitions="Auto,*,Auto">
 			<StackPanel Orientation="Horizontal" Spacing="5">
 				<Button Content="{StaticResource CopyRK}" Command="{Binding CopyResourceKeyDetails}"/>
@@ -78,5 +78,5 @@
 				<Button Content="{StaticResource OK}" Command="{Binding OK}"/>
 			</StackPanel>
 		</Grid>
-	</olib:OlibModalWindow.BottomPanel>
-</olib:OlibModalWindow>
+	</olib:OlibWindow.BottomPanel>
+</olib:OlibWindow>

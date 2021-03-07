@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Version>2.0.0</Version>
+		<Authors>Dmitry Zhutkov (Onebeld)</Authors>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<Copyright>©2020-2021 Dmitry Zhutkov (Onebeld)</Copyright>
+		<RepositoryType>public</RepositoryType>
+		<PackageTags>style, olib, olibui, avalonia, ui</PackageTags>
+		<Description>Dynamic user interface for Avalonia</Description>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="0.10.999-cibuild0013089-beta" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.999-cibuild0013089-beta" />
+		<PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="0.10.999-cibuild0013089-beta" />
+	</ItemGroup>
+	<ItemGroup>
+		<AvaloniaResource Include="Themes\**" />
+		<AvaloniaResource Include="Controls\**" />
+		<AvaloniaResource Include="Instruments\**" />
+		<AvaloniaResource Include="Windows\OlibWindow.axaml" />
+		<AvaloniaResource Include="Local\**" />
+		<AvaloniaResource Include="OlibUI.axaml" />
+	</ItemGroup>
+</Project>

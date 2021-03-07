@@ -5,14 +5,14 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Regul.Views.Controls.Tab.TabHeader">
 	<StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-		<Path Fill="{DynamicResource ThemeForegroundBrush}" Data="{Binding Icon}" Margin="0 0 5 0" VerticalAlignment="Center" Width="16" Stretch="Uniform"/>
+		<Path Fill="{DynamicResource ForegroundBrush}" Data="{Binding Icon}" Margin="0 0 5 0" VerticalAlignment="Center" Width="16" Stretch="Uniform"/>
 		
 		<TextBlock Text="{Binding NameTab}" VerticalAlignment="Center"/>
 
 		<TextBlock Text="*" IsVisible="{Binding !IsSave}"/>
 
 		<Button Padding="0" Width="16" Height="16" Command="{Binding CloseTab}" Margin="5 0 0 0">
-			<Path Data="{StaticResource CloseIcon}"/>
+			<Path Data="{StaticResource CloseIcon}" VerticalAlignment="Center"/>
 		</Button>
 	</StackPanel>
 </UserControl>

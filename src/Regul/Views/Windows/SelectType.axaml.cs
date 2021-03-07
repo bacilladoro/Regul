@@ -1,11 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Regul.OlibUI;
+using OlibUI.Windows;
 
 namespace Regul.Views.Windows
 {
-    public class SelectType : OlibModalWindow
+    public class SelectType : OlibWindow
     {
         public SelectType()
         {

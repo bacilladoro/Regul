@@ -8,7 +8,7 @@ using Regul.Core;
 using Regul.Structures;
 using System.Runtime.InteropServices;
 using Avalonia.Dialogs;
-using Regul.OlibUI;
+using OlibUI.Windows;
 using Avalonia.Rendering;
 using System.Threading;
 using System.Diagnostics;
@@ -43,26 +43,37 @@ namespace Regul
 
             if (e.ExceptionObject is Exception ex)
             {
-                lock (Sync) File.AppendAllText(Path.Combine(pathToLog,
-                            $"{AppDomain.CurrentDomain.FriendlyName}_{DateTime.Now:dd.MM.yyy}.log"),
-                        $"[{DateTime.Now:dd.MM.yyy HH:mm:ss.fff}] | Fatal | [{ex.TargetSite.DeclaringType}.{ex.TargetSite.Name}()] {ex}\r\n",
+                string filename = $"{AppDomain.CurrentDomain.FriendlyName}_{DateTime.Now:dd.MM.yyy}.log";
+
+                lock (Sync) File.AppendAllText(Path.Combine(pathToLog, filename),
+                        $"[{DateTime.Now:dd.MM.yyy HH:mm:ss.fff}] | Fatal | [{ex.TargetSite?.DeclaringType}.{ex.TargetSite?.Name}()] {ex}\r\n",
                         Encoding.UTF8);
+
+                Process process = new Process();
+                process.StartInfo = new ProcessStartInfo()
+                {
+                    UseShellExecute = true,
+                    FileName = Path.Combine(pathToLog, filename)
+                };
+
+                process.Start();
             }
         }
 
         private static AppBuilder BuildAvaloniaApp()
         {
-            var result = AppBuilder.Configure<App>();
+            AppBuilder result = AppBuilder.Configure<App>();
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
                 result
                     .UseWin32()
                     .UseSkia()
+                    .UseManagedSystemDialogs()
                     .With(new AngleOptions { AllowedPlatformApis = new List<AngleOptions.PlatformApi> { AngleOptions.PlatformApi.DirectX11 } });
 
                 if (DwmIsCompositionEnabled(out bool dwmEnabled) == 0 && dwmEnabled)
                 {
-                    var wp = result.WindowingSubsystemInitializer;
+                    Action wp = result.WindowingSubsystemInitializer;
                     result.UseWindowingSubsystem(() =>
                     {
                         wp();
@@ -73,7 +84,7 @@ namespace Regul
             else
             {
                 result.UsePlatformDetect()
-                    .UseManagedSystemDialogs<AppBuilder, OlibMainWindow>();
+                    .UseManagedSystemDialogs<AppBuilder, OlibWindow>();
             }
             return result
                 .LogToTrace()
@@ -85,7 +96,7 @@ namespace Regul
 
         private static void AppMain(Application app, string[] args)
         {
-            App.MainWindow = new MainWindow { DataContext = new MainWindowViewModel() };
+            App.MainWindow = new MainWindow();
 
             app.Run(App.MainWindow);
         }
