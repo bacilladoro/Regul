@@ -29,7 +29,6 @@
 				<Border Name="border"
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
-						CornerRadius="5"
 						BorderThickness="{TemplateBinding BorderThickness}">
 					<DockPanel Margin="{TemplateBinding Padding}"
 							   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -95,6 +94,9 @@
 	</Style>
 	<Style Selector="TextBox:error /template/ Border#border">
 		<Setter Property="BorderBrush" Value="{DynamicResource ErrorBrush}"/>
+	</Style>
+	<Style Selector="TextBox /template/ Border#border">
+		<Setter Property="CornerRadius" Value="5"/>
 	</Style>
 	<Style Selector="TextBox /template/ DockPanel">
 		<Setter Property="Cursor" Value="IBeam" />

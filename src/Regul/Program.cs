@@ -68,7 +68,6 @@ namespace Regul
                 result
                     .UseWin32()
                     .UseSkia()
-                    .UseManagedSystemDialogs()
                     .With(new AngleOptions { AllowedPlatformApis = new List<AngleOptions.PlatformApi> { AngleOptions.PlatformApi.DirectX11 } });
 
                 if (DwmIsCompositionEnabled(out bool dwmEnabled) == 0 && dwmEnabled)

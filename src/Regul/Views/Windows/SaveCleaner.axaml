@@ -3,54 +3,59 @@
 				 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 				 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 				 xmlns:olib="using:OlibUI.Windows"
-				 mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="390"
+				 mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="475"
 				 x:Class="Regul.Views.Windows.SaveCleaner"
 				 xmlns:viewmodels="using:Regul.ViewModels.Windows"
-				 Width="600" Height="430"
+				 MinWidth="600" MinHeight="475"
+				 Width="600" Height="475"
 				 WindowStartupLocation="CenterOwner"
 				 WindowState="Normal"
-				 CanResize="False"
 				 TransparencyLevelHint="AcrylicBlur"
 				 ShowInTaskbar="False"
+				 WindowButtons="CloseAndExpand"
 				 InLoadMode="{Binding IsLoading}"
 				 Title="{StaticResource SaveCleaner}"
 				 Icon="avares://Regul/icon.ico">
 	<olib:OlibWindow.DataContext>
 		<viewmodels:SaveCleanerViewModel/>
 	</olib:OlibWindow.DataContext>
-	
-	<Grid>
-		<StackPanel Margin="5" Spacing="5">
-			<ListBox Classes="Horizontal" Items="{Binding SaveFilePortraits}" SelectedItem="{Binding SelectSave}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="210">
-				<ListBox.ItemsPanel>
-					<ItemsPanelTemplate>
-						<StackPanel Orientation="Horizontal"/>
-					</ItemsPanelTemplate>
-				</ListBox.ItemsPanel>
-			</ListBox>
-			<Border Classes="BorderStyle">
-				<ScrollViewer Height="70">
-					<StackPanel Spacing="5" Margin="5">
-						<CheckBox Content="{StaticResource RemovingFamilyPortraits}" IsChecked="{Binding RemovingFamilyPortraits}" ToolTip.Tip="{StaticResource ToolTipRemovingFamilyPortraits}"/>
-						<CheckBox Content="{StaticResource DeletingCharacterPortraits}" IsChecked="{Binding DeletingCharacterPortraits}" ToolTip.Tip="{StaticResource ToolTipDeletingCharacterPortraits}"/>
-						<CheckBox Content="{StaticResource RemovingLotThumbnails}" IsChecked="{Binding RemovingLotThumbnails}" ToolTip.Tip="{StaticResource ToolTipRemovingLotThumbnails}"/>
-						<CheckBox Content="{StaticResource RemovingPhotos}" IsChecked="{Binding RemovingPhotos}" ToolTip.Tip="{StaticResource ToolTipRemovingPhotos}"/>
-						<CheckBox Content="{StaticResource RemovingTextures}" IsChecked="{Binding RemovingTextures}" ToolTip.Tip="{StaticResource ToolTipRemovingTextures}"/>
-						<CheckBox Content="{StaticResource RemovingGeneratedImages}" IsChecked="{Binding RemovingGeneratedImages}" ToolTip.Tip="{StaticResource ToolTipRemovingGeneratedImages}"/>
-					</StackPanel>
-				</ScrollViewer>
-			</Border>
-			<CheckBox Content="{StaticResource CreateBackup}" IsChecked="{Binding CreateABackup}"/>
+
+	<Grid Margin="5" RowDefinitions="Auto,Auto,*,Auto">
+		<ListBox Classes="Horizontal" Items="{Binding SaveFilePortraits}" SelectionMode="Multiple" SelectedItem="{Binding SelectSave}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="210">
+			<ListBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Horizontal"/>
+				</ItemsPanelTemplate>
+			</ListBox.ItemsPanel>
+		</ListBox>
+		<StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="5" Margin="0 5 0 5">
+			<Button Content="{DynamicResource ChooseAll}" Padding="5 0" Command="{Binding ChooseAll}"/>
+			<Button Content="{DynamicResource CancelAll}" Padding="5 0" Command="{Binding CancelAll}"/>
+		</StackPanel>
+		<Button Content="{DynamicResource ClearMemories}" Command="{Binding ClearMemory}" Padding="5 0" Grid.Row="1" HorizontalAlignment="Right" Margin="5 5 5 5"/>
+		<Border Classes="BorderStyle" Grid.Row="2">
+			<ScrollViewer>
+				<StackPanel Spacing="5" Margin="5">
+					<CheckBox Content="{StaticResource RemovingFamilyPortraits}" IsChecked="{Binding RemovingFamilyPortraits}" ToolTip.Tip="{StaticResource ToolTipRemovingFamilyPortraits}"/>
+					<CheckBox Content="{StaticResource DeletingCharacterPortraits}" IsChecked="{Binding DeletingCharacterPortraits}" ToolTip.Tip="{StaticResource ToolTipDeletingCharacterPortraits}"/>
+					<CheckBox Content="{StaticResource RemovingLotThumbnails}" IsChecked="{Binding RemovingLotThumbnails}" ToolTip.Tip="{StaticResource ToolTipRemovingLotThumbnails}"/>
+					<CheckBox Content="{StaticResource RemovingPhotos}" IsChecked="{Binding RemovingPhotos}" ToolTip.Tip="{StaticResource ToolTipRemovingPhotos}"/>
+					<CheckBox Content="{StaticResource RemovingTextures}" IsChecked="{Binding RemovingTextures}" ToolTip.Tip="{StaticResource ToolTipRemovingTextures}"/>
+					<CheckBox Content="{StaticResource RemovingGeneratedImages}" IsChecked="{Binding RemovingGeneratedImages}" ToolTip.Tip="{StaticResource ToolTipRemovingGeneratedImages}"/>
+				</StackPanel>
+			</ScrollViewer>
+		</Border>
+		<StackPanel Margin="0 5 0 0" Spacing="5" Grid.Row="3">
+			<CheckBox Content="{DynamicResource ClearCache}" IsChecked="{Binding ClearCache}" ToolTip.Tip="{DynamicResource ToolTipClearCache}"/>
+			<CheckBox Content="{DynamicResource CreateBackup}" IsChecked="{Binding CreateABackup}"/>
 			<DockPanel>
-				<Button Content="{StaticResource Select}" Command="{Binding SelectPath}" Margin="0 0 5 0" Padding="10 0" IsEnabled="{Binding CreateABackup}"/>
-				<TextBox IsEnabled="{Binding CreateABackup}" Text="{Binding PathBackup}" Watermark="{StaticResource PathBackup}"/>
+				<Button Content="{DynamicResource Select}" Command="{Binding SelectPath}" Margin="0 0 5 0" Padding="10 0" IsEnabled="{Binding CreateABackup}"/>
+				<TextBox IsEnabled="{Binding CreateABackup}" Text="{Binding PathBackup}" Watermark="{DynamicResource PathBackup}"/>
 			</DockPanel>
 		</StackPanel>
 	</Grid>
 
 	<olib:OlibWindow.BottomPanel>
-		<Grid>
-			<Button Content="{StaticResource Clear}" Command="{Binding Clear}"/>
-		</Grid>
+		<Button Content="{StaticResource Clear}" Command="{Binding Clear}"/>
 	</olib:OlibWindow.BottomPanel>
 </olib:OlibWindow>

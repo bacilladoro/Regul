@@ -11,9 +11,9 @@
 		<Description>Dynamic user interface for Avalonia</Description>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="0.10.999-cibuild0013089-beta" />
-		<PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.999-cibuild0013089-beta" />
-		<PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="0.10.999-cibuild0013089-beta" />
+		<PackageReference Include="Avalonia" Version="0.10.999-cibuild0013153-beta" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.999-cibuild0013153-beta" />
+		<PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="0.10.999-cibuild0013153-beta" />
 	</ItemGroup>
 	<ItemGroup>
 		<AvaloniaResource Include="Themes\**" />

@@ -1,16 +1,17 @@
 ﻿<Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:olib="using:OlibUI.Windows"
              x:Class="Regul.App">
     <Application.Styles>
 		<StyleInclude Source="avares://OlibUI/OlibUI.axaml"/>
 		<StyleInclude Source="avares://OlibUI/Themes/Dazzling.axaml"/>
 		
 		<StyleInclude Source="/Assets/Images.axaml"/>
-		<StyleInclude Source="/Assets/Local/Lang.en-US.axaml"/>
+		<StyleInclude Source="/Assets/Local/Lang.en.axaml"/>
 		
 		<StyleInclude Source="avares://Regul.Instruments/Instruments.axaml"/>
 
-        <Style Selector="Window">
+        <Style Selector="olib|OlibWindow">
             <Setter Property="FontFamily" Value="/Assets/Fonts#Noto Sans"/>
         </Style>
     </Application.Styles>

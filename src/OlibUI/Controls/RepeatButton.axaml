@@ -53,6 +53,10 @@
 		<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
 		<Setter Property="TextBlock.Foreground" Value="{DynamicResource PressedForegroundBrush}" />
 	</Style>
+	
+	<Style Selector="RepeatButton:pressed > Path">
+		<Setter Property="Fill" Value="{DynamicResource PressedForegroundBrush}"/>
+	</Style>
 
 	<Style Selector="RepeatButton:disabled /template/ ContentPresenter">
 		<Setter Property="Opacity" Value="0.5" />

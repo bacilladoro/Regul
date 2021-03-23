@@ -110,8 +110,12 @@ namespace OlibUI.Windows
             base.OnApplyTemplate(e);
             OlibWindow window = this;
 
+            SizeToContent content = window.SizeToContent;
+
             window.ExtendClientAreaToDecorationsHint = true;
             window.ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.PreferSystemChrome;
+
+            window.SizeToContent = content;
 
             ReestablishMenuItem = GetControl<MenuItem>(e, "ReestablishMenuItem");
             ExpandMenuItem = GetControl<MenuItem>(e, "ExpandMenuItem");

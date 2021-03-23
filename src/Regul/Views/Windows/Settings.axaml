@@ -11,6 +11,7 @@
                  x:Class="Regul.Views.Windows.Settings"
                  WindowStartupLocation="CenterOwner"
                  TransparencyLevelHint="AcrylicBlur"
+				 WindowButtons="CloseAndExpand"
                  Icon="avares://Regul/icon.ico"
                  ShowInTaskbar="False"
                  Title="{DynamicResource Settings}">
@@ -22,9 +23,8 @@
     </olib:OlibWindow.Resources>
 
     <TabControl>
-        <TabItem Header="General">
-            <Border BorderThickness="0 1 0 0" BorderBrush="{DynamicResource BorderBrush}"
-                    Background="{DynamicResource BorderBackgroundBrush}">
+        <TabItem Header="{DynamicResource General}">
+            <Border BorderThickness="0 1 0 0" BorderBrush="{DynamicResource BorderBrush}" Background="{DynamicResource BorderBackgroundBrush}">
                 <ScrollViewer>
                     <StackPanel Spacing="5" Margin="5">
                         <CheckBox IsChecked="{Binding HardwareAcceleration}"
@@ -33,8 +33,29 @@
                 </ScrollViewer>
             </Border>
         </TabItem>
+		
+		<TabItem Header="{DynamicResource SaveCleaner}">
+			<Border BorderThickness="0 1 0 0" BorderBrush="{DynamicResource BorderBrush}" Background="{DynamicResource BorderBackgroundBrush}">
+				<ScrollViewer>
+					<StackPanel Spacing="5" Margin="5">
+						<DockPanel>
+                            <TextBlock Text="{DynamicResource PathToTheSims3DocumentC}" Margin="0 0 5 0"/>
+                            <TextBox Text="{Binding PathToTheSims3Document}"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="{DynamicResource PathToSavesFolderC}" Margin="0 0 5 0"/>
+                            <TextBox Text="{Binding PathToSaves}"/>
+                        </DockPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <Button Content="{DynamicResource Define}" Padding="5 0" Command="{Binding Define}"/>
+                            <Button Content="{DynamicResource ChoosePath}" Padding="5 0" Command="{Binding ChoosePath}"/>
+                        </StackPanel>
+					</StackPanel>
+				</ScrollViewer>
+			</Border>
+		</TabItem>
 
-        <TabItem Header="Style">
+        <TabItem Header="{DynamicResource Style}">
             <Border BorderThickness="0 1 0 0" BorderBrush="{DynamicResource BorderBrush}"
                     Background="{DynamicResource BorderBackgroundBrush}">
                 <Grid Margin="5" RowDefinitions="Auto,*">

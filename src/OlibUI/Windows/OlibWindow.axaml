@@ -61,7 +61,7 @@
 									<StackPanel Orientation="Horizontal" Margin="5,0,0,0" ZIndex="-10">
 										<Image Classes="IconImage" Source="{Binding Icon, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource WindowIconToImageConverter}}" MaxWidth="16" MaxHeight="16"/>
 										<TextBlock Name="TitleTextBlock" VerticalAlignment="Center" Text="{TemplateBinding Title}"/>
-										<Path Name="PathIcon" Stretch="Uniform" Width="50" VerticalAlignment="Center" Fill="{DynamicResource ForegroundBrush}" Data="{TemplateBinding TextIcon}"/>
+										<Path Name="PathIcon" Stretch="Uniform" Width="50" VerticalAlignment="Center" Data="{TemplateBinding TextIcon}"/>
 									</StackPanel>
 									<ContentPresenter Margin="5 0 0 0" Grid.Column="1" Content="{TemplateBinding TitleBarMenu}"/>
 									<StackPanel
@@ -104,7 +104,7 @@
 												<Setter Property="Fill" Value="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"/>
 											</Style>
 											<Style Selector="local|OlibWindow[IsActive=false] /template/ Button:not(:pointerover):not(:pressed)">
-												<Setter Property="Opacity" Value="0.5"/>
+												<Setter Property="Foreground" Value="{DynamicResource ForegroundOpacityBrush}"/>
 											</Style>
 										</StackPanel.Styles>
 										<Button Name="MinimizeButton" Classes="NoBorder">
@@ -149,10 +149,13 @@
 	<Style Selector="local|OlibWindow /template/ Grid#ResizeGrid Border">
 		<Setter Property="Background" Value="#01000000"/>
 	</Style>
-	<Style Selector="local|OlibWindow[IsActive=false] /template/ Path#Icon">
-		<Setter Property="Opacity" Value="0.5"/>
+	<Style Selector="local|OlibWindow /template/ Path#PathIcon">
+		<Setter Property="Fill" Value="{DynamicResource ForegroundBrush}"/>
+	</Style>
+	<Style Selector="local|OlibWindow[IsActive=false] /template/ Path#PathIcon">
+		<Setter Property="Fill" Value="{DynamicResource ForegroundOpacityBrush}"/>
 	</Style>
 	<Style Selector="local|OlibWindow[IsActive=false] /template/ TextBlock#TitleTextBlock">
-		<Setter Property="Opacity" Value="0.5"/>
+		<Setter Property="Foreground" Value="{DynamicResource ForegroundOpacityBrush}"/>
 	</Style>
 </Styles>

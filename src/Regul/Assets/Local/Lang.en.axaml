@@ -34,15 +34,24 @@
 		<!-- WelcomeWindow -->
 
 		<!-- Settings -->
+		<v:String x:Key="General">General</v:String>
+		<v:String x:Key="Style">Style</v:String>
+		
 		<v:String x:Key="ThemeC">Theme:</v:String>
 		<v:String x:Key="LanguageC">Language:</v:String>
 		<v:String x:Key="HardwareAcceleration">Hardware acceleration (restart required)</v:String>
+		
+		<v:String x:Key="PathToTheSims3DocumentC">The Sims 3 Document Path:</v:String>
+		<v:String x:Key="PathToSavesFolderC">Save folder path:</v:String>
 
 		<v:String x:Key="Dazzling">Dazzling</v:String>
 		<v:String x:Key="Gloomy">Gloomy</v:String>
 		<v:String x:Key="Mysterious">Mysterious</v:String>
 		<v:String x:Key="Turquoise">Turquoise</v:String>
 		<v:String x:Key="Emerald">Emerald</v:String>
+		
+		<v:String x:Key="Define">Define</v:String>
+		<v:String x:Key="ChoosePath">Choose path</v:String>
 		<!-- Settings -->
 
 		<!-- About the program -->
@@ -68,6 +77,7 @@
 		<v:String x:Key="No">No</v:String>
 		<v:String x:Key="OK">OK</v:String>
 		<v:String x:Key="Cancel">Cancel</v:String>
+		<v:String x:Key="Proceed">Proceed</v:String>
 
 		<v:String x:Key="Error">Error</v:String>
 		<v:String x:Key="Successfully">Successfully</v:String>
@@ -85,6 +95,7 @@
 		<v:String x:Key="RemovingPhotos">Removing photos</v:String>
 		<v:String x:Key="RemovingTextures">Removing textures</v:String>
 		<v:String x:Key="RemovingGeneratedImages">Removing generated images</v:String>
+		<v:String x:Key="ClearCache">Clear cache</v:String>
 		<v:String x:Key="CreateBackup">Create backup</v:String>
 		<v:String x:Key="ToolTipRemovingFamilyPortraits">Removes all family portraits except the current one (It is recommended to enable)</v:String>
 		<v:String x:Key="ToolTipDeletingCharacterPortraits">Portraits are displayed in the relationship panel, in the CAS, when choosing clothes and in the panel of the selected active character (It is recommended to enable)</v:String>
@@ -92,17 +103,31 @@
 		<v:String x:Key="ToolTipRemovingPhotos">Deletes all photos taken by the sim</v:String>
 		<v:String x:Key="ToolTipRemovingTextures">Removes textures of an unloaded lot</v:String>
 		<v:String x:Key="ToolTipRemovingGeneratedImages">Removes generated images created, for example, during a prom</v:String>
+		<v:String x:Key="ToolTipClearCache">Clears the cache in the "Documents/Electronic Arts/The Sims 3" folder</v:String>
 
 		<v:String x:Key="AnErrorHasOccurred">An error has occurred. Details below.</v:String>
 		<v:String x:Key="SaveFilesCleanedSuccessfully">Save files cleaned successfully!</v:String>
+		<v:String x:Key="MemoriesDeleted">All memories are deleted!</v:String>
 		<v:String x:Key="SaveFilesNotFound">Save files not found</v:String>
 		<v:String x:Key="NoSelectedSaveFile">You haven't selected a save file!</v:String>
 		<v:String x:Key="NotFindFolderTheSims3">Could not find the "The Sims 3" folder. Select the folder manually.</v:String>
+		<v:String x:Key="ContinueClearMemories">To continue, make sure you turn off memories in the game.</v:String>
 
 		<v:String x:Key="ProcessingCreateBackup">Create backup...</v:String>
 		<v:String x:Key="ProcessingCompressingSave">Compressing save...</v:String>
 		<v:String x:Key="ProcessingClearingSave">Clearing save...</v:String>
-		<v:String x:Key="ProcessingSavingSave">Saving save...</v:String>
+		<v:String x:Key="ProcessingClearingMemories">Clearing memories...</v:String>
+		
+		<v:String x:Key="SaveNameC">Save name:</v:String>
+		<v:String x:Key="TimePassedC">Time passed:</v:String>
+		<v:String x:Key="Sec">sec.</v:String>
+		<v:String x:Key="OldSizeC">Old size:</v:String>
+		<v:String x:Key="NewSizeC">New size:</v:String>
+		<v:String x:Key="PercentC">Percent:</v:String>
+		
+		<v:String x:Key="ChooseAll">Choose all</v:String>
+		<v:String x:Key="CancelAll">Cancel all</v:String>
+		<v:String x:Key="ClearMemories">Clear memories</v:String>
 		<!-- SaveCleaner -->
 
 		<!-- SelectPackageType -->

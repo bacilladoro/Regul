@@ -54,6 +54,10 @@
 
 	<Style Selector="Button:disabled">
 		<Setter Property="Opacity" Value="0.5"/>
+		<Setter Property="Foreground" Value="{DynamicResource ForegroundOpacityBrush}"/>
+	</Style>
+	<Style Selector="Button:disabled > Path">
+		<Setter Property="Fill" Value="{DynamicResource ForegroundOpacityBrush}"/>
 	</Style>
 
 	<Style Selector="Button.NoBorder">

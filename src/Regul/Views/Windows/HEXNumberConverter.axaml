@@ -4,7 +4,7 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:olib="using:OlibUI.Windows"
                  mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="150"
-                 Width="300" Height="150"
+                 Width="300" Height="130"
                  x:Class="Regul.Views.Windows.HEXNumberConverter"
                  xmlns:viewmodels="using:Regul.ViewModels.Windows"
                  WindowStartupLocation="CenterOwner"

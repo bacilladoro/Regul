@@ -1,5 +1,4 @@
-﻿#nullable enable
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Media;
@@ -15,6 +14,7 @@ using Newtonsoft.Json;
 using OlibUI;
 using OlibUI.Instruments;
 using OlibUI.Windows;
+using Regul.S3PI;
 
 namespace Regul.ViewModels.Windows
 {
@@ -27,6 +27,9 @@ namespace Regul.ViewModels.Windows
         private ObservableCollection<Theme> _customThemes;
 
         private Theme _customTheme;
+
+        private string _pathToTheSims3Document;
+        private string _pathToSaves;
 
         #region Properties
 
@@ -78,6 +81,25 @@ namespace Regul.ViewModels.Windows
             }
         }
 
+        private string PathToTheSims3Document
+        {
+            get => _pathToTheSims3Document;
+            set
+            {
+                RaiseAndSetIfChanged(ref _pathToTheSims3Document, value);
+                Program.Settings.PathToTheSims3Document = value;
+            }
+        }
+        private string PathToSaves
+        {
+            get => _pathToSaves;
+            set
+            {
+                RaiseAndSetIfChanged(ref _pathToSaves, value);
+                Program.Settings.PathToSaves = value;
+            }
+        }
+
         [DataMember]
         private ObservableCollection<Theme> CustomThemes
         {
@@ -113,6 +135,8 @@ namespace Regul.ViewModels.Windows
         private void Initialize()
         {
             HardwareAcceleration = Program.Settings.HardwareAcceleration;
+            PathToTheSims3Document = Program.Settings.PathToTheSims3Document;
+            PathToSaves = Program.Settings.PathToSaves;
 
             CustomThemes = new ObservableCollection<Theme>();
 
@@ -141,6 +165,25 @@ namespace Regul.ViewModels.Windows
                         CustomTheme = theme;
                     else Theme = 0;
                     break;
+            }
+        }
+
+        private void Define()
+        {
+            PathToTheSims3Document = TS3CC.Sims3MyDocFolder;
+            PathToSaves = PathToTheSims3Document + "\\Saves";
+        }
+
+        private async void ChoosePath()
+        {
+            OpenFolderDialog dialog = new OpenFolderDialog();
+            dialog.Directory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            string path = await dialog.ShowAsync(App.Settings);
+            if (!string.IsNullOrEmpty(path))
+            {
+                PathToTheSims3Document = path;
+                PathToSaves = PathToTheSims3Document + "\\Saves";
             }
         }
 
